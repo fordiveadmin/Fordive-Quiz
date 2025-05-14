@@ -8,12 +8,19 @@ import {
   type ZodiacMapping,
   type InsertZodiacMapping,
   type QuizResult,
-  type InsertQuizResult
+  type InsertQuizResult,
+  users, 
+  scents, 
+  questions, 
+  zodiacMappings, 
+  quizResults
 } from "@shared/schema";
 
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import { eq } from 'drizzle-orm';
+import { db } from './db';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -337,4 +344,175 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+  
+  // Question operations
+  async getQuestions(): Promise<Question[]> {
+    return db
+      .select()
+      .from(questions)
+      .orderBy(questions.order);
+  }
+  
+  async getQuestion(id: number): Promise<Question | undefined> {
+    const [question] = await db
+      .select()
+      .from(questions)
+      .where(eq(questions.id, id));
+    return question || undefined;
+  }
+  
+  async createQuestion(insertQuestion: InsertQuestion): Promise<Question> {
+    const [question] = await db
+      .insert(questions)
+      .values(insertQuestion)
+      .returning();
+    return question;
+  }
+  
+  async updateQuestion(id: number, updateQuestion: Partial<InsertQuestion>): Promise<Question | undefined> {
+    const [question] = await db
+      .update(questions)
+      .set(updateQuestion)
+      .where(eq(questions.id, id))
+      .returning();
+    return question || undefined;
+  }
+  
+  async deleteQuestion(id: number): Promise<boolean> {
+    const result = await db
+      .delete(questions)
+      .where(eq(questions.id, id));
+    return !!result;
+  }
+  
+  // Scent operations
+  async getScents(): Promise<Scent[]> {
+    return db
+      .select()
+      .from(scents);
+  }
+  
+  async getScent(id: number): Promise<Scent | undefined> {
+    const [scent] = await db
+      .select()
+      .from(scents)
+      .where(eq(scents.id, id));
+    return scent || undefined;
+  }
+  
+  async createScent(insertScent: InsertScent): Promise<Scent> {
+    const [scent] = await db
+      .insert(scents)
+      .values(insertScent)
+      .returning();
+    return scent;
+  }
+  
+  async updateScent(id: number, updateScent: Partial<InsertScent>): Promise<Scent | undefined> {
+    const [scent] = await db
+      .update(scents)
+      .set(updateScent)
+      .where(eq(scents.id, id))
+      .returning();
+    return scent || undefined;
+  }
+  
+  async deleteScent(id: number): Promise<boolean> {
+    const result = await db
+      .delete(scents)
+      .where(eq(scents.id, id));
+    return !!result;
+  }
+  
+  // Zodiac mapping operations
+  async getZodiacMappings(): Promise<ZodiacMapping[]> {
+    return db
+      .select()
+      .from(zodiacMappings);
+  }
+  
+  async getZodiacMapping(id: number): Promise<ZodiacMapping | undefined> {
+    const [mapping] = await db
+      .select()
+      .from(zodiacMappings)
+      .where(eq(zodiacMappings.id, id));
+    return mapping || undefined;
+  }
+  
+  async getZodiacMappingsBySign(sign: string): Promise<ZodiacMapping[]> {
+    return db
+      .select()
+      .from(zodiacMappings)
+      .where(eq(zodiacMappings.zodiacSign, sign));
+  }
+  
+  async createZodiacMapping(insertMapping: InsertZodiacMapping): Promise<ZodiacMapping> {
+    const [mapping] = await db
+      .insert(zodiacMappings)
+      .values(insertMapping)
+      .returning();
+    return mapping;
+  }
+  
+  async updateZodiacMapping(id: number, updateMapping: Partial<InsertZodiacMapping>): Promise<ZodiacMapping | undefined> {
+    const [mapping] = await db
+      .update(zodiacMappings)
+      .set(updateMapping)
+      .where(eq(zodiacMappings.id, id))
+      .returning();
+    return mapping || undefined;
+  }
+  
+  async deleteZodiacMapping(id: number): Promise<boolean> {
+    const result = await db
+      .delete(zodiacMappings)
+      .where(eq(zodiacMappings.id, id));
+    return !!result;
+  }
+  
+  // Quiz result operations
+  async getQuizResult(id: number): Promise<QuizResult | undefined> {
+    const [result] = await db
+      .select()
+      .from(quizResults)
+      .where(eq(quizResults.id, id));
+    return result || undefined;
+  }
+  
+  async getQuizResultsByUserId(userId: number): Promise<QuizResult[]> {
+    return db
+      .select()
+      .from(quizResults)
+      .where(eq(quizResults.userId, userId));
+  }
+  
+  async createQuizResult(insertResult: InsertQuizResult): Promise<QuizResult> {
+    const [result] = await db
+      .insert(quizResults)
+      .values(insertResult)
+      .returning();
+    return result;
+  }
+}
+
+// Switch to database storage
+export const storage = new DatabaseStorage();
