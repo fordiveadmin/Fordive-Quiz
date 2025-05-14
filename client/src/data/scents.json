@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Atlantis",
+    "notes": ["Grapefruit", "Black Currant", "Sea Salt", "Lily of the Valley", "Pine", "Jasmine", "Amber", "Praline"],
+    "vibes": ["Fresh", "Energetic", "Playful"],
+    "mood": "Like ocean air at sunrise—fresh and full of energy.",
+    "description": "Atlantis captures the essence of an ocean breeze with layers of citrus and aquatic notes. It opens with zesty grapefruit and black currant, then reveals a heart of sea salt, lily of the valley, and pine. The base notes of amber and praline provide a gentle warmth that balances the freshness.",
+    "category": "Fresh"
+  },
+  {
+    "id": 2,
+    "name": "Feeling Good",
+    "notes": ["Raspberry", "Peony", "Floral", "Candy", "Amber", "Praline", "Musky"],
+    "vibes": ["Girly", "Soft", "Joyful"],
+    "mood": "Like a gentle hug in perfume form.",
+    "description": "Feeling Good is a sweet and comforting fragrance that opens with juicy raspberry and delicate peony. Its heart reveals a bouquet of soft florals and a hint of candy-like sweetness. The base notes of amber, praline, and musk create a warm, enveloping sensation that lingers throughout the day.",
+    "category": "Oriental/Sweet ambery"
+  },
+  {
+    "id": 3,
+    "name": "Shelby",
+    "notes": ["Sage", "Grapefruit", "Quince", "Lily of the Valley", "Iris", "Amber", "Sandalwood", "Pine"],
+    "vibes": ["Fruity", "Smooth", "Charming"],
+    "mood": "You're like a story that's fascinating to keep listening to.",
+    "description": "Shelby is a charismatic fragrance that opens with an aromatic blend of sage and bright grapefruit, complemented by the unique note of quince. Its heart features delicate lily of the valley and iris for a sophisticated touch. The base of amber, sandalwood, and pine creates a smooth, memorable trail that makes a lasting impression.",
+    "category": "Fresh"
+  },
+  {
+    "id": 4,
+    "name": "Utopia",
+    "notes": ["Lavender", "Violet", "Chamomile", "Jasmine", "Vanilla", "Sandalwood"],
+    "vibes": ["Floral", "Dreamy", "Soothing"],
+    "mood": "A peaceful moment in a blooming garden.",
+    "description": "Utopia is a dreamy floral fragrance that transports you to a serene garden. It begins with calming lavender and delicate violet, blending into a heart of chamomile and jasmine. The base notes of vanilla and sandalwood create a comforting, soothing foundation that promotes tranquility and peace.",
+    "category": "Floral"
+  },
+  {
+    "id": 5,
+    "name": "1970",
+    "notes": ["Vanilla", "Cinnamon", "Honey", "Tobacco", "Leather", "Sandalwood"],
+    "vibes": ["Warm", "Nostalgic", "Sophisticated"],
+    "mood": "Like a well-loved leather-bound book in a cozy library.",
+    "description": "1970 is a nostalgic fragrance that evokes a sense of timeless elegance. It opens with warm vanilla and spicy cinnamon, complemented by honey's natural sweetness. The heart reveals tobacco and leather notes for a vintage touch, while sandalwood grounds the composition with sophisticated warmth.",
+    "category": "Woody"
+  },
+  {
+    "id": 6,
+    "name": "Royal",
+    "notes": ["Bergamot", "Black Pepper", "Rose", "Iris", "Leather", "Oud", "Amber"],
+    "vibes": ["Elegant", "Powerful", "Distinguished"],
+    "mood": "commanding presence with refined elegance.",
+    "description": "Royal is a distinguished fragrance designed for those who embody natural leadership. It opens with crisp bergamot and black pepper, revealing a noble heart of rose and iris. The base features luxurious leather, precious oud, and warm amber—creating an aura of authority, sophistication, and timeless elegance.",
+    "category": "Woody"
+  },
+  {
+    "id": 7,
+    "name": "Garden Breeze",
+    "notes": ["Mint", "Green Apple", "Jasmine", "Lily", "Green Tea", "Cedar", "Musk"],
+    "vibes": ["Fresh", "Gentle", "Refreshing"],
+    "mood": "A gentle breeze carrying the scent of blooming flowers.",
+    "description": "Garden Breeze captures the essence of a fresh spring morning. It opens with invigorating mint and crisp green apple, leading to a floral heart of jasmine and lily. The base notes of green tea, cedar, and musk create a clean, refreshing foundation that feels like a breath of fresh air.",
+    "category": "Fresh"
+  },
+  {
+    "id": 8,
+    "name": "Revolt",
+    "notes": ["Ginger", "Pepper", "Vetiver", "Cedarwood", "Leather", "Incense"],
+    "vibes": ["Bold", "Energetic", "Confident"],
+    "mood": "Breaking boundaries with fearless confidence.",
+    "description": "Revolt is a bold and energetic fragrance made for those who push limits. It opens with spicy ginger and pepper, leading to an earthy heart of vetiver. The base of cedarwood, leather, and incense creates a trail of confident individuality—perfect for those who aren't afraid to challenge conventions.",
+    "category": "Woody"
+  }
+]

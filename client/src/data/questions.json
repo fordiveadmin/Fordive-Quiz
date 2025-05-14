@@ -1,0 +1,228 @@
+[
+  {
+    "id": 1,
+    "text": "Which kind of place would you like to spend a holiday?",
+    "type": "multiple_choice",
+    "order": 1,
+    "options": [
+      {
+        "id": "option_1_1",
+        "text": "A breezy beach club party",
+        "description": "Sun, sand, and refreshing ocean breeze",
+        "scentMappings": {
+          "Atlantis": 3,
+          "Feeling Good": 1
+        }
+      },
+      {
+        "id": "option_1_2",
+        "text": "A blooming spring garden picnic",
+        "description": "Fragrant flowers and gentle sunshine",
+        "scentMappings": {
+          "Utopia": 3,
+          "Garden Breeze": 2
+        }
+      },
+      {
+        "id": "option_1_3",
+        "text": "A quiet, earthy forest camping",
+        "description": "Tall trees and peaceful nature sounds",
+        "scentMappings": {
+          "1970": 3,
+          "Royal": 1
+        }
+      },
+      {
+        "id": "option_1_4",
+        "text": "A cozy lounge in a 5-star hotel",
+        "description": "Luxurious comfort and elegant ambiance",
+        "scentMappings": {
+          "Feeling Good": 3,
+          "Royal": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "text": "What kind of legacy do you admire?",
+    "type": "multiple_choice",
+    "order": 2,
+    "options": [
+      {
+        "id": "option_2_1",
+        "text": "Classic and timeless elegance",
+        "description": "Enduring style that transcends trends",
+        "scentMappings": {
+          "1970": 3,
+          "Shelby": 1
+        }
+      },
+      {
+        "id": "option_2_2",
+        "text": "Bold and noble leadership",
+        "description": "Commanding presence and distinguished authority",
+        "scentMappings": {
+          "Royal": 3,
+          "Revolt": 2
+        }
+      },
+      {
+        "id": "option_2_3",
+        "text": "Charismatic and magnetic influence",
+        "description": "Captivating personality that draws others in",
+        "scentMappings": {
+          "Shelby": 3,
+          "Feeling Good": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "text": "How would you describe your energy level most days?",
+    "type": "slider",
+    "order": 3,
+    "options": [
+      {
+        "id": "slider_3",
+        "text": "Energy Level",
+        "description": "From calm & relaxed to energetic & lively",
+        "scentMappings": {
+          "1": {
+            "Utopia": 3,
+            "Garden Breeze": 2
+          },
+          "2": {
+            "1970": 2,
+            "Garden Breeze": 2
+          },
+          "3": {
+            "Shelby": 2,
+            "Royal": 2
+          },
+          "4": {
+            "Feeling Good": 2,
+            "Revolt": 2
+          },
+          "5": {
+            "Atlantis": 3,
+            "Revolt": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "text": "Which activities do you enjoy in your free time? (Select all that apply)",
+    "type": "checkbox",
+    "order": 4,
+    "options": [
+      {
+        "id": "option_4_1",
+        "text": "Water activities",
+        "description": "Swimming, surfing, sailing",
+        "scentMappings": {
+          "Atlantis": 3
+        }
+      },
+      {
+        "id": "option_4_2",
+        "text": "Night adventures",
+        "description": "Exploring the city at night",
+        "scentMappings": {
+          "Shelby": 3
+        }
+      },
+      {
+        "id": "option_4_3",
+        "text": "Creative pursuits",
+        "description": "Reading, writing, arts",
+        "scentMappings": {
+          "1970": 3
+        }
+      },
+      {
+        "id": "option_4_4",
+        "text": "Mindful practices",
+        "description": "Yoga, meditation, tea rituals",
+        "scentMappings": {
+          "Utopia": 3
+        }
+      },
+      {
+        "id": "option_4_5",
+        "text": "Luxurious experiences",
+        "description": "Fine dining, spa days",
+        "scentMappings": {
+          "Royal": 3
+        }
+      },
+      {
+        "id": "option_4_6",
+        "text": "Social gatherings",
+        "description": "Parties, brunches, social events",
+        "scentMappings": {
+          "Feeling Good": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "text": "Which quote speaks to you most?",
+    "type": "multiple_choice",
+    "order": 5,
+    "options": [
+      {
+        "id": "option_5_1",
+        "text": "Every day is a fresh start for you.",
+        "description": "",
+        "scentMappings": {
+          "Atlantis": 3
+        }
+      },
+      {
+        "id": "option_5_2",
+        "text": "Charisma is the fragrance of soul.",
+        "description": "",
+        "scentMappings": {
+          "Shelby": 3
+        }
+      },
+      {
+        "id": "option_5_3",
+        "text": "Class never goes out of style.",
+        "description": "",
+        "scentMappings": {
+          "Royal": 3
+        }
+      },
+      {
+        "id": "option_5_4",
+        "text": "Don't search for anything except peace.",
+        "description": "",
+        "scentMappings": {
+          "Utopia": 3
+        }
+      },
+      {
+        "id": "option_5_5",
+        "text": "Where life plants you, bloom with grace.",
+        "description": "",
+        "scentMappings": {
+          "Garden Breeze": 3
+        }
+      },
+      {
+        "id": "option_5_6",
+        "text": "Stand up, be bold, be strong.",
+        "description": "",
+        "scentMappings": {
+          "Revolt": 3
+        }
+      }
+    ]
+  }
+]
