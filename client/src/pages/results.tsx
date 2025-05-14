@@ -31,10 +31,10 @@ export default function Results() {
 
   // Redirect if quiz not completed
   useEffect(() => {
-    if (!user || !Object.keys(answers).length) {
+    if (!user) {
       navigate('/quiz');
     }
-  }, [user, answers, navigate]);
+  }, [user, navigate]);
 
   // Get all scents
   const { data: scents, isLoading: scentsLoading } = useQuery({
@@ -45,14 +45,29 @@ export default function Results() {
   // Calculate top scent if not already stored
   useEffect(() => {
     if (scents && !primaryScent) {
-      const scores = calculateScentScores(answers);
-      const topScentName = getTopScent(scores);
-      setPrimaryScent(topScentName);
+      console.log("Answers to process:", JSON.stringify(answers));
+      console.log("Available scents:", scents.map(s => s.name));
       
-      // Find the matching scent ID
-      const matchedScent = scents.find(scent => scent.name === topScentName);
-      if (matchedScent) {
-        setResultScentId(matchedScent.id);
+      // Reset to force recalculation
+      const scores = calculateScentScores(answers);
+      console.log("Calculated scores:", scores);
+      
+      const topScentName = getTopScent(scores);
+      console.log("Top scent:", topScentName);
+      
+      // Default to the first scent if no score was calculated
+      if (!topScentName && scents.length > 0) {
+        console.log("No top scent found, defaulting to first scent");
+        setPrimaryScent(scents[0].name);
+        setResultScentId(scents[0].id);
+      } else {
+        setPrimaryScent(topScentName);
+        
+        // Find the matching scent ID
+        const matchedScent = scents.find(scent => scent.name === topScentName);
+        if (matchedScent) {
+          setResultScentId(matchedScent.id);
+        }
       }
     }
   }, [scents, primaryScent, setPrimaryScent, answers, setResultScentId]);

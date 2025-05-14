@@ -1,10 +1,16 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useStore } from '@/store/quizStore';
 import UserForm from '@/components/quiz/UserForm';
 import QuizContainer from '@/components/quiz/QuizContainer';
 
 export default function Quiz() {
-  const user = useStore((state) => state.user);
+  const { user, resetQuiz } = useStore();
+  
+  // Reset quiz answers when page loads
+  useEffect(() => {
+    resetQuiz();
+  }, [resetQuiz]);
   
   return (
     <>
