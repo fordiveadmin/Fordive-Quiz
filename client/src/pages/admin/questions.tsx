@@ -113,8 +113,11 @@ export default function AdminQuestions() {
   // Create question
   const createQuestion = useMutation({
     mutationFn: async (data: z.infer<typeof questionSchema>) => {
+      console.log('Submitting data to API:', data);
       const res = await apiRequest('POST', '/api/questions', data);
-      return res.json();
+      const jsonResponse = await res.json();
+      console.log('API response:', jsonResponse);
+      return jsonResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
@@ -124,10 +127,12 @@ export default function AdminQuestions() {
       });
       setIsAddDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Error in createQuestion:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
       toast({
         title: 'Error',
-        description: `Failed to create question: ${error.message}`,
+        description: `Failed to create question: ${errorMsg}`,
         variant: 'destructive',
       });
     },
@@ -136,8 +141,11 @@ export default function AdminQuestions() {
   // Update question
   const updateQuestion = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: z.infer<typeof questionSchema> }) => {
+      console.log('Updating question data:', data);
       const res = await apiRequest('PUT', `/api/questions/${id}`, data);
-      return res.json();
+      const jsonResponse = await res.json();
+      console.log('API update response:', jsonResponse);
+      return jsonResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
@@ -147,10 +155,12 @@ export default function AdminQuestions() {
       });
       setIsEditDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Error in updateQuestion:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
       toast({
         title: 'Error',
-        description: `Failed to update question: ${error.message}`,
+        description: `Failed to update question: ${errorMsg}`,
         variant: 'destructive',
       });
     },
@@ -234,6 +244,9 @@ export default function AdminQuestions() {
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
+      // Pastikan data yang dikirim valid
+      console.log('Form data to submit:', data);
+      
       if (isEdit && currentQuestion) {
         updateQuestion.mutate({ id: currentQuestion.id, data });
       } else {
