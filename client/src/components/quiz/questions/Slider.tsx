@@ -24,7 +24,12 @@ export default function Slider({ question }: SliderProps) {
   // Set initial state from stored answers
   useEffect(() => {
     // With our new format, the slider needs special handling to restore state
-    if (answers[question.id]) {
+    if (answers[question.id] && answers[question.id].value) {
+      const storedValue = answers[question.id].value;
+      setValue(storedValue);
+      updateDisplayText(storedValue);
+      console.log("Setting slider value to:", storedValue);
+    } else {
       // Default to middle value if we have an answer but can't determine the value
       setValue(3);
       updateDisplayText(3);
@@ -80,7 +85,7 @@ export default function Slider({ question }: SliderProps) {
           transition={{ delay: 0.2 }}
         >
           <SliderInput
-            defaultValue={[value]}
+            value={[value]}
             max={5}
             min={1}
             step={1}

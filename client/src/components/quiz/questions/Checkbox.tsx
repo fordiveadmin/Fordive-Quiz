@@ -24,8 +24,9 @@ export default function Checkbox({ question }: CheckboxProps) {
   
   // Set initial state from stored answers
   useEffect(() => {
-    if (answers[question.id] && Array.isArray(answers[question.id])) {
-      setSelectedOptions(answers[question.id]);
+    if (answers[question.id] && answers[question.id].optionIds) {
+      setSelectedOptions(answers[question.id].optionIds);
+      console.log("Setting selected checkbox options to:", answers[question.id].optionIds);
     }
   }, [answers, question.id]);
   

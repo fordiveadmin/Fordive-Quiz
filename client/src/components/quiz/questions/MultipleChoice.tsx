@@ -23,7 +23,9 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
   // Set initial state from stored answers
   useEffect(() => {
     if (answers[question.id]) {
-      setSelectedOption(answers[question.id]);
+      // Extract the optionId from the stored answer
+      setSelectedOption(answers[question.id].optionId);
+      console.log("Setting selected option to:", answers[question.id].optionId);
     }
   }, [answers, question.id]);
   
