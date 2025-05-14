@@ -102,14 +102,14 @@ export default function QuizContainer() {
   
   // Get current question data
   const getCurrentQuestion = () => {
-    if (!questions) return null;
+    if (!branchQuestions || branchQuestions.length === 0) return null;
     
     // Last question is the zodiac input
-    if (currentQuestion > questions.length) {
+    if (currentQuestion > branchQuestions.length) {
       return { type: 'zodiac', id: 'zodiac' };
     }
     
-    return questions[currentQuestion - 1];
+    return branchQuestions[currentQuestion - 1];
   };
   
   // Check if current question is answered
@@ -152,7 +152,7 @@ export default function QuizContainer() {
     );
   }
   
-  if (isError || !questions) {
+  if (isError || !allQuestions) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -163,7 +163,8 @@ export default function QuizContainer() {
     );
   }
   
-  const totalQuestions = questions.length + 1; // +1 for zodiac question
+  // Total pertanyaan yang akan ditampilkan (termasuk zodiak)
+  const totalQuestions = branchQuestions.length + 1; // +1 for zodiac question
   const isLastQuestion = currentQuestion === totalQuestions;
   
   return (
