@@ -42,19 +42,29 @@ export default function Checkbox({ question }: CheckboxProps) {
     
     setSelectedOptions(updatedSelections);
     
-    // Convert to array of scent mappings
-    const scentMappingsList: string[] = [];
+    // Create combined scent mappings from all selected options
+    const combinedScentMappings: Record<string, number> = {};
+    
     updatedSelections.forEach(selectionId => {
       const option = question.options.find(opt => opt.id === selectionId);
       if (option) {
-        // For each scent in the mappings, create a string in the format "scentName:points"
+        // Add points from each option's scent mappings
         Object.entries(option.scentMappings).forEach(([scentName, points]) => {
-          scentMappingsList.push(`${scentName}:${points}`);
+          if (combinedScentMappings[scentName]) {
+            combinedScentMappings[scentName] += points;
+          } else {
+            combinedScentMappings[scentName] = points;
+          }
         });
       }
     });
     
-    setAnswer(question.id.toString(), scentMappingsList);
+    const answer = {
+      optionIds: updatedSelections,
+      scentMappings: combinedScentMappings
+    };
+    
+    setAnswer(question.id.toString(), answer);
   };
   
   const container = {

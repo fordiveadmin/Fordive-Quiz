@@ -33,15 +33,13 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
     // Create answer with scent mappings
     const option = question.options.find(opt => opt.id === optionId);
     if (option) {
-      // Convert to array of scent mappings in the format "scentName:points"
-      const scentMappingsList: string[] = [];
+      // Store both the option ID and its scent mappings
+      const answer = {
+        optionId: optionId,
+        scentMappings: option.scentMappings
+      };
       
-      // For each scent in the mappings, create a string in the format "scentName:points"
-      Object.entries(option.scentMappings).forEach(([scentName, points]) => {
-        scentMappingsList.push(`${scentName}:${points}`);
-      });
-      
-      setAnswer(question.id.toString(), scentMappingsList);
+      setAnswer(question.id.toString(), answer);
     }
   };
   
