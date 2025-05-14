@@ -22,18 +22,37 @@ export default function QuizContainer() {
     zodiacSign,
   } = useStore();
   
-  // Fetch questions
-  const { data: questions, isLoading, isError } = useQuery({
+  // State untuk menyimpan jalur pertanyaan yang ditampilkan
+  const [questionPath, setQuestionPath] = useState<number[]>([]);
+  const [branchQuestions, setBranchQuestions] = useState<any[]>([]);
+  
+  // Fetch semua pertanyaan
+  const { data: allQuestions, isLoading, isError } = useQuery({
     queryKey: ['/api/questions'],
   });
   
-  // Update total questions count when data is loaded
+  // Memproses pertanyaan berdasarkan percabangan
   useEffect(() => {
-    if (questions) {
-      // Add 1 for the zodiac question
-      setTotalQuestions(questions.length + 1);
+    if (allQuestions) {
+      // Filter pertanyaan utama
+      const mainQuestion = allQuestions.find(q => q.isMainQuestion);
+      
+      if (!mainQuestion) {
+        // Jika tidak ada pertanyaan utama, gunakan semua pertanyaan (compatibility mode)
+        setBranchQuestions(allQuestions);
+        setTotalQuestions(allQuestions.length + 1); // +1 untuk zodiak
+        return;
+      }
+      
+      // Mulai dengan pertanyaan utama
+      const initialQuestions = [mainQuestion];
+      setQuestionPath([mainQuestion.id]);
+      setBranchQuestions(initialQuestions);
+      
+      // Jumlah pertanyaan awal adalah 1 (main question) + 1 (zodiac)
+      setTotalQuestions(2);
     }
-  }, [questions, setTotalQuestions]);
+  }, [allQuestions, setTotalQuestions]);
   
   // Handle navigation
   const handlePrevious = () => {
@@ -43,7 +62,36 @@ export default function QuizContainer() {
   };
   
   const handleNext = () => {
-    if (questions && currentQuestion <= questions.length) {
+    const currentQ = getCurrentQuestion();
+    if (!currentQ) return;
+    
+    // Jika ini adalah pertanyaan utama, kita perlu mengambil pertanyaan lanjutan
+    // berdasarkan jawaban yang dipilih
+    if (currentQ.isMainQuestion && answers[currentQ.id]) {
+      const selectedOptionId = answers[currentQ.id].optionId;
+      
+      // Cari pertanyaan lanjutan yang terkait dengan opsi yang dipilih
+      const childQuestions = allQuestions?.filter(q => 
+        q.parentId === currentQ.id && q.parentOptionId === selectedOptionId
+      ).sort((a, b) => a.order - b.order) || [];
+      
+      // Update jalur pertanyaan
+      const newPath = [currentQ.id, ...childQuestions.map(q => q.id)];
+      setQuestionPath(newPath);
+      
+      // Update pertanyaan yang akan ditampilkan
+      const updatedQuestions = [currentQ, ...childQuestions];
+      setBranchQuestions(updatedQuestions);
+      
+      // Update total pertanyaan (jumlah pertanyaan lanjutan + pertanyaan utama + zodiak)
+      const newTotal = childQuestions.length + 2; // +1 untuk pertanyaan utama, +1 untuk zodiak
+      setTotalQuestions(newTotal);
+      
+      // Lanjut ke pertanyaan berikutnya
+      setCurrentQuestion(currentQuestion + 1);
+    } 
+    // Untuk pertanyaan normal
+    else if (branchQuestions && currentQuestion <= branchQuestions.length) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };

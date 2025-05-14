@@ -37,6 +37,12 @@ export const questions = pgTable("questions", {
   text: text("text").notNull(),
   type: text("type").notNull(), // multiple_choice, checkbox, slider
   order: integer("order").notNull(),
+  
+  // Untuk struktur pertanyaan bercabang
+  isMainQuestion: boolean("is_main_question").default(false),
+  parentId: integer("parent_id"), // ID pertanyaan induk
+  parentOptionId: text("parent_option_id"), // ID opsi yang mengarah ke pertanyaan ini
+  
   options: json("options").$type<{
     id: string;
     text: string;
