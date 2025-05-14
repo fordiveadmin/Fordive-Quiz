@@ -12,6 +12,23 @@ import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
 
+// Interface untuk pertanyaan kuis
+interface QuizQuestion {
+  id: number;
+  text: string;
+  type: string;
+  order: number;
+  isMainQuestion: boolean;
+  parentId: number | null;
+  parentOptionId: string | null;
+  options: {
+    id: string;
+    text: string;
+    description?: string;
+    scentMappings: Record<string, number>;
+  }[];
+}
+
 export default function QuizContainer() {
   const [_, navigate] = useLocation();
   const { 
@@ -24,18 +41,18 @@ export default function QuizContainer() {
   
   // State untuk menyimpan jalur pertanyaan yang ditampilkan
   const [questionPath, setQuestionPath] = useState<number[]>([]);
-  const [branchQuestions, setBranchQuestions] = useState<any[]>([]);
+  const [branchQuestions, setBranchQuestions] = useState<QuizQuestion[]>([]);
   
   // Fetch semua pertanyaan
-  const { data: allQuestions, isLoading, isError } = useQuery({
+  const { data: allQuestions, isLoading, isError } = useQuery<QuizQuestion[]>({
     queryKey: ['/api/questions'],
   });
   
   // Memproses pertanyaan berdasarkan percabangan
   useEffect(() => {
-    if (allQuestions) {
+    if (allQuestions && allQuestions.length > 0) {
       // Filter pertanyaan utama
-      const mainQuestion = allQuestions.find(q => q.isMainQuestion);
+      const mainQuestion = allQuestions.find(q => q.isMainQuestion === true);
       
       if (!mainQuestion) {
         // Jika tidak ada pertanyaan utama, gunakan semua pertanyaan (compatibility mode)
@@ -45,7 +62,7 @@ export default function QuizContainer() {
       }
       
       // Mulai dengan pertanyaan utama
-      const initialQuestions = [mainQuestion];
+      const initialQuestions: QuizQuestion[] = [mainQuestion];
       setQuestionPath([mainQuestion.id]);
       setBranchQuestions(initialQuestions);
       
@@ -67,7 +84,7 @@ export default function QuizContainer() {
     
     // Jika ini adalah pertanyaan utama, kita perlu mengambil pertanyaan lanjutan
     // berdasarkan jawaban yang dipilih
-    if (currentQ.isMainQuestion && answers[currentQ.id]) {
+    if ('isMainQuestion' in currentQ && currentQ.isMainQuestion && answers[currentQ.id]) {
       const selectedOptionId = answers[currentQ.id].optionId;
       
       // Cari pertanyaan lanjutan yang terkait dengan opsi yang dipilih
@@ -77,10 +94,10 @@ export default function QuizContainer() {
       
       // Update jalur pertanyaan
       const newPath = [currentQ.id, ...childQuestions.map(q => q.id)];
-      setQuestionPath(newPath);
+      setQuestionPath(newPath as number[]);
       
       // Update pertanyaan yang akan ditampilkan
-      const updatedQuestions = [currentQ, ...childQuestions];
+      const updatedQuestions: QuizQuestion[] = [currentQ, ...childQuestions];
       setBranchQuestions(updatedQuestions);
       
       // Update total pertanyaan (jumlah pertanyaan lanjutan + pertanyaan utama + zodiak)
@@ -100,8 +117,14 @@ export default function QuizContainer() {
     navigate('/results');
   };
   
+  // Define zodiac question type untuk memastikan tipe data konsisten
+  type ZodiacQuestionType = {
+    type: 'zodiac';
+    id: string;
+  }
+  
   // Get current question data
-  const getCurrentQuestion = () => {
+  const getCurrentQuestion = (): QuizQuestion | ZodiacQuestionType | null => {
     if (!branchQuestions || branchQuestions.length === 0) return null;
     
     // Last question is the zodiac input
@@ -131,11 +154,11 @@ export default function QuizContainer() {
     
     switch (question.type) {
       case 'multiple_choice':
-        return <MultipleChoice question={question} />;
+        return <MultipleChoice question={question as QuizQuestion} />;
       case 'checkbox':
-        return <Checkbox question={question} />;
+        return <Checkbox question={question as QuizQuestion} />;
       case 'slider':
-        return <Slider question={question} />;
+        return <Slider question={question as QuizQuestion} />;
       case 'zodiac':
         return <ZodiacInput />;
       default:

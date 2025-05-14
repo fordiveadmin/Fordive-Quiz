@@ -583,12 +583,13 @@ export default function AdminQuestions() {
                     <TableHead>Question</TableHead>
                     <TableHead className="w-28">Type</TableHead>
                     <TableHead className="w-24">Options</TableHead>
+                    <TableHead className="w-28">Branch Status</TableHead>
                     <TableHead className="w-28 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {questions.sort((a, b) => a.order - b.order).map((question) => (
-                    <TableRow key={question.id}>
+                    <TableRow key={question.id} className={question.isMainQuestion ? "bg-primary/5" : ""}>
                       <TableCell>{question.order}</TableCell>
                       <TableCell>{question.text}</TableCell>
                       <TableCell>
@@ -597,6 +598,21 @@ export default function AdminQuestions() {
                         </div>
                       </TableCell>
                       <TableCell>{question.options?.length || 0}</TableCell>
+                      <TableCell>
+                        {question.isMainQuestion ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
+                            Main Question
+                          </span>
+                        ) : question.parentId ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                            Branch Question
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                            Standard Question
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
