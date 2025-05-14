@@ -51,18 +51,16 @@ export default function Slider({ question }: SliderProps) {
     const option = question.options[0]; // Sliders typically have one option with mappings per value
     const scentMappings = option.scentMappings[val.toString()];
     
-    // Convert scent mappings to the format expected by calculateScentScores
-    const scentMappingsList: string[] = [];
-    
     if (scentMappings) {
-      // For each scent in the mappings, create a string in the format "scentName:points"
-      Object.entries(scentMappings).forEach(([scentName, points]) => {
-        scentMappingsList.push(`${scentName}:${points}`);
-      });
+      // Store both the slider value and its scent mappings
+      const answer = {
+        value: val,
+        scentMappings: scentMappings
+      };
+      
+      // Save the answer
+      setAnswer(question.id.toString(), answer);
     }
-    
-    // Save the answer
-    setAnswer(question.id.toString(), scentMappingsList);
   };
   
   return (
