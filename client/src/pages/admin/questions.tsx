@@ -85,6 +85,9 @@ const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
   type: z.enum(['multiple_choice', 'checkbox', 'slider']),
   order: z.number().min(1, 'Order is required'),
+  isMainQuestion: z.boolean().default(false),
+  parentId: z.number().nullable().optional(),
+  parentOptionId: z.string().nullable().optional(),
   options: z.array(optionSchema).min(1, 'At least one option is required')
 });
 
@@ -189,11 +192,17 @@ export default function AdminQuestions() {
         text: currentQuestion.text,
         type: currentQuestion.type,
         order: currentQuestion.order,
+        isMainQuestion: currentQuestion.isMainQuestion || false,
+        parentId: currentQuestion.parentId || null,
+        parentOptionId: currentQuestion.parentOptionId || null,
         options: currentQuestion.options
       } : {
         text: '',
         type: 'multiple_choice',
         order: questions ? questions.length + 1 : 1,
+        isMainQuestion: false,
+        parentId: null,
+        parentOptionId: null,
         options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
       },
     });
@@ -297,6 +306,97 @@ export default function AdminQuestions() {
                 </FormItem>
               )}
             />
+          </div>
+
+          <div className="space-y-4 border p-4 rounded-md">
+            <h3 className="font-medium">Branching Settings</h3>
+            <div className="space-y-2">
+              <FormField
+                control={form.control}
+                name="isMainQuestion"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2 space-y-0">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="h-4 w-4 rounded border-gray-300"
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      Set as main question (this is the starting point of a quiz branch)
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {!form.watch('isMainQuestion') && (
+              <div className="grid grid-cols-1 gap-4">
+                <FormField
+                  control={form.control}
+                  name="parentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parent Question</FormLabel>
+                      <Select
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        value={field.value ? field.value.toString() : undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select parent question" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {questions?.filter(q => q.isMainQuestion).map(q => (
+                            <SelectItem key={q.id} value={q.id.toString()}>
+                              {q.text}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Select which main question this branch belongs to
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch('parentId') && (
+                  <FormField
+                    control={form.control}
+                    name="parentOptionId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Option from Parent</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value || undefined}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select parent option" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {questions?.find(q => q.id === form.watch('parentId'))?.options.map(option => (
+                              <SelectItem key={option.id} value={option.id}>
+                                {option.text}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          This question will show when this option is selected in the parent question
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
+            )}
           </div>
           
           <div>
