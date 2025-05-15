@@ -2,86 +2,96 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Database, FileQuestion, FlaskRound, Sparkles } from 'lucide-react';
+import { Database, FileQuestion, FlaskRound, Sparkles, Users, BarChart3 } from 'lucide-react';
+import AdminLayout from '@/components/admin/AdminLayout';
 
 export default function AdminIndex() {
   return (
-    <>
+    <AdminLayout>
       <Helmet>
         <title>Admin Dashboard | Fordive Scent Finder</title>
         <meta name="description" content="Admin dashboard for Fordive Scent Finder application." />
       </Helmet>
       
-      <div className="min-h-screen bg-background p-8">
+      <div className="p-8">
         <div className="max-w-6xl mx-auto">
           <header className="mb-10">
             <h1 className="text-3xl font-playfair font-bold mb-2">Fordive Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage your questions, scents, and zodiac mappings</p>
+            <p className="text-muted-foreground">Kelola quiz, parfum, dan lihat data pengguna</p>
           </header>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <FileQuestion className="h-5 w-5 text-primary" />
-                  Questions Management
+                  Pertanyaan Quiz
                 </CardTitle>
                 <CardDescription>
-                  Create, edit, or delete quiz questions
+                  Buat, edit, atau hapus pertanyaan
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-sm">
-                  Manage quiz questions including multiple choice, checkbox, and slider types.
-                  Set options and scoring for each question.
-                </p>
                 <Link href="/admin/questions">
                   <Button className="w-full" variant="outline">
-                    Manage Questions
+                    Kelola Pertanyaan
                   </Button>
                 </Link>
               </CardContent>
             </Card>
             
             <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <FlaskRound className="h-5 w-5 text-primary" />
-                  Scents Management
+                  Parfum
                 </CardTitle>
                 <CardDescription>
-                  Add, edit, or remove fragrance data
+                  Tambah, edit, atau hapus parfum
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-sm">
-                  Manage perfume details including names, notes, vibes, mood descriptions, and categories.
-                </p>
                 <Link href="/admin/scents">
                   <Button className="w-full" variant="outline">
-                    Manage Scents
+                    Kelola Parfum
                   </Button>
                 </Link>
               </CardContent>
             </Card>
             
             <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Sparkles className="h-5 w-5 text-primary" />
-                  Zodiac Mappings
+                  Zodiak
                 </CardTitle>
                 <CardDescription>
-                  Configure zodiac sign to scent mappings
+                  Kelola keterkaitan zodiak dan parfum
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-sm">
-                  Set up how each zodiac sign relates to different fragrances with custom descriptions.
-                </p>
                 <Link href="/admin/zodiac">
                   <Button className="w-full" variant="outline">
-                    Manage Zodiac Mappings
+                    Kelola Zodiak
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover:shadow-lg transition-shadow bg-primary/5 border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Users className="h-5 w-5 text-primary" />
+                  Data Pengguna
+                </CardTitle>
+                <CardDescription>
+                  Lihat dan unduh data pengguna quiz
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href="/admin/analytics">
+                  <Button className="w-full" variant="default">
+                    Lihat Data Pengguna
                   </Button>
                 </Link>
               </CardContent>
@@ -127,6 +137,6 @@ export default function AdminIndex() {
           </div>
         </div>
       </div>
-    </>
+    </AdminLayout>
   );
 }
