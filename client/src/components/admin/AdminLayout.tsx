@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { Home, FileQuestion, Droplets, Sparkles, BarChart3 } from 'lucide-react';
+import { Home, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdminLayoutProps {
@@ -12,9 +12,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   
   const menuItems = [
     { label: 'Dashboard', href: '/admin', icon: <Home className="w-4 h-4 mr-2" /> },
-    { label: 'Questions', href: '/admin/questions', icon: <FileQuestion className="w-4 h-4 mr-2" /> },
-    { label: 'Scents', href: '/admin/scents', icon: <Droplets className="w-4 h-4 mr-2" /> },
-    { label: 'Zodiac Mappings', href: '/admin/zodiac-mappings', icon: <Sparkles className="w-4 h-4 mr-2" /> },
     { label: 'Analytics', href: '/admin/analytics', icon: <BarChart3 className="w-4 h-4 mr-2" /> },
   ];
   

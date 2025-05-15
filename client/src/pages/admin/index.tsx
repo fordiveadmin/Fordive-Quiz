@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Database, FileQuestion, FlaskRound, Sparkles, Users, BarChart3 } from 'lucide-react';
+import { FileQuestion, FlaskRound, Sparkles, Users } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 
 export default function AdminIndex() {
@@ -94,38 +94,6 @@ export default function AdminIndex() {
                     Lihat Data Pengguna
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="mt-10">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Database className="h-5 w-5 text-primary" />
-                  Data Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-secondary rounded-lg p-4">
-                    <div className="text-2xl font-bold">Quiz Questions</div>
-                    <p className="text-muted-foreground">Current Format: JSON</p>
-                    <p className="text-sm mt-2">Stored in: questions.json</p>
-                  </div>
-                  
-                  <div className="bg-secondary rounded-lg p-4">
-                    <div className="text-2xl font-bold">Scents Collection</div>
-                    <p className="text-muted-foreground">Current Format: JSON</p>
-                    <p className="text-sm mt-2">Stored in: scents.json</p>
-                  </div>
-                  
-                  <div className="bg-secondary rounded-lg p-4">
-                    <div className="text-2xl font-bold">Zodiac Mappings</div>
-                    <p className="text-muted-foreground">Current Format: JSON</p>
-                    <p className="text-sm mt-2">Stored in: zodiac_mapping.json</p>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
