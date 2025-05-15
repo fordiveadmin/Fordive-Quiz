@@ -116,7 +116,9 @@ export default function Results() {
   }
 
   // Find the scent object that matches primaryScent
+  console.log("All scents with images:", scents);
   const matchedScent = scents.find(scent => scent.name === primaryScent);
+  console.log("Matched scent:", matchedScent);
   
   if (!matchedScent) {
     return (

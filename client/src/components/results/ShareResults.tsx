@@ -14,6 +14,7 @@ interface ShareResultsProps {
     vibes: string[];
     mood: string;
     notes: string[];
+    imageUrl?: string;
   };
   userName: string;
   userEmail: string;
