@@ -263,6 +263,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ message: 'Failed to fetch quiz results' });
     }
   });
+  
+  // Get all quiz results with user details for analysis
+  app.get('/api/analytics/quiz-results', async (_req: Request, res: Response) => {
+    try {
+      const results = await storage.getAllQuizResultsWithUserDetails();
+      return res.status(200).json(results);
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to fetch analytics data' });
+    }
+  });
 
   // Email Results
   app.post('/api/email-results', async (req: Request, res: Response) => {

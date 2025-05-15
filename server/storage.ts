@@ -25,6 +25,16 @@ import { db } from './db';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
+// Interface for analytics data
+export interface QuizResultWithUserDetails {
+  id: number;
+  userName: string;
+  userEmail: string;
+  scentName: string;
+  zodiacSign: string | null;
+  createdAt: Date;
+}
+
 export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
@@ -57,6 +67,9 @@ export interface IStorage {
   getQuizResult(id: number): Promise<QuizResult | undefined>;
   getQuizResultsByUserId(userId: number): Promise<QuizResult[]>;
   createQuizResult(result: InsertQuizResult): Promise<QuizResult>;
+  
+  // Analytics operations
+  getAllQuizResultsWithUserDetails(): Promise<QuizResultWithUserDetails[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -342,6 +355,29 @@ export class MemStorage implements IStorage {
     this.quizResults.set(id, newResult);
     return newResult;
   }
+  
+  async getAllQuizResultsWithUserDetails(): Promise<QuizResultWithUserDetails[]> {
+    const results: QuizResultWithUserDetails[] = [];
+    
+    for (const quizResult of this.quizResults.values()) {
+      const user = this.users.get(quizResult.userId);
+      const scent = this.scents.get(quizResult.primaryScentId);
+      
+      if (user && scent) {
+        results.push({
+          id: quizResult.id,
+          userName: user.name,
+          userEmail: user.email,
+          scentName: scent.name,
+          zodiacSign: quizResult.zodiacSign,
+          createdAt: quizResult.createdAt as Date
+        });
+      }
+    }
+    
+    // Sort by created date, newest first
+    return results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -511,6 +547,25 @@ export class DatabaseStorage implements IStorage {
       .values(insertResult)
       .returning();
     return result;
+  }
+  
+  // Analytics operations
+  async getAllQuizResultsWithUserDetails(): Promise<QuizResultWithUserDetails[]> {
+    // Perform a join across users, quiz results, and scents tables
+    const results = await db.select({
+      id: quizResults.id,
+      userName: users.name,
+      userEmail: users.email,
+      scentName: scents.name,
+      zodiacSign: quizResults.zodiacSign,
+      createdAt: quizResults.createdAt
+    })
+    .from(quizResults)
+    .innerJoin(users, eq(quizResults.userId, users.id))
+    .innerJoin(scents, eq(quizResults.primaryScentId, scents.id))
+    .orderBy(quizResults.createdAt);
+    
+    return results;
   }
 }
 
