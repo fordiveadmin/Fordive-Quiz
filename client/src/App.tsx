@@ -10,6 +10,7 @@ import AdminIndex from "@/pages/admin/index";
 import AdminQuestions from "@/pages/admin/questions";
 import AdminScents from "@/pages/admin/scents";
 import AdminZodiac from "@/pages/admin/zodiac";
+import AdminAnalytics from "@/pages/admin/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 
 function AnimatedRoutes() {
@@ -32,6 +33,7 @@ function AnimatedRoutes() {
           <Route path="/admin/questions" component={AdminQuestions} />
           <Route path="/admin/scents" component={AdminScents} />
           <Route path="/admin/zodiac" component={AdminZodiac} />
+          <Route path="/admin/analytics" component={AdminAnalytics} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>
