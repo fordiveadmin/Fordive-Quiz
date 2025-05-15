@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const menuItems = [
     { label: 'Dashboard', href: '/admin', icon: <Home className="w-4 h-4 mr-2" /> },
     { label: 'Analytics', href: '/admin/analytics', icon: <BarChart3 className="w-4 h-4 mr-2" /> },
+    { label: 'Settings', href: '/admin/settings', icon: <Settings className="w-4 h-4 mr-2" /> },
   ];
   
   const handleLogout = async () => {
@@ -44,38 +45,38 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <div className="hidden md:flex w-64 flex-col bg-card border-r">
         <div className="flex h-16 items-center border-b px-6">
-          <span className="font-playfair text-xl font-bold cursor-pointer" onClick={() => window.location.href = '/'}>
+          <Link href="/admin" className="font-playfair text-xl font-bold cursor-pointer">
             FORDIVE ADMIN
-          </span>
+          </Link>
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => (
             <div key={item.href} className="w-full">
-              <div 
+              <Link 
+                href={item.href}
                 className={cn(
                   "flex items-center px-3 py-2 rounded-md text-sm font-medium cursor-pointer",
                   location === item.href
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
-                onClick={() => window.location.href = item.href}
               >
                 {item.icon}
                 {item.label}
-              </div>
+              </Link>
             </div>
           ))}
         </nav>
         
         <div className="border-t p-4 space-y-2">
-          <div 
+          <Link 
+            href="/"
             className="flex items-center text-sm text-muted-foreground hover:text-foreground cursor-pointer"
-            onClick={() => window.location.href = "/"}
           >
             <Home className="w-4 h-4 mr-2" />
             Back to Site
-          </div>
+          </Link>
           <div 
             className="flex items-center text-sm text-muted-foreground hover:text-foreground cursor-pointer"
             onClick={handleLogout}
@@ -88,12 +89,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       
       {/* Mobile header */}
       <div className="md:hidden flex items-center justify-between h-16 px-4 border-b w-full sticky top-0 bg-background z-10">
-        <div 
+        <Link 
+          href="/admin"
           className="font-playfair text-lg font-bold cursor-pointer"
-          onClick={() => window.location.href = "/admin"}
         >
           FORDIVE ADMIN
-        </div>
+        </Link>
         <div className="flex items-center space-x-4">
           <button 
             onClick={handleLogout}

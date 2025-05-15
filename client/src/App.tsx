@@ -39,6 +39,7 @@ function AnimatedRoutes() {
           <Route path="/admin/scents" component={() => <PrivateRoute component={AdminScents} />} />
           <Route path="/admin/zodiac" component={() => <PrivateRoute component={AdminZodiac} />} />
           <Route path="/admin/analytics" component={() => <PrivateRoute component={AdminAnalytics} />} />
+          <Route path="/admin/settings" component={() => <PrivateRoute component={AdminSettings} />} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>
