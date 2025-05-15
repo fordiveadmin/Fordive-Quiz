@@ -14,6 +14,7 @@ interface ResultsCardProps {
     vibes: string[];
     mood: string;
     description: string;
+    imageUrl?: string;
   };
   zodiacSign: any | null;
 }
@@ -53,7 +54,7 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
       <div className="md:flex">
         <div className="md:w-2/5">
           <img 
-            src={getScentImageUrl(scent.name)} 
+            src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
             alt={`${scent.name} Perfume`} 
             className="w-full h-full object-cover"
           />

@@ -87,7 +87,7 @@ export default function Collection() {
               >
                 <div className="h-64 overflow-hidden">
                   <img 
-                    src={getScentImageUrl(scent.name)} 
+                    src={(scent as any).imageUrl ? getScentImageUrl(scent.name, (scent as any).imageUrl) : getScentImageUrl(scent.name)} 
                     alt={`${scent.name} Perfume`} 
                     className="w-full h-full object-cover"
                   />
