@@ -25,6 +25,7 @@ export const scents = pgTable("scents", {
   mood: text("mood").notNull(),
   description: text("description"),
   category: text("category").notNull(),
+  imageUrl: text("image_url"),
 });
 
 export const insertScentSchema = createInsertSchema(scents).omit({

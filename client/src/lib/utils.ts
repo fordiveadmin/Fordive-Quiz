@@ -77,7 +77,13 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 // Helper to get image URLs for scents
-export function getScentImageUrl(scentName: string): string {
+export function getScentImageUrl(scentName: string, customImageUrl?: string): string {
+  // If a custom image URL is provided, use it
+  if (customImageUrl) {
+    return customImageUrl;
+  }
+  
+  // Fallback to predefined image map if no custom URL
   const imageMap: Record<string, string> = {
     'Atlantis': 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80',
     'Feeling Good': 'https://pixabay.com/get/g2f3b97dc97a860db8898bca8b4f08288c316906a97a358749e3a70f6c487b421a50ee25a14559707a10d3408953045cf5b2d421bff7ccc7ad76120d4254adac5_1280.jpg',
