@@ -11,6 +11,8 @@ import AdminQuestions from "@/pages/admin/questions";
 import AdminScents from "@/pages/admin/scents";
 import AdminZodiac from "@/pages/admin/zodiac";
 import AdminAnalytics from "@/pages/admin/analytics";
+import AdminLogin from "@/pages/admin/login";
+import { Toaster } from "@/components/ui/toaster";
 import { motion, AnimatePresence } from "framer-motion";
 
 function AnimatedRoutes() {
@@ -29,6 +31,7 @@ function AnimatedRoutes() {
           <Route path="/" component={Home} />
           <Route path="/quiz" component={Quiz} />
           <Route path="/results" component={Results} />
+          <Route path="/admin/login" component={AdminLogin} />
           <Route path="/admin" component={AdminIndex} />
           <Route path="/admin/questions" component={AdminQuestions} />
           <Route path="/admin/scents" component={AdminScents} />
@@ -46,6 +49,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AnimatedRoutes />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );

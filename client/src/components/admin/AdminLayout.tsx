@@ -1,19 +1,43 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { Home, BarChart3 } from 'lucide-react';
+import { Home, BarChart3, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
   
   const menuItems = [
     { label: 'Dashboard', href: '/admin', icon: <Home className="w-4 h-4 mr-2" /> },
     { label: 'Analytics', href: '/admin/analytics', icon: <BarChart3 className="w-4 h-4 mr-2" /> },
   ];
+  
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/admin/logout', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Logout berhasil",
+          description: "Anda telah keluar dari panel admin"
+        });
+        setLocation('/admin/login');
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Gagal logout. Silakan coba lagi."
+      });
+    }
+  };
   
   return (
     <div className="flex min-h-screen bg-background">
