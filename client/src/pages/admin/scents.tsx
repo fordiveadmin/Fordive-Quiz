@@ -83,6 +83,7 @@ const scentSchema = z.object({
   mood: z.string().min(1, 'Mood description is required'),
   description: z.string().min(1, 'Description is required'),
   category: z.string().min(1, 'Category is required'),
+  imageUrl: z.string().url('Must be a valid URL').optional(),
 });
 
 type Scent = z.infer<typeof scentSchema> & { id: number };
@@ -366,6 +367,41 @@ export default function AdminScents() {
             )}
           />
           
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image URL</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="https://example.com/image.jpg" 
+                    {...field} 
+                    value={field.value || ''}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Enter a URL to an image for this fragrance. The image should be in landscape format (16:9).
+                </FormDescription>
+                {field.value && (
+                  <div className="mt-2 rounded-md overflow-hidden border border-border">
+                    <img 
+                      src={field.value} 
+                      alt="Scent preview" 
+                      className="w-full h-40 object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
+                        target.title = 'Failed to load image';
+                      }}
+                    />
+                  </div>
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -456,6 +492,7 @@ export default function AdminScents() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-24">Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Notes</TableHead>
@@ -466,6 +503,19 @@ export default function AdminScents() {
                 <TableBody>
                   {scents.map((scent) => (
                     <TableRow key={scent.id}>
+                      <TableCell>
+                        <div className="h-16 w-20 rounded-md overflow-hidden border border-border">
+                          <img 
+                            src={(scent as any).imageUrl || getScentImageUrl(scent.name)} 
+                            alt={scent.name}
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
+                            }}
+                          />
+                        </div>
+                      </TableCell>
                       <TableCell className="font-medium">{scent.name}</TableCell>
                       <TableCell>{scent.category}</TableCell>
                       <TableCell>
