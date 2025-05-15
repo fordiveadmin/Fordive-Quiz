@@ -23,44 +23,49 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <div className="hidden md:flex w-64 flex-col bg-card border-r">
         <div className="flex h-16 items-center border-b px-6">
-          <Link href="/">
-            <a className="font-playfair text-xl font-bold">FORDIVE ADMIN</a>
-          </Link>
+          <span className="font-playfair text-xl font-bold cursor-pointer" onClick={() => window.location.href = '/'}>
+            FORDIVE ADMIN
+          </span>
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <a 
+            <div key={item.href} className="w-full">
+              <div 
                 className={cn(
-                  "flex items-center px-3 py-2 rounded-md text-sm font-medium",
+                  "flex items-center px-3 py-2 rounded-md text-sm font-medium cursor-pointer",
                   location === item.href
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
+                onClick={() => window.location.href = item.href}
               >
                 {item.icon}
                 {item.label}
-              </a>
-            </Link>
+              </div>
+            </div>
           ))}
         </nav>
         
         <div className="border-t p-4">
-          <Link href="/">
-            <a className="flex items-center text-sm text-muted-foreground hover:text-foreground">
-              <Home className="w-4 h-4 mr-2" />
-              Back to Site
-            </a>
-          </Link>
+          <div 
+            className="flex items-center text-sm text-muted-foreground hover:text-foreground cursor-pointer"
+            onClick={() => window.location.href = "/"}
+          >
+            <Home className="w-4 h-4 mr-2" />
+            Back to Site
+          </div>
         </div>
       </div>
       
       {/* Mobile header */}
       <div className="md:hidden flex items-center h-16 px-4 border-b w-full sticky top-0 bg-background z-10">
-        <Link href="/admin">
-          <a className="font-playfair text-lg font-bold">FORDIVE ADMIN</a>
-        </Link>
+        <div 
+          className="font-playfair text-lg font-bold cursor-pointer"
+          onClick={() => window.location.href = "/admin"}
+        >
+          FORDIVE ADMIN
+        </div>
       </div>
       
       {/* Main content */}

@@ -1,156 +1,212 @@
-import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useQuery } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { BarChart3, Download, Search, Users } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import AdminLayout from '@/components/admin/AdminLayout';
 
-// Interface for analytics data
-interface QuizResultWithUserDetails {
-  id: number;
-  userName: string;
-  userEmail: string;
-  scentName: string;
-  zodiacSign: string | null;
-  createdAt: string; // will be converted from Date
-}
-
 export default function AnalyticsPage() {
-  const [downloading, setDownloading] = useState(false);
-
-  // Fetch quiz results with user details
-  const { data: quizResults = [], isLoading, isError } = useQuery({
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const { data: quizResults, isLoading } = useQuery({
     queryKey: ['/api/analytics/quiz-results'],
-    queryFn: async () => {
-      const res = await fetch('/api/analytics/quiz-results');
-      if (!res.ok) throw new Error('Failed to fetch analytics data');
-      
-      const data = await res.json();
-      
-      // Convert date strings to formatted dates
-      return data.map((result: any) => ({
-        ...result,
-        createdAt: new Date(result.createdAt),
-        zodiacSign: result.zodiacSign || 'Not provided'
-      }));
-    }
   });
-
-  // Download the quiz data as CSV
+  
+  // Calculate stats
+  const totalParticipants = quizResults?.length || 0;
+  
+  // Function to download CSV
   const downloadCSV = () => {
-    setDownloading(true);
-    try {
-      // Create CSV header
-      const headers = ['ID', 'Name', 'Email', 'Perfume', 'Zodiac Sign', 'Date'];
-      
-      // Create CSV rows
-      const rows = quizResults.map((result: QuizResultWithUserDetails) => [
-        result.id,
+    if (!quizResults || quizResults.length === 0) return;
+    
+    // Prepare CSV header row
+    const headers = ['Nama', 'Email', 'Parfum', 'Zodiak', 'Tanggal'];
+    
+    // Prepare CSV data rows
+    const csvData = quizResults.map((result: any) => {
+      return [
         result.userName,
         result.userEmail,
         result.scentName,
-        result.zodiacSign || 'Not provided',
+        result.zodiacSign || 'Tidak diisi',
         formatDate(new Date(result.createdAt))
-      ]);
-      
-      // Combine headers and rows
-      const csvContent = [
-        headers.join(','),
-        ...rows.map(row => row.join(','))
-      ].join('\n');
-      
-      // Create and download the file
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `fordive-quiz-data-${new Date().toISOString().split('T')[0]}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error downloading CSV:', error);
-    } finally {
-      setDownloading(false);
-    }
+      ];
+    });
+    
+    // Combine header and data rows
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `fordive-participants-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
-
+  
+  // Filter results based on search term
+  const filteredResults = quizResults?.filter((result: any) => {
+    const searchTermLower = searchTerm.toLowerCase();
+    return (
+      result.userName.toLowerCase().includes(searchTermLower) ||
+      result.userEmail.toLowerCase().includes(searchTermLower) ||
+      result.scentName.toLowerCase().includes(searchTermLower) ||
+      (result.zodiacSign && result.zodiacSign.toLowerCase().includes(searchTermLower))
+    );
+  });
+  
   return (
     <AdminLayout>
       <Helmet>
-        <title>Analytics | Fordive Admin</title>
+        <title>Data Analitik | Fordive Admin</title>
+        <meta name="description" content="Analisis data pengguna quiz Fordive Scent Finder" />
       </Helmet>
       
-      <div className="container py-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl">Quiz Participants</CardTitle>
-              <CardDescription>
-                {quizResults.length > 0 
-                  ? `${quizResults.length} users have completed the perfume quiz` 
-                  : 'No quiz data available yet'
-                }
-              </CardDescription>
-            </div>
-            
-            <Button 
-              onClick={downloadCSV}
-              disabled={isLoading || quizResults.length === 0 || downloading}
-              className="ml-auto"
-            >
-              {downloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-              Download CSV
-            </Button>
-          </CardHeader>
+      <div className="p-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-playfair font-bold">Data Pengguna Quiz</h1>
+            <p className="text-muted-foreground mt-1">
+              Lihat dan analisa data pengguna yang telah mengikuti quiz Fordive Scent Finder
+            </p>
+          </div>
           
+          <Button 
+            onClick={downloadCSV} 
+            className="mt-4 md:mt-0 bg-primary text-white"
+            disabled={!quizResults || quizResults.length === 0}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Download CSV
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-primary/5 border-primary/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center text-lg">
+                <Users className="mr-2 h-5 w-5 text-primary" />
+                Total Peserta
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{totalParticipants}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Jumlah pengguna yang telah menyelesaikan quiz
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center text-lg">
+                <BarChart3 className="mr-2 h-5 w-5 text-primary" />
+                Top Scents
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-semibold">
+                {quizResults && quizResults.length > 0
+                  ? (() => {
+                      const scentCounts: Record<string, number> = {};
+                      quizResults.forEach((result: any) => {
+                        scentCounts[result.scentName] = (scentCounts[result.scentName] || 0) + 1;
+                      });
+                      
+                      const topScent = Object.entries(scentCounts)
+                        .sort((a, b) => b[1] - a[1])[0];
+                      
+                      return topScent ? topScent[0] : 'Belum ada data';
+                    })()
+                  : 'Belum ada data'
+                }
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Parfum yang paling banyak direkomendasikan
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center text-lg">
+                Analytics & Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-semibold">Lebih detail segera hadir</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Dashboard analitik lengkap sedang dikembangkan
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Detail Data Pengguna</CardTitle>
+            <CardDescription>
+              Daftar pengguna yang telah menyelesaikan quiz Fordive Scent Finder
+            </CardDescription>
+            <div className="relative mt-4">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Cari berdasarkan nama, email, parfum, atau zodiak..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2">Loading analytics data...</span>
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
-            ) : isError ? (
-              <div className="text-center py-8 text-red-500">
-                Failed to load analytics data. Please try again.
-              </div>
-            ) : quizResults.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No quiz data available yet. When users complete the quiz, their data will appear here.
+            ) : !quizResults || quizResults.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">
+                  Belum ada data pengguna yang tersedia
+                </p>
               </div>
             ) : (
               <div className="rounded-md border">
                 <Table>
-                  <TableCaption>A list of all users who have completed the perfume quiz</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Name</TableHead>
+                      <TableHead>Nama</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead>Result</TableHead>
-                      <TableHead>Zodiac Sign</TableHead>
+                      <TableHead>Parfum</TableHead>
+                      <TableHead>Zodiak</TableHead>
+                      <TableHead>Tanggal</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {quizResults.map((result: QuizResultWithUserDetails) => (
+                    {filteredResults.map((result: any) => (
                       <TableRow key={result.id}>
-                        <TableCell className="font-medium">{formatDate(new Date(result.createdAt))}</TableCell>
-                        <TableCell>{result.userName}</TableCell>
+                        <TableCell className="font-medium">{result.userName}</TableCell>
                         <TableCell>{result.userEmail}</TableCell>
                         <TableCell>{result.scentName}</TableCell>
-                        <TableCell>{result.zodiacSign}</TableCell>
+                        <TableCell>{result.zodiacSign || '—'}</TableCell>
+                        <TableCell>{formatDate(new Date(result.createdAt))}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
