@@ -68,7 +68,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           ))}
         </nav>
         
-        <div className="border-t p-4">
+        <div className="border-t p-4 space-y-2">
           <div 
             className="flex items-center text-sm text-muted-foreground hover:text-foreground cursor-pointer"
             onClick={() => window.location.href = "/"}
@@ -76,16 +76,31 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <Home className="w-4 h-4 mr-2" />
             Back to Site
           </div>
+          <div 
+            className="flex items-center text-sm text-muted-foreground hover:text-foreground cursor-pointer"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </div>
         </div>
       </div>
       
       {/* Mobile header */}
-      <div className="md:hidden flex items-center h-16 px-4 border-b w-full sticky top-0 bg-background z-10">
+      <div className="md:hidden flex items-center justify-between h-16 px-4 border-b w-full sticky top-0 bg-background z-10">
         <div 
           className="font-playfair text-lg font-bold cursor-pointer"
           onClick={() => window.location.href = "/admin"}
         >
           FORDIVE ADMIN
+        </div>
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={handleLogout}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </div>
       
