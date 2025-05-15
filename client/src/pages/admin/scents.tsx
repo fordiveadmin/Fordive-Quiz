@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
+import { getScentImageUrl } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -86,7 +87,10 @@ const scentSchema = z.object({
   imageUrl: z.string().url('Must be a valid URL').optional(),
 });
 
-type Scent = z.infer<typeof scentSchema> & { id: number };
+type Scent = z.infer<typeof scentSchema> & { 
+  id: number;
+  imageUrl?: string;
+};
 
 export default function AdminScents() {
   const { toast } = useToast();
@@ -506,7 +510,7 @@ export default function AdminScents() {
                       <TableCell>
                         <div className="h-16 w-20 rounded-md overflow-hidden border border-border">
                           <img 
-                            src={(scent as any).imageUrl || getScentImageUrl(scent.name)} 
+                            src={scent.imageUrl || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80'} 
                             alt={scent.name}
                             className="h-full w-full object-cover"
                             onError={(e) => {

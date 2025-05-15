@@ -58,7 +58,7 @@ export default function SimilarScents({ currentScentId, category, allScents }: S
           >
             <div className="h-48 overflow-hidden">
               <img 
-                src={getScentImageUrl(scent.name)} 
+                src={(scent as any).imageUrl ? getScentImageUrl(scent.name, (scent as any).imageUrl) : getScentImageUrl(scent.name)} 
                 alt={`${scent.name} Perfume`} 
                 className="w-full h-full object-cover"
               />
