@@ -26,7 +26,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
 
   // Gets the icon element based on the icon string
   const getIconElement = (iconKey: string | undefined) => {
-    if (!iconKey) return null;
+    if (!iconKey || iconKey === 'none') return null;
     
     const iconMap: Record<string, string> = {
       'star': '★',
@@ -101,7 +101,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               
               {/* Option Text */}
               <h3 className="text-xl font-medium uppercase tracking-wide text-center">
-                {option.icon ? option.text : `BRANCH ${question.options.indexOf(option) + 1}`}
+                {option.icon && option.icon !== 'none' ? option.text : `BRANCH ${question.options.indexOf(option) + 1}`}
               </h3>
               
               {/* Description if available */}

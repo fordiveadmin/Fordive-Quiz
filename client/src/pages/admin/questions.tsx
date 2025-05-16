@@ -475,7 +475,7 @@ export default function AdminQuestions() {
                   <div>
                     <Label htmlFor={`option-icon-${index}`}>Icon (optional)</Label>
                     <Select
-                      value={option.icon || ''}
+                      value={option.icon || 'none'}
                       onValueChange={(value) => {
                         const newOptions = [...options];
                         newOptions[index].icon = value;
@@ -488,7 +488,7 @@ export default function AdminQuestions() {
                         <SelectValue placeholder="Select an icon" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Icon</SelectItem>
+                        <SelectItem value="none">No Icon</SelectItem>
                         <SelectItem value="star">★ Star</SelectItem>
                         <SelectItem value="heart">♥ Heart</SelectItem>
                         <SelectItem value="flower">✿ Flower</SelectItem>
