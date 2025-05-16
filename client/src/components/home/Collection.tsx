@@ -244,14 +244,18 @@ export default function Collection() {
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
               >
-                <div className="h-[180px] md:h-[280px] w-full relative overflow-hidden">
-                  <motion.img 
+                <div className="h-[180px] md:h-[280px] w-full relative overflow-hidden bg-slate-100">
+                  {/* Use regular img tag for mobile compatibility */}
+                  <img 
                     src={(scent as any).imageUrl ? getScentImageUrl(scent.name, (scent as any).imageUrl) : getScentImageUrl(scent.name)} 
                     alt={`${scent.name} Perfume`} 
-                    className="w-full h-full object-cover"
-                    variants={imageVariants}
-                    initial="initial"
-                    animate={hoveredScent === scent.id ? "hover" : "initial"}
+                    className="w-full h-full object-contain md:object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://i.imgur.com/qHUJ6qZ.png'; // Fallback image
+                      target.onerror = null; // Prevent infinite error loop
+                    }}
                   />
                   <motion.div 
                     className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-4 md:p-6"
