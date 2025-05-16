@@ -4,49 +4,76 @@ import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   return (
-    <div className="relative h-screen w-full overflow-hidden pt-16">
-      <div className="absolute inset-0 bg-charcoal opacity-30 z-0"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-charcoal opacity-70 z-0"></div>
+    <div className="relative h-screen w-full overflow-hidden pt-16 bg-[#F9F7F2]">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#F9F7F2]/80 z-0"></div>
       <div 
         style={{
-          backgroundImage: "url('https://pixabay.com/get/g74e065384229ae05934f20db3fe4c1d2d623f2eeb077c8fd3bca4418b0ee7d27f2e3b8a836732499f130c672f0ece5b09ad9c79ef45e0e7ddd19dd71977a4c6e_1280.jpg')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1920&auto=format&fit=crop')"
         }} 
-        className="absolute inset-0 bg-cover bg-center z-[-1]"
+        className="absolute inset-0 bg-cover bg-center z-[-1] opacity-60"
       ></div>
       
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center">
-        <motion.h1 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="text-5xl md:text-6xl font-playfair font-bold text-white mb-6 text-shadow"
-        >
-          Discover Your Signature Scent
-        </motion.h1>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-xl text-white mb-10 max-w-2xl text-shadow"
-        >
-          Find the perfect fragrance that complements your personality, mood, and zodiac sign
-        </motion.p>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <Link href="/quiz">
-            <Button 
-              className="bg-primary hover:bg-accent text-white font-semibold py-3 px-8 rounded-full shadow-lg transform transition duration-300 hover:scale-105"
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-[80vh] relative z-10">
+          <div className="flex flex-col justify-center pr-4 md:pl-10 text-left">
+            <motion.h1 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl md:text-6xl font-playfair font-medium italic text-[#C17A50] mb-4"
             >
-              Find Your Scent
-            </Button>
-          </Link>
-        </motion.div>
+              <span className="block">Love More</span>
+              <span className="block">Live More</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-lg text-gray-700 mb-8 max-w-md"
+            >
+              Since the first day we believe that Fordive is not just a Product, we are a brand with vision. 
+              <span className="font-semibold">"Always have a positive impact on society".</span> So we deliver the importance of self love and share it with others.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mb-8"
+            >
+              <Link href="/quiz">
+                <Button 
+                  className="btn-premium py-3 px-8 rounded-md text-base font-medium"
+                >
+                  <span className="mr-2">Find Your Scent</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+          
+          <div className="hidden md:flex items-center justify-center relative">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="float"
+            >
+              <div className="relative w-[400px] h-[400px]">
+                <img 
+                  src="https://i.imgur.com/h3N3cHJ.png" 
+                  alt="Fordive Perfume Collection" 
+                  className="object-contain w-full h-full z-10"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </div>
+      
+      {/* Golden line divider */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C89F65] to-transparent"></div>
     </div>
   );
 }
