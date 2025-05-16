@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import perfumeBottles1 from "../../assets/perfume-bottles-1.png";
+import perfumeBottles2 from "../../assets/perfume-bottles-2.png";
 
 export default function Hero() {
   // Animation variants
@@ -157,63 +159,63 @@ export default function Hero() {
             className="w-full md:w-1/2 relative h-[400px] md:h-[500px]"
           >
             {/* Perfume bottles with individual animations */}
-            <motion.div
-              variants={floatingBottles}
-              className="absolute top-[5%] left-[15%] md:left-[20%] w-[100px] md:w-[140px]"
-              style={{ zIndex: 2 }}
-            >
-              <img 
-                src="https://i.imgur.com/qHUJ6qZ.png" 
-                alt="Fordive Perfume 1" 
-                className="w-full h-auto drop-shadow-xl"
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Background glow effect */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ duration: 2 }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
+                style={{ zIndex: 0 }}
               />
-            </motion.div>
-            
-            <motion.div
-              variants={rotateBottle}
-              className="absolute top-[20%] left-[45%] md:left-[50%] w-[120px] md:w-[180px]"
-              style={{ zIndex: 3 }}
-            >
-              <img 
-                src="https://i.imgur.com/9h8vvX7.png" 
-                alt="Fordive Perfume 2" 
-                className="w-full h-auto drop-shadow-xl"
-              />
-            </motion.div>
-            
-            <motion.div
-              variants={floatingBottles}
-              custom={1.5}
-              className="absolute top-[30%] left-[5%] md:left-[10%] w-[110px] md:w-[150px]"
-              style={{ zIndex: 1 }}
-            >
-              <img 
-                src="https://i.imgur.com/k7MRiVV.png" 
-                alt="Fordive Perfume 3" 
-                className="w-full h-auto drop-shadow-xl"
-              />
-            </motion.div>
-            
-            <motion.div
-              variants={floatingBottles}
-              className="absolute top-[35%] right-[15%] md:right-[20%] w-[90px] md:w-[130px]"
-              style={{ zIndex: 4 }}
-            >
-              <img 
-                src="https://i.imgur.com/2QwIYpT.png" 
-                alt="Fordive Perfume 4" 
-                className="w-full h-auto drop-shadow-xl"
-              />
-            </motion.div>
-            
-            {/* Background glow effect */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.7 }}
-              transition={{ duration: 2 }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
-              style={{ zIndex: 0 }}
-            />
+              
+              {/* First image (colorful bottles) */}
+              <motion.div
+                animate={{ 
+                  y: [0, -8, 0],
+                  transition: { 
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatType: "mirror" 
+                  }
+                }}
+                className="absolute md:relative md:top-0 md:right-0 w-[260px] md:w-[320px] h-auto"
+                style={{ zIndex: 2 }}
+              >
+                <motion.img 
+                  src={perfumeBottles1}
+                  alt="Fordive Perfume Collection" 
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.3 }}
+                />
+              </motion.div>
+              
+              {/* Second image (bottle pair) */}
+              <motion.div
+                animate={{ 
+                  y: [0, -12, 0],
+                  transition: { 
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    delay: 0.5 
+                  }
+                }}
+                className="absolute md:relative top-[50%] md:top-[10%] -right-[10%] md:-left-[20%] w-[220px] md:w-[300px] h-auto"
+                style={{ zIndex: 1 }}
+              >
+                <motion.img 
+                  src={perfumeBottles2}
+                  alt="Fordive Perfume Men Collection" 
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.6 }}
+                />
+              </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       </div>
