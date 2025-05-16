@@ -169,52 +169,55 @@ export default function Hero() {
                 style={{ zIndex: 0 }}
               />
               
-              {/* Women perfume bottles */}
-              <motion.div
-                animate={{ 
-                  y: [0, -10, 0],
-                  transition: { 
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatType: "mirror" 
-                  }
-                }}
-                className="absolute md:relative right-0 md:right-[5%] top-[5%] md:top-[5%] w-[220px] md:w-[320px] h-auto"
-                style={{ zIndex: 2 }}
-              >
-                <motion.img 
-                  src={perfumeWomen}
-                  alt="Fordive Women Perfume Collection" 
-                  className="w-full h-auto object-contain drop-shadow-2xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.3 }}
-                />
-              </motion.div>
-              
-              {/* Men perfume bottles */}
-              <motion.div
-                animate={{ 
-                  y: [0, -8, 0],
-                  transition: { 
-                    duration: 4,
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                    delay: 0.5
-                  }
-                }}
-                className="absolute md:relative right-0 md:right-[25%] top-[50%] md:top-[45%] w-[180px] md:w-[240px] h-auto"
-                style={{ zIndex: 1 }}
-              >
-                <motion.img 
-                  src={perfumeMen}
-                  alt="Fordive Men Perfume Collection" 
-                  className="w-full h-auto object-contain drop-shadow-2xl"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.6 }}
-                />
-              </motion.div>
+              {/* Perfume bottles container */}
+              <div className="relative h-full w-full flex items-center justify-center">
+                {/* Women perfume bottles */}
+                <motion.div
+                  animate={{ 
+                    y: [0, -8, 0],
+                    transition: { 
+                      duration: 3.5,
+                      repeat: Infinity,
+                      repeatType: "mirror" 
+                    }
+                  }}
+                  className="absolute md:relative -top-10 md:-top-16 left-8 md:left-0 w-[200px] md:w-[320px] h-auto"
+                  style={{ zIndex: 2 }}
+                >
+                  <motion.img 
+                    src={perfumeWomen}
+                    alt="Fordive Women Perfume Collection" 
+                    className="w-full h-auto object-contain drop-shadow-2xl"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.3 }}
+                  />
+                </motion.div>
+                
+                {/* Men perfume bottles */}
+                <motion.div
+                  animate={{ 
+                    y: [0, -5, 0],
+                    transition: { 
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      delay: 0.5
+                    }
+                  }}
+                  className="absolute md:relative bottom-0 md:bottom-6 right-8 md:right-4 w-[140px] md:w-[220px] h-auto"
+                  style={{ zIndex: 1 }}
+                >
+                  <motion.img 
+                    src={perfumeMen}
+                    alt="Fordive Men Perfume Collection" 
+                    className="w-full h-auto object-contain drop-shadow-2xl"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.6 }}
+                  />
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </motion.div>
