@@ -73,13 +73,13 @@ export default function Hero() {
           {/* Left Text Content */}
           <motion.div 
             variants={fadeInUp}
-            className="w-full md:w-1/2 text-left mb-12 md:mb-0"
+            className="w-full text-center md:text-left mb-12 md:mb-0"
           >
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="inline-block mb-4 px-4 py-1 rounded-full bg-[#F2ECE3] border border-[#E5D9C3]"
+              className="inline-block mb-4 px-4 py-1 rounded-full bg-[#F2ECE3] border border-[#E5D9C3] mx-auto md:mx-0"
             >
               <span className="text-[#C17A50] font-medium text-sm">Discover Your Perfect Scent</span>
             </motion.div>
@@ -115,7 +115,7 @@ export default function Hero() {
             
             <motion.div
               variants={fadeInUp}
-              className="flex items-center space-x-6"
+              className="flex items-center justify-center md:justify-start space-x-6"
             >
               <Link href="/quiz">
                 <Button 
@@ -152,10 +152,10 @@ export default function Hero() {
             </motion.div>
           </motion.div>
           
-          {/* Right Perfume Bottles Display */}
+          {/* Right Perfume Bottles Display - Hidden on Mobile */}
           <motion.div 
             variants={fadeInUp}
-            className="w-full md:w-1/2 relative h-[300px] md:h-[500px]"
+            className="hidden md:block w-full md:w-1/2 relative h-[300px] md:h-[500px]"
           >
             {/* Perfume bottles with individual animations */}
             <div className="relative w-full h-full flex items-center justify-center">
