@@ -75,7 +75,7 @@ export default function Slider({ question }: SliderProps) {
         {question.text}
       </motion.h2>
       
-      <div className="space-y-8 px-2">
+      <div className="space-y-8 px-2 max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -108,7 +108,7 @@ export default function Slider({ question }: SliderProps) {
           transition={{ delay: 0.4 }}
           className="text-center mt-6"
         >
-          <p className="font-medium">{displayText}</p>
+          <p className="font-medium text-lg">{displayText}</p>
           <p className="text-sm text-muted-foreground mt-2">Your energy affects how you experience scents</p>
         </motion.div>
       </div>
