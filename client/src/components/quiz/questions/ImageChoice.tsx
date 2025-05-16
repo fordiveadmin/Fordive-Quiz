@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useStore } from '@/store/quizStore';
 
 interface Option {
   id: string;
@@ -20,12 +21,13 @@ interface ImageChoiceProps {
     textColor?: string;
     options: Option[];
   };
-  selectedOption: string | null;
-  onChange: (optionId: string) => void;
 }
 
-export default function ImageChoice({ question, selectedOption, onChange }: ImageChoiceProps) {
-  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+export default function ImageChoice({ question }: ImageChoiceProps) {
+  const { answers, setAnswer } = useStore();
+  const [selectedOption, setSelectedOption] = useState<string | null>(
+    answers[question.id] as string || null
+  );
 
   // Animation variants
   const container = {
@@ -43,15 +45,20 @@ export default function ImageChoice({ question, selectedOption, onChange }: Imag
     show: { opacity: 1, y: 0 }
   };
 
+  const handleSelect = (optionId: string) => {
+    setSelectedOption(optionId);
+    setAnswer(question.id, optionId);
+  };
+
   return (
     <div className={cn(
-      "rounded-lg p-8 w-full", 
-      question.backgroundColor ? question.backgroundColor : "bg-white"
+      "rounded-lg p-6 md:p-8 w-full", 
+      question.backgroundColor || "bg-white"
     )}>
       <h2 
         className={cn(
-          "text-3xl font-medium text-center mb-10",
-          question.textColor ? question.textColor : "text-gray-800"
+          "text-2xl md:text-3xl font-medium text-center mb-8 md:mb-10",
+          question.textColor || "text-gray-800"
         )}
       >
         {question.text}
@@ -69,23 +76,26 @@ export default function ImageChoice({ question, selectedOption, onChange }: Imag
             variants={item}
             className={cn(
               "relative flex flex-col items-center p-6 rounded-lg transition-all cursor-pointer",
-              option.backgroundColor ? option.backgroundColor : "bg-[#F2ECE3]",
+              option.backgroundColor || "bg-[#F2ECE3]",
               selectedOption === option.id ? "ring-2 ring-[#C89F65] shadow-md" : "hover:shadow-md",
             )}
-            onMouseEnter={() => setHoveredOption(option.id)}
-            onMouseLeave={() => setHoveredOption(null)}
-            onClick={() => onChange(option.id)}
+            onClick={() => handleSelect(option.id)}
           >
-            <div className="w-24 h-24 rounded-full flex items-center justify-center bg-white mb-4">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center bg-white mb-4">
               {option.imageUrl ? (
                 <img 
                   src={option.imageUrl} 
                   alt={option.text} 
-                  className="w-12 h-12 object-contain"
+                  className="w-10 h-10 md:w-12 md:h-12 object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    // Fallback to generic icon if image fails to load
+                    target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNC41IDRoLTVMNyA3SDRhMiAyIDAgMCAwLTIgMnY5YTIgMiAwIDAgMCAyIDJoMTZhMiAyIDAgMCAwIDItMlY5YTIgMiAwIDAgMC0yLTJoLTNsLTIuNS0zeiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTMiIHI9IjMiLz48L3N2Zz4=';
+                  }}
                 />
               ) : (
-                <div className="w-12 h-12 flex items-center justify-center text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-5"/></svg>
                 </div>
               )}
             </div>
@@ -93,7 +103,7 @@ export default function ImageChoice({ question, selectedOption, onChange }: Imag
             <h3 
               className={cn(
                 "text-lg font-medium text-center",
-                option.textColor ? option.textColor : "text-gray-800"
+                option.textColor || "text-gray-800"
               )}
             >
               {option.text}
