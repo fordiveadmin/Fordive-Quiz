@@ -2,8 +2,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupAdminAuth } from "./admin-auth";
-import { setupImageUpload } from "./upload";
-import path from "path";
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -11,12 +9,6 @@ app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 // Setup admin authentication
 setupAdminAuth(app);
-
-// Setup image upload functionality
-setupImageUpload(app);
-
-// Serve static files (needed for uploaded images)
-app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
 
 app.use((req, res, next) => {
   const start = Date.now();
