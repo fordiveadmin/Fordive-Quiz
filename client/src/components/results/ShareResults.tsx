@@ -6,7 +6,8 @@ import { copyToClipboard } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { FaCopy, FaEnvelope, FaInstagram, FaFacebookF } from 'react-icons/fa';
+import { FaCopy, FaEnvelope, FaImage } from 'react-icons/fa';
+import ResultImageGenerator from './ResultImageGenerator';
 
 interface ShareResultsProps {
   scent: {
@@ -88,31 +89,10 @@ Find your signature scent at fordive.com
     }
   };
   
-  const handleShareSocial = (platform: string) => {
-    let shareUrl = '';
-    const text = `I just discovered my signature scent, ${scent.name}, with Fordive Scent Finder! Find yours at fordive.com`;
-    
-    switch (platform) {
-      case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://fordive.com')}&quote=${encodeURIComponent(text)}`;
-        break;
-      case 'instagram':
-        // Instagram doesn't support direct sharing via URL
-        toast({
-          title: 'Instagram Sharing',
-          description: 'Copy your results and share as a post or story on Instagram',
-        });
-        handleCopyResults();
-        return;
-      default:
-        return;
-    }
-    
-    if (shareUrl) {
-      window.open(shareUrl, '_blank', 'width=600,height=400');
-    }
-  };
+  // We've replaced this with the image generator functionality
   
+  const [showImageGenerator, setShowImageGenerator] = useState(false);
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -120,50 +100,59 @@ Find your signature scent at fordive.com
       transition={{ delay: 0.2 }}
       className="bg-white rounded-xl shadow-md p-6"
     >
-      <h3 className="font-playfair font-semibold text-xl mb-4">Share Your Results</h3>
-      <div className="flex flex-wrap gap-4">
-        <Button
-          variant="outline"
-          className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-          onClick={handleCopyResults}
-          disabled={isCopied}
-        >
-          <FaCopy className="mr-2 text-primary" />
-          <span>{isCopied ? 'Copied!' : 'Copy Results'}</span>
-        </Button>
-        
-        <Button
-          variant="outline"
-          className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-          onClick={() => emailResults.mutate()}
-          disabled={emailResults.isPending}
-        >
-          {emailResults.isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
-          ) : (
-            <FaEnvelope className="mr-2 text-primary" />
-          )}
-          <span>Email Results</span>
-        </Button>
-        
-        <Button
-          variant="outline"
-          className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-          onClick={() => handleShareSocial('instagram')}
-        >
-          <FaInstagram className="mr-2 text-primary" />
-          <span>Instagram</span>
-        </Button>
-        
-        <Button
-          variant="outline"
-          className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-          onClick={() => handleShareSocial('facebook')}
-        >
-          <FaFacebookF className="mr-2 text-primary" />
-          <span>Facebook</span>
-        </Button>
-      </div>
+      <h3 className="font-playfair font-semibold text-xl mb-4">Save & Share Your Results</h3>
+      
+      {!showImageGenerator ? (
+        <div className="flex flex-wrap gap-4">
+          <Button
+            variant="outline"
+            className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
+            onClick={() => setShowImageGenerator(true)}
+          >
+            <FaImage className="mr-2 text-primary" />
+            <span>Save as Image</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
+            onClick={handleCopyResults}
+            disabled={isCopied}
+          >
+            <FaCopy className="mr-2 text-primary" />
+            <span>{isCopied ? 'Copied!' : 'Copy Results'}</span>
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
+            onClick={() => emailResults.mutate()}
+            disabled={emailResults.isPending}
+          >
+            {emailResults.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
+            ) : (
+              <FaEnvelope className="mr-2 text-primary" />
+            )}
+            <span>Email Results</span>
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center">
+          <ResultImageGenerator 
+            scent={scent}
+            userName={userName}
+            zodiacSign={zodiacSign}
+          />
+          <Button
+            variant="outline"
+            className="mt-6"
+            onClick={() => setShowImageGenerator(false)}
+          >
+            Back to Options
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 }
