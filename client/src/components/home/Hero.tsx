@@ -1,8 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import perfumeWomen from "../../assets/perfume-women.png";
-import perfumeMen from "../../assets/perfume-men.png";
+import perfumeCollection from "../../assets/perfume-collection.png";
 
 export default function Hero() {
   // Animation variants
@@ -169,55 +168,27 @@ export default function Hero() {
                 style={{ zIndex: 0 }}
               />
               
-              {/* Perfume bottles container */}
-              <div className="relative h-full w-full flex items-center justify-center">
-                {/* Women perfume bottles */}
-                <motion.div
-                  animate={{ 
-                    y: [0, -8, 0],
-                    transition: { 
-                      duration: 3.5,
-                      repeat: Infinity,
-                      repeatType: "mirror" 
-                    }
-                  }}
-                  className="absolute md:relative -top-10 md:-top-16 left-8 md:left-0 w-[200px] md:w-[320px] h-auto"
-                  style={{ zIndex: 2 }}
-                >
-                  <motion.img 
-                    src={perfumeWomen}
-                    alt="Fordive Women Perfume Collection" 
-                    className="w-full h-auto object-contain drop-shadow-2xl"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, delay: 0.3 }}
-                  />
-                </motion.div>
-                
-                {/* Men perfume bottles */}
-                <motion.div
-                  animate={{ 
-                    y: [0, -5, 0],
-                    transition: { 
-                      duration: 3,
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      delay: 0.5
-                    }
-                  }}
-                  className="absolute md:relative bottom-0 md:bottom-6 right-8 md:right-4 w-[140px] md:w-[220px] h-auto"
-                  style={{ zIndex: 1 }}
-                >
-                  <motion.img 
-                    src={perfumeMen}
-                    alt="Fordive Men Perfume Collection" 
-                    className="w-full h-auto object-contain drop-shadow-2xl"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, delay: 0.6 }}
-                  />
-                </motion.div>
-              </div>
+              {/* Complete Perfume Collection */}
+              <motion.div
+                animate={{ 
+                  y: [0, -10, 0],
+                  transition: { 
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "mirror" 
+                  }
+                }}
+                className="relative w-full h-full flex items-center justify-center"
+              >
+                <motion.img 
+                  src={perfumeCollection}
+                  alt="Fordive Perfume Collection" 
+                  className="w-[90%] md:w-[80%] h-auto object-contain drop-shadow-2xl"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.3 }}
+                />
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>
