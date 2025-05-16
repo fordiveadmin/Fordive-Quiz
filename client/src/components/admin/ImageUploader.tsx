@@ -83,6 +83,7 @@ export function ImageUploader({ onImageUploaded, currentImageUrl }: ImageUploade
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <Input
+            id="file-upload"
             type="file"
             accept="image/jpeg, image/png, image/gif, image/webp"
             onChange={handleFileChange}
@@ -90,15 +91,10 @@ export function ImageUploader({ onImageUploaded, currentImageUrl }: ImageUploade
           />
         </div>
         
-        {isUploading ? (
+        {isUploading && (
           <Button disabled variant="outline">
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             Uploading...
-          </Button>
-        ) : (
-          <Button type="button" variant="outline" onClick={() => document.getElementById('file-upload')?.click()}>
-            <Upload className="h-4 w-4 mr-2" />
-            Upload
           </Button>
         )}
       </div>
