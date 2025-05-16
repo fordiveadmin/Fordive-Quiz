@@ -8,6 +8,8 @@ import MultipleChoice from '@/components/quiz/questions/MultipleChoice';
 import Checkbox from '@/components/quiz/questions/Checkbox';
 import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
+import ImageChoice from '@/components/quiz/questions/ImageChoice';
+import GenderChoice from '@/components/quiz/questions/GenderChoice';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
@@ -152,15 +154,26 @@ export default function QuizContainer() {
     const question = getCurrentQuestion();
     if (!question) return null;
     
+    // Get question text to determine if this is a gender question
+    const questionText = question.type !== 'zodiac' ? (question as QuizQuestion).text.toLowerCase() : '';
+    const isGenderQuestion = questionText.includes('gender') || questionText.includes('jenis kelamin');
+    
     switch (question.type) {
       case 'multiple_choice':
-        return <MultipleChoice question={question as QuizQuestion} />;
+        // Use specialized component for gender questions
+        if (isGenderQuestion) {
+          return <GenderChoice question={question as QuizQuestion} />;
+        }
+        // Use ImageChoice for better visual layout for other questions
+        return <ImageChoice question={question as QuizQuestion} />;
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;
       case 'slider':
         return <Slider question={question as QuizQuestion} />;
       case 'zodiac':
         return <ZodiacInput />;
+      case 'image_choice':
+        return <ImageChoice question={question as QuizQuestion} />;
       default:
         return <div>Unsupported question type</div>;
     }
