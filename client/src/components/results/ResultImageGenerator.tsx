@@ -56,9 +56,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-amber-50 border-2 border-white"
         style={{ fontFamily: '"Playfair Display", "Montserrat", sans-serif' }}
       >
-        {/* Background image with gradient overlay */}
+        {/* Background image with darker gradient overlay */}
         <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-gradient-to-b from-black/40 via-transparent to-black/60 z-10 absolute" />
+          <div className="w-full h-full bg-gradient-to-b from-black/70 via-black/40 to-black/70 z-10 absolute" />
           <img 
             src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
             alt={scent.name} 
@@ -76,32 +76,32 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           
           {/* Middle content */}
           <div className="flex flex-col items-center justify-center -mt-8">
-            <div className="bg-white/30 backdrop-blur-sm p-6 rounded-2xl shadow-lg w-full max-w-[280px] text-center">
-              <p className="text-sm uppercase tracking-wider mb-2">Your Scent Match</p>
-              <h2 className="text-3xl font-bold mb-3">{scent.name}</h2>
+            <div className="bg-black/40 backdrop-blur-md p-6 rounded-2xl shadow-lg w-full max-w-[280px] text-center">
+              <p className="text-sm uppercase tracking-wider mb-2 text-gray-200">YOUR SCENT MATCH</p>
+              <h2 className="text-3xl font-bold mb-3 text-white">{scent.name}</h2>
               <div className="flex flex-wrap justify-center gap-2 mb-4">
                 {scent.notes.slice(0, 4).map((note, index) => (
                   <span 
                     key={index} 
-                    className="inline-block px-3 py-1 rounded-full bg-white/30 backdrop-blur-sm text-xs"
+                    className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs"
                   >
                     {note}
                   </span>
                 ))}
               </div>
-              <p className="text-sm italic">"{scent.mood}"</p>
+              <p className="text-sm italic text-gray-100">"{scent.mood}"</p>
             </div>
           </div>
           
           {/* Footer */}
-          <div className="text-center mb-4">
+          <div className="text-center mb-4 bg-black/30 backdrop-blur-sm py-3 px-6 rounded-xl">
             <p className="text-lg font-medium">
               {userName}'s Signature Scent
             </p>
             {zodiacSign && (
-              <p className="text-sm opacity-90">{zodiacSign} ✨</p>
+              <p className="text-sm text-gray-200">{zodiacSign} ✨</p>
             )}
-            <p className="text-xs mt-4 opacity-80">fordive.com</p>
+            <p className="text-xs mt-4 text-gray-300">fordive.com</p>
           </div>
         </div>
       </div>
