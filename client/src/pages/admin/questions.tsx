@@ -267,6 +267,15 @@ export default function AdminQuestions() {
       // Pastikan data yang dikirim valid
       console.log('Form data to submit:', data);
       
+      // Add options to data from state
+      data.options = options;
+      
+      // Add background and text colors for image_choice questions
+      if (data.type === 'image_choice') {
+        data.backgroundColor = backgroundColor;
+        data.textColor = textColor;
+      }
+      
       if (isEdit && currentQuestion) {
         updateQuestion.mutate({ id: currentQuestion.id, data });
       } else {
@@ -355,6 +364,51 @@ export default function AdminQuestions() {
             />
           </div>
 
+          {form.watch('type') === 'image_choice' && (
+            <div className="space-y-4 border p-4 rounded-md">
+              <h3 className="font-medium">Appearance Settings</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="question-background">Background Color</Label>
+                  <div className="flex space-x-2">
+                    <Input
+                      id="question-background"
+                      type="color"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="w-12 h-10 p-1"
+                    />
+                    <Input
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      placeholder="#FFFFFF"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="question-text-color">Text Color</Label>
+                  <div className="flex space-x-2">
+                    <Input
+                      id="question-text-color"
+                      type="color"
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                      className="w-12 h-10 p-1"
+                    />
+                    <Input
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                      placeholder="#1E293B"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="space-y-4 border p-4 rounded-md">
             <h3 className="font-medium">Branching Settings</h3>
             <div className="space-y-2">
@@ -459,28 +513,36 @@ export default function AdminQuestions() {
               </Button>
             </div>
             
-            {options.map((option, index) => (
-              <div key={option.id} className="border p-4 rounded-md mb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <Label className="text-sm font-medium">Option {index + 1}</Label>
-                  {options.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeOption(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  )}
-                </div>
-                
-                <div className="grid gap-4 mb-4">
-                  <div>
-                    <Label htmlFor={`option-text-${index}`}>Text</Label>
-                    <Input
-                      id={`option-text-${index}`}
-                      value={option.text}
+            {form.watch('type') === 'image_choice' ? (
+              <ImageChoiceEditor 
+                options={options} 
+                onChange={setOptions} 
+                scents={scentsData || []} 
+              />
+            ) : (
+              <div>
+                {options.map((option, index) => (
+                <div key={option.id} className="border p-4 rounded-md mb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <Label className="text-sm font-medium">Option {index + 1}</Label>
+                    {options.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeOption(index)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid gap-4 mb-4">
+                    <div>
+                      <Label htmlFor={`option-text-${index}`}>Text</Label>
+                      <Input
+                        id={`option-text-${index}`}
+                        value={option.text}
                       onChange={(e) => {
                         const newOptions = [...options];
                         newOptions[index].text = e.target.value;
@@ -533,7 +595,9 @@ export default function AdminQuestions() {
                   </div>
                 </div>
               </div>
-            ))}
+                ))}
+              </div>
+            )}
           </div>
           
           <DialogFooter>
