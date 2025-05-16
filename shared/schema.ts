@@ -49,6 +49,7 @@ export const questions = pgTable("questions", {
     id: string;
     text: string;
     description?: string;
+    imageUrl?: string; // Tambahkan field untuk URL gambar opsi
     scentMappings: Record<string, number>;
   }[]>(),
 });

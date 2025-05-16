@@ -471,6 +471,24 @@ export default function AdminQuestions() {
                       placeholder="Description"
                     />
                   </div>
+                  
+                  <div>
+                    <Label htmlFor={`option-image-${index}`}>Image URL (optional)</Label>
+                    <Input
+                      id={`option-image-${index}`}
+                      value={option.imageUrl || ''}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].imageUrl = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.imageUrl`, e.target.value);
+                      }}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Add image URL untuk mengubah tampilan opsi kuis
+                    </p>
+                  </div>
                 </div>
                 
                 <div>
