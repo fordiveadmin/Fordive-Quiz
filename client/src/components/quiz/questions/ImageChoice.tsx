@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useStore } from '@/store/quizStore';
 
 interface Option {
   id: string;
@@ -23,11 +21,14 @@ interface ImageChoiceProps {
   };
 }
 
-export default function ImageChoice({ question }: ImageChoiceProps) {
-  const { answers, setAnswer } = useStore();
-  const [selectedOption, setSelectedOption] = useState<string | null>(
-    answers[question.id] as string || null
-  );
+export default function ImageChoice({ 
+  question,
+  selectedOption,
+  onChange
+}: ImageChoiceProps & { 
+  selectedOption: string | null,
+  onChange: (optionId: string) => void 
+}) {
 
   // Animation variants
   const container = {
@@ -46,8 +47,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
   };
 
   const handleSelect = (optionId: string) => {
-    setSelectedOption(optionId);
-    setAnswer(question.id, optionId);
+    onChange(optionId);
   };
 
   return (

@@ -79,16 +79,21 @@ const optionSchema = z.object({
   id: z.string().optional(),
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
   options: z.array(optionSchema).min(1, 'At least one option is required')
 });
 
@@ -189,12 +194,26 @@ export default function AdminQuestions() {
     },
   });
   
+  // Get scents for mappings
+  const { data: scentsData = [] } = useQuery({
+    queryKey: ['/api/scents'],
+    refetchOnWindowFocus: false,
+  });
+
   // Form for adding/editing questions
   const QuestionForm = ({ isEdit = false, onClose }: { isEdit?: boolean; onClose: () => void }) => {
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
         [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+    );
+    
+    const [backgroundColor, setBackgroundColor] = useState<string>(
+      isEdit && currentQuestion?.backgroundColor ? currentQuestion.backgroundColor : '#FFFFFF'
+    );
+    
+    const [textColor, setTextColor] = useState<string>(
+      isEdit && currentQuestion?.textColor ? currentQuestion.textColor : '#1E293B'
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -283,7 +302,20 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      
+                      // Reset options for image_choice to include image and color properties
+                      if (value === 'image_choice' && options.length > 0) {
+                        const updatedOptions = options.map(opt => ({
+                          ...opt,
+                          imageUrl: opt.imageUrl || '',
+                          backgroundColor: opt.backgroundColor || '#F2ECE3',
+                          textColor: opt.textColor || '#1E293B'
+                        }));
+                        setOptions(updatedOptions);
+                      }
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>

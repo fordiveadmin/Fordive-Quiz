@@ -167,15 +167,10 @@ export default function QuizContainer() {
         return <Slider question={question as QuizQuestion} />;
       case 'image_choice':
         return <ImageChoice 
-          question={question as QuizQuestion} 
+          question={question} 
           selectedOption={answers[question.id] as string || null}
-          onChange={(optionId) => {
-            useStore.setState({
-              answers: {
-                ...answers,
-                [question.id]: optionId
-              }
-            });
+          onChange={(optionId: string) => {
+            setAnswer(question.id, optionId);
           }}
         />;
       case 'zodiac':
