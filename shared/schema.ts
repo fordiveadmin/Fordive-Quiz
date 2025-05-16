@@ -49,6 +49,7 @@ export const questions = pgTable("questions", {
     id: string;
     text: string;
     description?: string;
+    icon?: string;
     scentMappings: Record<string, number>;
   }[]>(),
 });

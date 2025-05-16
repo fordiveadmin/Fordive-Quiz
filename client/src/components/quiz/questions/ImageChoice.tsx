@@ -8,6 +8,7 @@ interface Option {
   text: string;
   description?: string;
   imageUrl?: string;
+  icon?: string;
   scentMappings: Record<string, number>;
 }
 

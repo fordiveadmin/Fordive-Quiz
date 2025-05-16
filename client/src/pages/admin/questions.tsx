@@ -471,6 +471,41 @@ export default function AdminQuestions() {
                       placeholder="Description"
                     />
                   </div>
+                  
+                  <div>
+                    <Label htmlFor={`option-icon-${index}`}>Icon (optional)</Label>
+                    <Select
+                      value={option.icon || ''}
+                      onValueChange={(value) => {
+                        const newOptions = [...options];
+                        newOptions[index].icon = value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.icon`, value);
+                      }}
+                    >
+                      <SelectTrigger id={`option-icon-${index}`}>
+                        <SelectValue placeholder="Select an icon" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">No Icon</SelectItem>
+                        <SelectItem value="star">★ Star</SelectItem>
+                        <SelectItem value="heart">♥ Heart</SelectItem>
+                        <SelectItem value="flower">✿ Flower</SelectItem>
+                        <SelectItem value="sun">☀ Sun</SelectItem>
+                        <SelectItem value="moon">☽ Moon</SelectItem>
+                        <SelectItem value="cloud">☁ Cloud</SelectItem>
+                        <SelectItem value="water">≈ Water</SelectItem>
+                        <SelectItem value="fire">▲ Fire</SelectItem>
+                        <SelectItem value="leaf">❦ Leaf</SelectItem>
+                        <SelectItem value="gem">◆ Gem</SelectItem>
+                        <SelectItem value="crown">♛ Crown</SelectItem>
+                        <SelectItem value="note">♪ Music Note</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      This icon will be shown instead of "BRANCH" text in quiz options
+                    </p>
+                  </div>
                 </div>
                 
                 <div>
