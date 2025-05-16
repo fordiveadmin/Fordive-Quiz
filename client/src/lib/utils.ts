@@ -80,7 +80,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 export function getScentImageUrl(scentName: string, customImageUrl?: string): string {
   // If a custom image URL is provided, use it
   if (customImageUrl) {
-    return customImageUrl;
+    // If it's a base64 image or a regular URL, return it directly
+    if (customImageUrl.startsWith('data:image') || customImageUrl.startsWith('http')) {
+      return customImageUrl;
+    }
   }
   
   // Fallback to predefined image map if no custom URL

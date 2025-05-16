@@ -37,7 +37,7 @@ export default function Results() {
   }, [user, navigate]);
 
   // Get all scents
-  const { data: scents, isLoading: scentsLoading } = useQuery({
+  const { data: scents, isLoading: scentsLoading } = useQuery<any[]>({
     queryKey: ['/api/scents'],
     enabled: !!user,
   });
