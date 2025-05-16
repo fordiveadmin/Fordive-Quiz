@@ -37,7 +37,7 @@ export const insertScentSchema = createInsertSchema(scents).omit({
 export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text").notNull(),
-  type: text("type").notNull(), // multiple_choice, checkbox, slider, image_choice
+  type: text("type").notNull(), // multiple_choice, checkbox, slider
   order: integer("order").notNull(),
   
   // Untuk struktur pertanyaan bercabang
@@ -45,17 +45,10 @@ export const questions = pgTable("questions", {
   parentId: integer("parent_id"), // ID pertanyaan induk
   parentOptionId: text("parent_option_id"), // ID opsi yang mengarah ke pertanyaan ini
   
-  // Styling options untuk pertanyaan
-  backgroundColor: text("background_color"), // Untuk background pertanyaan
-  textColor: text("text_color"), // Untuk warna teks pertanyaan
-  
   options: json("options").$type<{
     id: string;
     text: string;
     description?: string;
-    imageUrl?: string;
-    backgroundColor?: string;
-    textColor?: string;
     scentMappings: Record<string, number>;
   }[]>(),
 });

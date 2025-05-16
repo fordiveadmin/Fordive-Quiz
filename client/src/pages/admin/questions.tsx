@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
-import ImageChoiceEditor from '@/components/admin/ImageChoiceEditor';
 import {
   Table,
   TableBody,
@@ -79,21 +78,16 @@ const optionSchema = z.object({
   id: z.string().optional(),
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
-  imageUrl: z.string().optional(),
-  backgroundColor: z.string().optional(),
-  textColor: z.string().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
   order: z.number().min(1, 'Order is required'),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
-  backgroundColor: z.string().optional(),
-  textColor: z.string().optional(),
   options: z.array(optionSchema).min(1, 'At least one option is required')
 });
 
@@ -194,26 +188,12 @@ export default function AdminQuestions() {
     },
   });
   
-  // Get scents for mappings
-  const { data: scentsData = [] } = useQuery({
-    queryKey: ['/api/scents'],
-    refetchOnWindowFocus: false,
-  });
-
   // Form for adding/editing questions
   const QuestionForm = ({ isEdit = false, onClose }: { isEdit?: boolean; onClose: () => void }) => {
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
         [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
-    );
-    
-    const [backgroundColor, setBackgroundColor] = useState<string>(
-      isEdit && currentQuestion?.backgroundColor ? currentQuestion.backgroundColor : '#FFFFFF'
-    );
-    
-    const [textColor, setTextColor] = useState<string>(
-      isEdit && currentQuestion?.textColor ? currentQuestion.textColor : '#1E293B'
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -267,15 +247,6 @@ export default function AdminQuestions() {
       // Pastikan data yang dikirim valid
       console.log('Form data to submit:', data);
       
-      // Add options to data from state
-      data.options = options;
-      
-      // Add background and text colors for image_choice questions
-      if (data.type === 'image_choice') {
-        data.backgroundColor = backgroundColor;
-        data.textColor = textColor;
-      }
-      
       if (isEdit && currentQuestion) {
         updateQuestion.mutate({ id: currentQuestion.id, data });
       } else {
@@ -311,20 +282,7 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      
-                      // Reset options for image_choice to include image and color properties
-                      if (value === 'image_choice' && options.length > 0) {
-                        const updatedOptions = options.map(opt => ({
-                          ...opt,
-                          imageUrl: opt.imageUrl || '',
-                          backgroundColor: opt.backgroundColor || '#F2ECE3',
-                          textColor: opt.textColor || '#1E293B'
-                        }));
-                        setOptions(updatedOptions);
-                      }
-                    }}
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -336,7 +294,6 @@ export default function AdminQuestions() {
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
                       <SelectItem value="slider">Slider</SelectItem>
-                      <SelectItem value="image_choice">Image Choice</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -364,51 +321,6 @@ export default function AdminQuestions() {
             />
           </div>
 
-          {form.watch('type') === 'image_choice' && (
-            <div className="space-y-4 border p-4 rounded-md">
-              <h3 className="font-medium">Appearance Settings</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="question-background">Background Color</Label>
-                  <div className="flex space-x-2">
-                    <Input
-                      id="question-background"
-                      type="color"
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="w-12 h-10 p-1"
-                    />
-                    <Input
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      placeholder="#FFFFFF"
-                      className="flex-1"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="question-text-color">Text Color</Label>
-                  <div className="flex space-x-2">
-                    <Input
-                      id="question-text-color"
-                      type="color"
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      className="w-12 h-10 p-1"
-                    />
-                    <Input
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      placeholder="#1E293B"
-                      className="flex-1"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          
           <div className="space-y-4 border p-4 rounded-md">
             <h3 className="font-medium">Branching Settings</h3>
             <div className="space-y-2">
@@ -513,91 +425,81 @@ export default function AdminQuestions() {
               </Button>
             </div>
             
-            {form.watch('type') === 'image_choice' ? (
-              <ImageChoiceEditor 
-                options={options} 
-                onChange={setOptions} 
-                scents={scentsData || []} 
-              />
-            ) : (
-              <div className="space-y-4">
-                {options.map((option, index) => (
-                  <div key={option.id} className="border p-4 rounded-md mb-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <Label className="text-sm font-medium">Option {index + 1}</Label>
-                      {options.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeOption(index)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      )}
-                    </div>
-                    
-                    <div className="grid gap-4 mb-4">
-                      <div>
-                        <Label htmlFor={`option-text-${index}`}>Text</Label>
-                        <Input
-                          id={`option-text-${index}`}
-                          value={option.text}
-                          onChange={(e) => {
-                            const newOptions = [...options];
-                            newOptions[index].text = e.target.value;
-                            setOptions(newOptions);
-                            form.setValue(`options.${index}.text`, e.target.value);
-                          }}
-                          placeholder="Option text"
-                        />
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
-                        <Input
-                          id={`option-desc-${index}`}
-                          value={option.description || ''}
-                          onChange={(e) => {
-                            const newOptions = [...options];
-                            newOptions[index].description = e.target.value;
-                            setOptions(newOptions);
-                            form.setValue(`options.${index}.description`, e.target.value);
-                          }}
-                          placeholder="Description"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label className="mb-2 block">Scent Mappings</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {scents && scents.map((scent) => (
-                          <div key={scent.id} className="flex items-center gap-2">
-                            <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
-                              {scent.name}
-                            </Label>
-                            <Input
-                              id={`scent-${scent.id}-option-${index}`}
-                              type="number"
-                              min="0"
-                              max="5"
-                              className="w-1/2"
-                              value={option.scentMappings[scent.name] || 0}
-                              onChange={(e) => updateScentMapping(
-                                index, 
-                                scent.name, 
-                                parseInt(e.target.value) || 0
-                              )}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+            {options.map((option, index) => (
+              <div key={option.id} className="border p-4 rounded-md mb-4">
+                <div className="flex justify-between items-start mb-2">
+                  <Label className="text-sm font-medium">Option {index + 1}</Label>
+                  {options.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeOption(index)}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  )}
+                </div>
+                
+                <div className="grid gap-4 mb-4">
+                  <div>
+                    <Label htmlFor={`option-text-${index}`}>Text</Label>
+                    <Input
+                      id={`option-text-${index}`}
+                      value={option.text}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].text = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.text`, e.target.value);
+                      }}
+                      placeholder="Option text"
+                    />
                   </div>
-                ))}
+                  
+                  <div>
+                    <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
+                    <Input
+                      id={`option-desc-${index}`}
+                      value={option.description || ''}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].description = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.description`, e.target.value);
+                      }}
+                      placeholder="Description"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="mb-2 block">Scent Mappings</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {scents && scents.map((scent) => (
+                      <div key={scent.id} className="flex items-center gap-2">
+                        <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
+                          {scent.name}
+                        </Label>
+                        <Input
+                          id={`scent-${scent.id}-option-${index}`}
+                          type="number"
+                          min="0"
+                          max="5"
+                          className="w-1/2"
+                          value={option.scentMappings[scent.name] || 0}
+                          onChange={(e) => updateScentMapping(
+                            index, 
+                            scent.name, 
+                            parseInt(e.target.value) || 0
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            )}
+            ))}
           </div>
           
           <DialogFooter>

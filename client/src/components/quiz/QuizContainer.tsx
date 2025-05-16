@@ -8,7 +8,6 @@ import MultipleChoice from '@/components/quiz/questions/MultipleChoice';
 import Checkbox from '@/components/quiz/questions/Checkbox';
 import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
-import ImageChoice from '@/components/quiz/questions/ImageChoice';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
@@ -22,15 +21,10 @@ interface QuizQuestion {
   isMainQuestion: boolean;
   parentId: number | null;
   parentOptionId: string | null;
-  backgroundColor?: string;
-  textColor?: string;
   options: {
     id: string;
     text: string;
     description?: string;
-    imageUrl?: string;
-    backgroundColor?: string;
-    textColor?: string;
     scentMappings: Record<string, number>;
   }[];
 }
@@ -42,7 +36,6 @@ export default function QuizContainer() {
     setCurrentQuestion, 
     setTotalQuestions,
     answers,
-    setAnswer,
     zodiacSign,
   } = useStore();
   
@@ -166,14 +159,6 @@ export default function QuizContainer() {
         return <Checkbox question={question as QuizQuestion} />;
       case 'slider':
         return <Slider question={question as QuizQuestion} />;
-      case 'image_choice':
-        return <ImageChoice 
-          question={question} 
-          selectedOption={answers[question.id] as string || null}
-          onChange={(optionId: string) => {
-            setAnswer(String(question.id), optionId);
-          }}
-        />;
       case 'zodiac':
         return <ZodiacInput />;
       default:
