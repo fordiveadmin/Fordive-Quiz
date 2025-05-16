@@ -98,7 +98,7 @@ export default function Hero() {
                 Live More
                 <motion.span 
                   initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
+                  animate={{ width: "70%" }}
                   transition={{ duration: 1.2, delay: 1 }}
                   className="absolute -bottom-2 left-0 h-[3px] bg-gradient-to-r from-[#C89F65] to-transparent"
                 />
