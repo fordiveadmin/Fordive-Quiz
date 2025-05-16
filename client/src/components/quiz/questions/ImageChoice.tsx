@@ -65,21 +65,12 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               onClick={() => handleSelect(option.id, option)}
               style={{ minHeight: '200px' }}
             >
-              {/* Icon or Image */}
-              <div className="bg-[#f5f1e9] rounded-full p-4 w-24 h-24 flex items-center justify-center mb-4">
-                {option.imageUrl ? (
-                  <img src={option.imageUrl} alt={option.text} className="w-16 h-16 object-contain" />
-                ) : (
-                  <div className="text-4xl">{option.text.charAt(0)}</div>
-                )}
-              </div>
-              
               {/* Option Text */}
-              <h3 className="text-xl font-medium uppercase tracking-wide text-center">{option.text}</h3>
+              <h3 className="text-lg md:text-xl font-medium uppercase tracking-wide text-center mb-2">{option.text}</h3>
               
               {/* Description if available */}
               {option.description && (
-                <p className="mt-2 text-sm text-center">{option.description}</p>
+                <p className="text-sm text-center">{option.description}</p>
               )}
               
               {/* Selected indicator */}
@@ -108,7 +99,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               `}
               onClick={() => handleSelect(option.id, option)}
             >
-              <h3 className="text-lg font-medium mb-2">{option.text}</h3>
+              <h3 className="text-lg font-medium uppercase text-center mb-2">{option.text}</h3>
               
               {/* Description if available */}
               {option.description && (
