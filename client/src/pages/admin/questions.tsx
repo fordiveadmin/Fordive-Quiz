@@ -5,7 +5,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
-import { ImageUploader } from '@/components/admin/ImageUploader';
 import {
   Table,
   TableBody,
@@ -471,24 +470,6 @@ export default function AdminQuestions() {
                       }}
                       placeholder="Description"
                     />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor={`option-image-${index}`}>Option Image</Label>
-                    <div className="mt-2">
-                      <ImageUploader 
-                        currentImageUrl={option.imageUrl}
-                        onImageUploaded={(imageUrl) => {
-                          const newOptions = [...options];
-                          newOptions[index].imageUrl = imageUrl;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, imageUrl);
-                        }}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Upload gambar untuk opsi kuis ini
-                    </p>
                   </div>
                 </div>
                 
