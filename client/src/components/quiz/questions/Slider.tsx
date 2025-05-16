@@ -11,7 +11,7 @@ interface SliderProps {
       id: string;
       text: string;
       description?: string;
-      scentMappings: Record<string, Record<string, number>>;
+      scentMappings: Record<string, number>;
     }[];
   };
 }
@@ -24,11 +24,11 @@ export default function Slider({ question }: SliderProps) {
   // Set initial state from stored answers
   useEffect(() => {
     // With our new format, the slider needs special handling to restore state
-    if (answers[question.id] && answers[question.id].value) {
-      const storedValue = answers[question.id].value;
+    const questionId = question.id.toString();
+    if (answers[questionId] && answers[questionId].value) {
+      const storedValue = answers[questionId].value;
       setValue(storedValue);
       updateDisplayText(storedValue);
-      console.log("Setting slider value to:", storedValue);
     } else {
       // Default to middle value if we have an answer but can't determine the value
       setValue(3);
@@ -52,20 +52,17 @@ export default function Slider({ question }: SliderProps) {
     setValue(val);
     updateDisplayText(val);
     
-    // Get the scent mappings for this value
-    const option = question.options[0]; // Sliders typically have one option with mappings per value
-    const scentMappings = option.scentMappings[val.toString()];
+    // Get the option object
+    const option = question.options[0]; // Sliders typically have one option with mappings
     
-    if (scentMappings) {
-      // Store both the slider value and its scent mappings
-      const answer = {
-        value: val,
-        scentMappings: scentMappings
-      };
-      
-      // Save the answer
-      setAnswer(question.id.toString(), answer);
-    }
+    // Store both the slider value and the scent mappings
+    const answer = {
+      value: val,
+      scentMappings: option.scentMappings
+    };
+    
+    // Save the answer
+    setAnswer(question.id.toString(), answer);
   };
   
   return (
