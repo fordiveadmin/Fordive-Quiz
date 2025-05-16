@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import perfumeCollection from "../../assets/perfume-collection.png";
+import heroPerfumes from "../../assets/hero-perfumes.png";
 
 export default function Hero() {
   // Animation variants
@@ -181,7 +181,7 @@ export default function Hero() {
                 className="relative w-full h-full flex items-center justify-center"
               >
                 <motion.img 
-                  src={perfumeCollection}
+                  src={heroPerfumes}
                   alt="Fordive Perfume Collection" 
                   className="w-[90%] md:w-[80%] h-auto object-contain drop-shadow-2xl"
                   initial={{ opacity: 0, scale: 0.8 }}
