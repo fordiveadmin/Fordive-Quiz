@@ -473,20 +473,20 @@ export default function AdminQuestions() {
                   </div>
                   
                   <div>
-                    <Label htmlFor={`option-image-${index}`}>Image URL (optional)</Label>
-                    <Input
-                      id={`option-image-${index}`}
-                      value={option.imageUrl || ''}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index].imageUrl = e.target.value;
-                        setOptions(newOptions);
-                        form.setValue(`options.${index}.imageUrl`, e.target.value);
-                      }}
-                      placeholder="https://example.com/image.jpg"
-                    />
+                    <Label htmlFor={`option-image-${index}`}>Option Image</Label>
+                    <div className="mt-2">
+                      <ImageUploader 
+                        currentImageUrl={option.imageUrl}
+                        onImageUploaded={(imageUrl) => {
+                          const newOptions = [...options];
+                          newOptions[index].imageUrl = imageUrl;
+                          setOptions(newOptions);
+                          form.setValue(`options.${index}.imageUrl`, imageUrl);
+                        }}
+                      />
+                    </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Add image URL untuk mengubah tampilan opsi kuis
+                      Upload gambar untuk opsi kuis ini
                     </p>
                   </div>
                 </div>
