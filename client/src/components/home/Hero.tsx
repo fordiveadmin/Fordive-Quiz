@@ -152,10 +152,10 @@ export default function Hero() {
             </motion.div>
           </motion.div>
           
-          {/* Right Perfume Bottles Display - Hidden on Mobile */}
+          {/* Right Perfume Bottles Display - Only on Desktop */}
           <motion.div 
             variants={fadeInUp}
-            className="hidden md:block w-full md:w-1/2 relative h-[300px] md:h-[500px]"
+            className="hidden md:block w-full md:w-1/2 relative h-[300px] md:h-[600px]"
           >
             {/* Perfume bottles with individual animations */}
             <div className="relative w-full h-full flex items-center justify-center">
@@ -178,12 +178,12 @@ export default function Hero() {
                     repeatType: "mirror" 
                   }
                 }}
-                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-110"
+                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-[1.7]"
               >
                 <motion.img 
                   src={heroPerfumes}
                   alt="Fordive Perfume Collection" 
-                  className="w-auto h-auto max-h-[280px] md:max-h-[400px] object-contain drop-shadow-2xl"
+                  className="w-auto h-auto max-h-[280px] md:max-h-[600px] object-contain drop-shadow-2xl"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.3 }}
