@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import logoImage from "../../assets/logo.png";
 
 export default function Navigation({ transparent = false }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,14 +43,15 @@ export default function Navigation({ transparent = false }) {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
-            <div className={cn(
-              "font-playfair text-2xl font-bold transition-colors duration-300",
-              transparent && !scrolled ? "gold-gradient" : "text-[#C89F65]"
-            )}>
-              <div className="flex items-center space-x-2">
-                <span className="text-3xl">F</span>
-                <span>ORDIVE</span>
-              </div>
+            <div className="transition-opacity duration-300 hover:opacity-90">
+              <img 
+                src={logoImage} 
+                alt="Fordive Logo" 
+                className={cn(
+                  "h-16 md:h-20 w-auto",
+                  transparent && !scrolled ? "brightness-100" : "brightness-100"
+                )} 
+              />
             </div>
           </Link>
         </div>
