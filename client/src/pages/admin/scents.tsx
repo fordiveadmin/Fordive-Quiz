@@ -84,12 +84,14 @@ const scentSchema = z.object({
   mood: z.string().min(1, 'Mood description is required'),
   description: z.string().min(1, 'Description is required'),
   category: z.string().min(1, 'Category is required'),
-  imageUrl: z.string().url('Must be a valid URL').optional(),
+  imageUrl: z.string().optional(),
+  purchaseUrl: z.string().url('Must be a valid URL').optional(),
 });
 
 type Scent = z.infer<typeof scentSchema> & { 
   id: number;
   imageUrl?: string;
+  purchaseUrl?: string;
 };
 
 export default function AdminScents() {
@@ -376,31 +378,70 @@ export default function AdminScents() {
             name="imageUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Image URL</FormLabel>
+                <FormLabel>Perfume Image</FormLabel>
+                <div className="space-y-2">
+                  <Input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        // Create a temporary URL for the image preview
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                          field.onChange(e.target?.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  {field.value && field.value.startsWith('data:') ? (
+                    <div className="mt-2 rounded-md overflow-hidden border border-border">
+                      <img 
+                        src={field.value} 
+                        alt="Scent preview" 
+                        className="w-full h-40 object-cover"
+                      />
+                    </div>
+                  ) : field.value ? (
+                    <div className="mt-2 rounded-md overflow-hidden border border-border">
+                      <img 
+                        src={field.value} 
+                        alt="Scent preview" 
+                        className="w-full h-40 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
+                          target.title = 'Failed to load image';
+                        }}
+                      />
+                    </div>
+                  ) : null}
+                </div>
+                <FormDescription>
+                  Upload an image for this fragrance. The image should be in landscape format (16:9).
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="purchaseUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Purchase URL</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="https://example.com/image.jpg" 
+                    placeholder="https://fordive.com/shop/perfume" 
                     {...field} 
                     value={field.value || ''}
                   />
                 </FormControl>
                 <FormDescription>
-                  Enter a URL to an image for this fragrance. The image should be in landscape format (16:9).
+                  Enter the URL where customers can purchase this fragrance (optional).
                 </FormDescription>
-                {field.value && (
-                  <div className="mt-2 rounded-md overflow-hidden border border-border">
-                    <img 
-                      src={field.value} 
-                      alt="Scent preview" 
-                      className="w-full h-40 object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
-                        target.title = 'Failed to load image';
-                      }}
-                    />
-                  </div>
-                )}
                 <FormMessage />
               </FormItem>
             )}
