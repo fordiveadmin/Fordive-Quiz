@@ -520,81 +520,81 @@ export default function AdminQuestions() {
                 scents={scentsData || []} 
               />
             ) : (
-              <div>
+              <div className="space-y-4">
                 {options.map((option, index) => (
-                <div key={option.id} className="border p-4 rounded-md mb-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <Label className="text-sm font-medium">Option {index + 1}</Label>
-                    {options.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeOption(index)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    )}
-                  </div>
-                  
-                  <div className="grid gap-4 mb-4">
-                    <div>
-                      <Label htmlFor={`option-text-${index}`}>Text</Label>
-                      <Input
-                        id={`option-text-${index}`}
-                        value={option.text}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index].text = e.target.value;
-                        setOptions(newOptions);
-                        form.setValue(`options.${index}.text`, e.target.value);
-                      }}
-                      placeholder="Option text"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
-                    <Input
-                      id={`option-desc-${index}`}
-                      value={option.description || ''}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index].description = e.target.value;
-                        setOptions(newOptions);
-                        form.setValue(`options.${index}.description`, e.target.value);
-                      }}
-                      placeholder="Description"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label className="mb-2 block">Scent Mappings</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {scents && scents.map((scent) => (
-                      <div key={scent.id} className="flex items-center gap-2">
-                        <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
-                          {scent.name}
-                        </Label>
+                  <div key={option.id} className="border p-4 rounded-md mb-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <Label className="text-sm font-medium">Option {index + 1}</Label>
+                      {options.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeOption(index)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="grid gap-4 mb-4">
+                      <div>
+                        <Label htmlFor={`option-text-${index}`}>Text</Label>
                         <Input
-                          id={`scent-${scent.id}-option-${index}`}
-                          type="number"
-                          min="0"
-                          max="5"
-                          className="w-1/2"
-                          value={option.scentMappings[scent.name] || 0}
-                          onChange={(e) => updateScentMapping(
-                            index, 
-                            scent.name, 
-                            parseInt(e.target.value) || 0
-                          )}
+                          id={`option-text-${index}`}
+                          value={option.text}
+                          onChange={(e) => {
+                            const newOptions = [...options];
+                            newOptions[index].text = e.target.value;
+                            setOptions(newOptions);
+                            form.setValue(`options.${index}.text`, e.target.value);
+                          }}
+                          placeholder="Option text"
                         />
                       </div>
-                    ))}
+                      
+                      <div>
+                        <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
+                        <Input
+                          id={`option-desc-${index}`}
+                          value={option.description || ''}
+                          onChange={(e) => {
+                            const newOptions = [...options];
+                            newOptions[index].description = e.target.value;
+                            setOptions(newOptions);
+                            form.setValue(`options.${index}.description`, e.target.value);
+                          }}
+                          placeholder="Description"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="mb-2 block">Scent Mappings</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {scents && scents.map((scent) => (
+                          <div key={scent.id} className="flex items-center gap-2">
+                            <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
+                              {scent.name}
+                            </Label>
+                            <Input
+                              id={`scent-${scent.id}-option-${index}`}
+                              type="number"
+                              min="0"
+                              max="5"
+                              className="w-1/2"
+                              value={option.scentMappings[scent.name] || 0}
+                              onChange={(e) => updateScentMapping(
+                                index, 
+                                scent.name, 
+                                parseInt(e.target.value) || 0
+                              )}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
                 ))}
               </div>
             )}

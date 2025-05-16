@@ -42,6 +42,7 @@ export default function QuizContainer() {
     setCurrentQuestion, 
     setTotalQuestions,
     answers,
+    setAnswer,
     zodiacSign,
   } = useStore();
   
@@ -170,7 +171,7 @@ export default function QuizContainer() {
           question={question} 
           selectedOption={answers[question.id] as string || null}
           onChange={(optionId: string) => {
-            setAnswer(question.id, optionId);
+            setAnswer(String(question.id), optionId);
           }}
         />;
       case 'zodiac':
