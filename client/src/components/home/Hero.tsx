@@ -1,7 +1,8 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import heroPerfumes from "../../assets/perfume-hero.png";
+import perfumeWomen from "../../assets/perfume-women.png";
+import perfumeMen from "../../assets/perfume-men.png";
 
 export default function Hero() {
   // Animation variants
@@ -168,26 +169,50 @@ export default function Hero() {
                 style={{ zIndex: 0 }}
               />
               
-              {/* Hero image with actual perfume bottles */}
+              {/* Women perfume bottles */}
               <motion.div
                 animate={{ 
-                  y: [0, -8, 0],
+                  y: [0, -10, 0],
                   transition: { 
                     duration: 3,
                     repeat: Infinity,
                     repeatType: "mirror" 
                   }
                 }}
-                className="absolute md:relative right-0 md:right-[5%] top-[10%] md:top-[5%] w-[260px] md:w-[380px] h-auto"
+                className="absolute md:relative right-0 md:right-[5%] top-[5%] md:top-[5%] w-[220px] md:w-[320px] h-auto"
                 style={{ zIndex: 2 }}
               >
                 <motion.img 
-                  src={heroPerfumes}
-                  alt="Fordive Perfume Collection" 
+                  src={perfumeWomen}
+                  alt="Fordive Women Perfume Collection" 
                   className="w-full h-auto object-contain drop-shadow-2xl"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.3 }}
+                />
+              </motion.div>
+              
+              {/* Men perfume bottles */}
+              <motion.div
+                animate={{ 
+                  y: [0, -8, 0],
+                  transition: { 
+                    duration: 4,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    delay: 0.5
+                  }
+                }}
+                className="absolute md:relative right-0 md:right-[25%] top-[50%] md:top-[45%] w-[180px] md:w-[240px] h-auto"
+                style={{ zIndex: 1 }}
+              >
+                <motion.img 
+                  src={perfumeMen}
+                  alt="Fordive Men Perfume Collection" 
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.6 }}
                 />
               </motion.div>
             </div>
