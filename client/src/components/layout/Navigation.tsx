@@ -59,43 +59,32 @@ export default function Navigation({ transparent = false }) {
         <nav className="hidden md:flex space-x-12">
           <Link href="/">
             <div className={cn(
-              transparent && !scrolled ? "text-white" : "text-gray-800",
-              "hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide",
-              location === "/" && "text-[#C89F65]"
+              "text-gray-800 hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide relative",
+              location === "/" && "text-[#C89F65] after:content-[''] after:h-[2px] after:bg-[#C89F65] after:absolute after:bottom-[-5px] after:left-0 after:right-0"
             )}>
               Shop
             </div>
           </Link>
           <Link href="/quiz">
             <div className={cn(
-              transparent && !scrolled ? "text-white" : "text-gray-800",
-              "hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide",
-              location === "/quiz" && "text-[#C89F65]"
+              "text-gray-800 hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide relative",
+              location === "/quiz" && "text-[#C89F65] after:content-[''] after:h-[2px] after:bg-[#C89F65] after:absolute after:bottom-[-5px] after:left-0 after:right-0"
             )}>
               Find Your Scent
             </div>
           </Link>
           <div 
-            className={cn(
-              transparent && !scrolled ? "text-white" : "text-gray-800",
-              "hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer"
-            )}
+            className="text-gray-800 hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer relative"
           >
             Mission
           </div>
           <div 
-            className={cn(
-              transparent && !scrolled ? "text-white" : "text-gray-800",
-              "hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer"
-            )}
+            className="text-gray-800 hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer relative"
           >
             About Us
           </div>
           <div 
-            className={cn(
-              transparent && !scrolled ? "text-white" : "text-gray-800",
-              "hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer"
-            )}
+            className="text-gray-800 hover:text-[#C89F65] transition-colors duration-300 font-medium text-sm uppercase tracking-wide cursor-pointer relative"
           >
             Distributor
           </div>
@@ -138,8 +127,8 @@ export default function Navigation({ transparent = false }) {
               <Link href="/">
                 <div 
                   className={cn(
-                    "py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide",
-                    location === "/" && "text-[#C89F65]"
+                    "py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide relative",
+                    location === "/" && "text-[#C89F65] after:content-[''] after:h-[2px] after:bg-[#C89F65] after:absolute after:bottom-[-5px] after:left-0 after:w-full"
                   )}
                   onClick={toggleMenu}
                 >
@@ -149,8 +138,8 @@ export default function Navigation({ transparent = false }) {
               <Link href="/quiz">
                 <div 
                   className={cn(
-                    "py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide",
-                    location === "/quiz" && "text-[#C89F65]"
+                    "py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide relative",
+                    location === "/quiz" && "text-[#C89F65] after:content-[''] after:h-[2px] after:bg-[#C89F65] after:absolute after:bottom-[-5px] after:left-0 after:w-full"
                   )}
                   onClick={toggleMenu}
                 >
@@ -158,19 +147,19 @@ export default function Navigation({ transparent = false }) {
                 </div>
               </Link>
               <div 
-                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer"
+                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer relative"
                 onClick={toggleMenu}
               >
                 Mission
               </div>
               <div 
-                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer"
+                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer relative"
                 onClick={toggleMenu}
               >
                 About Us
               </div>
               <div 
-                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer"
+                className="py-2 text-gray-800 hover:text-[#C89F65] font-medium text-sm uppercase tracking-wide cursor-pointer relative"
                 onClick={toggleMenu}
               >
                 Distributor
