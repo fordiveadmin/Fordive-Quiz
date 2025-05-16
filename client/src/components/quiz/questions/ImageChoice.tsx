@@ -57,7 +57,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className={`
-                relative flex flex-col items-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
+                relative flex flex-col items-center justify-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
                 ${option.id === selectedOption ? 
                   'bg-[#1f1f1f] text-white' : 
                   'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
@@ -66,7 +66,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               style={{ minHeight: '200px' }}
             >
               {/* Option Text */}
-              <h3 className="text-lg md:text-xl font-medium uppercase tracking-wide text-center mb-2">{option.text}</h3>
+              <h3 className="text-lg md:text-xl font-medium uppercase tracking-wide text-center mb-2" style={{ width: '100%', textAlign: 'center' }}>{option.text}</h3>
               
               {/* Description if available */}
               {option.description && (
