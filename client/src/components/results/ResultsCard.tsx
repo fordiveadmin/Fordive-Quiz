@@ -15,6 +15,7 @@ interface ResultsCardProps {
     mood: string;
     description: string;
     imageUrl?: string;
+    purchaseUrl?: string;
   };
   zodiacSign: any | null;
 }
@@ -32,7 +33,9 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
   const getZodiacMappingDescription = () => {
     if (!zodiacMappings || !scent) return null;
     
-    const mapping = zodiacMappings.find((m: any) => m.scentId === scent.id);
+    // Make sure zodiacMappings is an array before using find
+    const mappingsArray = Array.isArray(zodiacMappings) ? zodiacMappings : [];
+    const mapping = mappingsArray.find((m: any) => m.scentId === scent.id);
     if (mapping) return mapping.description;
     
     // Fallback to generic description if no mapping exists
@@ -105,6 +108,19 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
               <p className="text-muted-foreground mb-6">
                 {zodiacDescription}
               </p>
+            )}
+            
+            {scent.purchaseUrl && (
+              <div className="mt-6">
+                <a 
+                  href={scent.purchaseUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300 hover:shadow-lg transform hover:scale-105"
+                >
+                  Buy Now
+                </a>
+              </div>
             )}
           </div>
         </div>

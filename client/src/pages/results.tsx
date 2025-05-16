@@ -171,15 +171,6 @@ export default function Results() {
               category={matchedScent.category}
               allScents={scents}
             />
-            
-            <div className="text-center">
-              <Button 
-                className="bg-primary hover:bg-accent text-white font-semibold py-3 px-8 rounded-full shadow-lg transform transition duration-300 hover:scale-105"
-                onClick={() => window.open('https://fordive.com/shop', '_blank')}
-              >
-                Shop Your Fragrance Now
-              </Button>
-            </div>
           </div>
         </div>
         
