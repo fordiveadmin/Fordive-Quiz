@@ -19,8 +19,6 @@ export default function Home() {
         <Navigation transparent={true} />
         <Hero />
         <Features />
-        <Collection />
-        <Testimonials />
         <CtaSection />
         <Footer />
       </div>
