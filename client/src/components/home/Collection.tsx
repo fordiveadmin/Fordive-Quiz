@@ -200,9 +200,9 @@ export default function Collection() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="premium-card h-[480px] flex flex-col relative">
-                <div className="h-[280px] w-full relative bg-gradient-to-b from-[#F9F7F2] to-[#EDEAE0] animate-pulse"></div>
-                <div className="p-6 flex-grow flex flex-col">
+              <div key={i} className="premium-card h-[440px] md:h-[480px] flex flex-col relative">
+                <div className="h-[200px] md:h-[280px] w-full relative bg-gradient-to-b from-[#F9F7F2] to-[#EDEAE0] animate-pulse"></div>
+                <div className="p-4 md:p-6 flex-grow flex flex-col">
                   <div className="h-6 w-32 bg-[#EDEAE0] rounded animate-pulse mb-3"></div>
                   <div className="h-4 w-40 bg-[#EDEAE0] rounded animate-pulse mb-4"></div>
                   <div className="h-4 w-full bg-[#EDEAE0] rounded animate-pulse"></div>
@@ -218,13 +218,13 @@ export default function Collection() {
             variants={container}
             initial="hidden"
             animate={controls}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
           >
             {(scents || []).map((scent, index) => (
               <motion.div
                 key={scent.id}
                 variants={item}
-                className="premium-card h-[480px] flex flex-col relative group"
+                className="premium-card h-[400px] md:h-[480px] flex flex-col relative group"
                 onMouseEnter={() => setHoveredScent(scent.id)}
                 onMouseLeave={() => setHoveredScent(null)}
                 whileHover={{
@@ -232,7 +232,7 @@ export default function Collection() {
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
               >
-                <div className="h-[280px] w-full relative overflow-hidden">
+                <div className="h-[180px] md:h-[280px] w-full relative overflow-hidden">
                   <motion.img 
                     src={(scent as any).imageUrl ? getScentImageUrl(scent.name, (scent as any).imageUrl) : getScentImageUrl(scent.name)} 
                     alt={`${scent.name} Perfume`} 
@@ -242,13 +242,13 @@ export default function Collection() {
                     animate={hoveredScent === scent.id ? "hover" : "initial"}
                   />
                   <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6"
+                    className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-4 md:p-6"
                     variants={overlayVariants}
                     initial="initial"
                     animate={hoveredScent === scent.id ? "hover" : "initial"}
                   >
                     <motion.div
-                      className="flex flex-wrap gap-2"
+                      className="flex flex-wrap gap-1 md:gap-2"
                       variants={notesVariants}
                       initial="initial"
                       animate={hoveredScent === scent.id ? "hover" : "initial"}
@@ -257,7 +257,7 @@ export default function Collection() {
                         <motion.span 
                           key={idx}
                           variants={noteItemVariants}
-                          className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs text-white"
+                          className="px-2 md:px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-[10px] md:text-xs text-white"
                         >
                           {note}
                         </motion.span>
@@ -266,23 +266,23 @@ export default function Collection() {
                   </motion.div>
                 </div>
                 
-                <div className="p-6 flex-grow flex flex-col">
-                  <h3 className={`font-playfair text-2xl font-medium mb-2 ${getTitleColor(index)}`}>
+                <div className="p-4 md:p-6 flex-grow flex flex-col">
+                  <h3 className={`font-playfair text-xl md:text-2xl font-medium mb-1 md:mb-2 ${getTitleColor(index)}`}>
                     {scent.name}
                   </h3>
-                  <p className="text-gray-500 text-sm mb-3">
+                  <p className="text-gray-500 text-xs md:text-sm mb-2 md:mb-3">
                     {scent.vibes && scent.vibes.slice(0, 3).join(' • ')}
                   </p>
-                  <p className="italic text-sm text-gray-600 flex-grow">"{scent.mood}"</p>
+                  <p className="italic text-xs md:text-sm text-gray-600 flex-grow">"{scent.mood}"</p>
                   
                   <motion.div 
-                    className="mt-4 flex space-x-3"
+                    className="mt-3 md:mt-4 flex space-x-2 md:space-x-3"
                     variants={buttonVariants}
                     initial="initial"
                     animate={hoveredScent === scent.id ? "hover" : "initial"}
                   >
                     <Link href="/quiz">
-                      <div className="bg-[#F2ECE3] hover:bg-[#E5D9C3] text-[#B37D55] font-medium py-2 px-4 rounded-md text-sm transition-colors duration-300 flex-1 text-center cursor-pointer">
+                      <div className="bg-[#F2ECE3] hover:bg-[#E5D9C3] text-[#B37D55] font-medium py-2 px-3 md:px-4 rounded-md text-xs md:text-sm transition-colors duration-300 flex-1 text-center cursor-pointer">
                         Match With Me
                       </div>
                     </Link>
@@ -291,7 +291,7 @@ export default function Collection() {
                         href={scent.purchaseUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-premium py-2 px-4 rounded-md text-sm flex-1 text-center"
+                        className="btn-premium py-2 px-3 md:px-4 rounded-md text-xs md:text-sm flex-1 text-center"
                       >
                         Buy Now
                       </a>
@@ -300,14 +300,14 @@ export default function Collection() {
                 </div>
                 
                 <motion.div 
-                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center"
+                  className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-md flex items-center justify-center"
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C89F65" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C89F65" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
                 </motion.div>
