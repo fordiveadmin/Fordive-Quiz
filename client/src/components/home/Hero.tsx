@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import heroPerfumes from "../../assets/hero-perfumes.png";
+import heroPerfumes from "../../assets/perfume-hero.png";
 
 export default function Hero() {
   // Animation variants
@@ -178,7 +178,7 @@ export default function Hero() {
                     repeatType: "mirror" 
                   }
                 }}
-                className="absolute md:relative right-[-10%] md:right-0 top-[10%] md:top-[5%] w-[300px] md:w-[450px] h-auto"
+                className="absolute md:relative right-0 md:right-[5%] top-[10%] md:top-[5%] w-[260px] md:w-[380px] h-auto"
                 style={{ zIndex: 2 }}
               >
                 <motion.img 
