@@ -17,8 +17,10 @@ interface Scent {
 }
 
 export default function Collection() {
-  const { data: scents, isLoading } = useQuery<Scent[]>({
+  const { data: scents, isLoading, isError } = useQuery<Scent[]>({
     queryKey: ['/api/scents'],
+    retry: 3,
+    refetchOnWindowFocus: false,
   });
 
   const controls = useAnimation();
@@ -198,10 +200,10 @@ export default function Collection() {
         </motion.div>
         
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-0">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="premium-card h-[440px] md:h-[480px] flex flex-col relative">
-                <div className="h-[200px] md:h-[280px] w-full relative bg-gradient-to-b from-[#F9F7F2] to-[#EDEAE0] animate-pulse"></div>
+              <div key={i} className="premium-card h-[420px] md:h-[480px] flex flex-col relative">
+                <div className="h-[180px] md:h-[280px] w-full relative bg-gradient-to-b from-[#F9F7F2] to-[#EDEAE0] animate-pulse"></div>
                 <div className="p-4 md:p-6 flex-grow flex flex-col">
                   <div className="h-6 w-32 bg-[#EDEAE0] rounded animate-pulse mb-3"></div>
                   <div className="h-4 w-40 bg-[#EDEAE0] rounded animate-pulse mb-4"></div>
@@ -213,12 +215,22 @@ export default function Collection() {
               </div>
             ))}
           </div>
+        ) : isError ? (
+          <div className="text-center py-16">
+            <p className="text-lg text-gray-600 mb-4">Tidak dapat memuat data parfum</p>
+            <Button 
+              onClick={() => window.location.reload()}
+              className="btn-premium py-2 px-4"
+            >
+              Coba Lagi
+            </Button>
+          </div>
         ) : (
           <motion.div 
             variants={container}
             initial="hidden"
             animate={controls}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 px-4 md:px-0"
           >
             {(scents || []).map((scent, index) => (
               <motion.div
