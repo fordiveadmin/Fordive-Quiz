@@ -178,12 +178,12 @@ export default function Hero() {
                     repeatType: "mirror" 
                   }
                 }}
-                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-[3.2]"
+                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-[5.5] lg:scale-[6]"
               >
                 <motion.img 
                   src={heroPerfumes}
                   alt="Fordive Perfume Collection" 
-                  className="w-auto h-auto max-h-[280px] md:max-h-[600px] object-contain drop-shadow-2xl"
+                  className="w-auto h-auto md:min-w-[600px] max-h-[280px] md:max-h-[800px] object-contain drop-shadow-2xl"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.3 }}
