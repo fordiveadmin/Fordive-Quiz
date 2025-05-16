@@ -480,7 +480,8 @@ export default function AdminQuestions() {
                         const newOptions = [...options];
                         newOptions[index].icon = value;
                         setOptions(newOptions);
-                        form.setValue(`options.${index}.icon`, value);
+                        // Update the entire options array to include the icon
+                        form.setValue('options', newOptions);
                       }}
                     >
                       <SelectTrigger id={`option-icon-${index}`}>
