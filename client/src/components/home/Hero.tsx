@@ -45,7 +45,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden pt-20 bg-gradient-to-b from-[#F9F7F2] to-white">
+    <div className="relative min-h-[90vh] md:min-h-screen w-full overflow-hidden pt-20 bg-gradient-to-b from-[#F9F7F2] to-white">
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <motion.div 
@@ -68,7 +68,7 @@ export default function Hero() {
           initial="initial"
           animate="animate"
           variants={stagger}
-          className="flex flex-col md:flex-row items-center justify-between h-[85vh] px-6 pt-4"
+          className="flex flex-col md:flex-row items-center justify-between h-[70vh] md:h-[85vh] px-4 md:px-6 pt-4"
         >
           {/* Left Text Content */}
           <motion.div 
@@ -155,7 +155,7 @@ export default function Hero() {
           {/* Right Perfume Bottles Display */}
           <motion.div 
             variants={fadeInUp}
-            className="w-full md:w-1/2 relative h-[400px] md:h-[500px]"
+            className="w-full md:w-1/2 relative h-[300px] md:h-[500px]"
           >
             {/* Perfume bottles with individual animations */}
             <div className="relative w-full h-full flex items-center justify-center">
@@ -164,7 +164,7 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.7 }}
                 transition={{ duration: 2 }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
                 style={{ zIndex: 0 }}
               />
               
@@ -178,12 +178,12 @@ export default function Hero() {
                     repeatType: "mirror" 
                   }
                 }}
-                className="relative w-full h-full flex items-center justify-center scale-125 md:scale-110"
+                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-110"
               >
                 <motion.img 
                   src={heroPerfumes}
                   alt="Fordive Perfume Collection" 
-                  className="w-[100%] md:w-[100%] h-auto object-contain drop-shadow-2xl"
+                  className="w-auto h-auto max-h-[280px] md:max-h-[400px] object-contain drop-shadow-2xl"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, delay: 0.3 }}
