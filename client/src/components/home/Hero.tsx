@@ -164,7 +164,7 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.7 }}
                 transition={{ duration: 2 }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[400px] md:h-[400px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[500px] md:h-[500px] rounded-full bg-gradient-to-br from-[#FBF7F2] via-[#F5EDDE] to-[#FBEEE1] blur-3xl"
                 style={{ zIndex: 0 }}
               />
               
@@ -178,7 +178,7 @@ export default function Hero() {
                     repeatType: "mirror" 
                   }
                 }}
-                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-[1.7]"
+                className="relative w-full h-full flex items-center justify-center scale-100 md:scale-[3.2]"
               >
                 <motion.img 
                   src={heroPerfumes}
