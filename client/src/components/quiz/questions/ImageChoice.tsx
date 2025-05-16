@@ -8,7 +8,6 @@ interface Option {
   text: string;
   description?: string;
   imageUrl?: string;
-  icon?: string;
   scentMappings: Record<string, number>;
 }
 
@@ -24,28 +23,6 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
   const { answers, setAnswer } = useStore();
   const selectedOption = answers[question.id]?.optionId;
 
-  // Gets the icon element based on the icon string
-  const getIconElement = (iconKey: string | undefined) => {
-    if (!iconKey || iconKey === 'none') return null;
-    
-    const iconMap: Record<string, string> = {
-      'star': '★',
-      'heart': '♥',
-      'flower': '✿',
-      'sun': '☀',
-      'moon': '☽',
-      'cloud': '☁',
-      'water': '≈',
-      'fire': '▲',
-      'leaf': '❦',
-      'gem': '◆',
-      'crown': '♛',
-      'note': '♪'
-    };
-    
-    return iconMap[iconKey] || null;
-  };
-
   const handleSelect = (optionId: string, option: Option) => {
     setAnswer(
       question.id.toString(),
@@ -55,12 +32,9 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
       }
     );
   };
-
-  // Determine if we should use the split or grid layout based on number of options
-  const isGridLayout = question.options.length > 2;
   
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 max-w-[800px] mx-auto">
       <motion.h2 
         className="text-2xl md:text-3xl font-playfair text-center mb-10 px-4" 
         initial={{ opacity: 0, y: -10 }}
@@ -70,93 +44,56 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
         {question.text}
       </motion.h2>
 
-      {!isGridLayout ? (
-        // Split layout (half screen per option) - good for 2 options
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {question.options.map((option) => (
+      {/* Simple split layout - always use this design for consistency */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {question.options.map((option) => {
+          const isSelected = option.id === selectedOption;
+          
+          return (
             <motion.div
               key={option.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className={`
-                relative flex flex-col items-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
-                ${option.id === selectedOption ? 
-                  'bg-[#1f1f1f] text-white' : 
+                relative flex flex-col items-center justify-center p-6 md:p-8 cursor-pointer transition-all
+                ${isSelected ? 
+                  'bg-[#27241F] text-white' : 
                   'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
               `}
               onClick={() => handleSelect(option.id, option)}
-              style={{ minHeight: '200px' }}
+              style={{ height: '160px' }}
             >
-              {/* Icon or Image */}
-              <div className="bg-[#f5f1e9] rounded-full p-4 w-24 h-24 flex items-center justify-center mb-4">
-                {option.imageUrl ? (
-                  <img src={option.imageUrl} alt={option.text} className="w-16 h-16 object-contain" />
-                ) : option.icon ? (
-                  <div className="text-5xl">{getIconElement(option.icon)}</div>
-                ) : (
-                  <div className="text-4xl">{option.text.charAt(0)}</div>
-                )}
+              {/* Center content */}
+              <div className="flex flex-col items-center">
+                {/* Circle with letter or image */}
+                <div className={`
+                  ${isSelected ? 'bg-white text-[#27241F]' : 'bg-white text-[#27241F]'} 
+                  rounded-full w-16 h-16 flex items-center justify-center mb-4
+                `}>
+                  {option.imageUrl ? (
+                    <img src={option.imageUrl} alt={option.text} className="w-10 h-10 object-contain" />
+                  ) : (
+                    <span className="text-2xl lowercase font-medium">{option.text.charAt(0)}</span>
+                  )}
+                </div>
+                
+                {/* Option Text */}
+                <h3 className="font-playfair uppercase tracking-wide text-center">
+                  {option.text}
+                </h3>
               </div>
               
-              {/* Option Text */}
-              <h3 className="text-xl font-medium uppercase tracking-wide text-center">
-                {option.icon && option.icon !== 'none' ? option.text : `BRANCH ${question.options.indexOf(option) + 1}`}
-              </h3>
-              
-              {/* Description if available */}
-              {option.description && (
-                <p className="mt-2 text-sm text-center">{option.description}</p>
-              )}
-              
               {/* Selected indicator */}
-              {option.id === selectedOption && (
+              {isSelected && (
                 <div className="absolute right-4 top-4">
-                  <Check className="h-6 w-6 text-white" />
+                  <Check className="h-5 w-5" />
                 </div>
               )}
             </motion.div>
-          ))}
-        </div>
-      ) : (
-        // Grid layout for 3+ options
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {question.options.map((option) => (
-            <motion.div
-              key={option.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className={`
-                relative border rounded-lg p-6 cursor-pointer transition-all
-                ${option.id === selectedOption ? 
-                  'bg-[#f5f1e9] border-[#C89F65] shadow-md' : 
-                  'bg-white border-gray-200 hover:border-[#C89F65]'}
-              `}
-              onClick={() => handleSelect(option.id, option)}
-            >
-              <div className="flex items-center mb-2">
-                {option.icon && (
-                  <span className="text-2xl mr-2">{getIconElement(option.icon)}</span>
-                )}
-                <h3 className="text-lg font-medium">{option.text}</h3>
-              </div>
-              
-              {/* Description if available */}
-              {option.description && (
-                <p className="text-sm text-gray-600">{option.description}</p>
-              )}
-              
-              {/* Selected indicator */}
-              {option.id === selectedOption && (
-                <div className="absolute right-4 top-4">
-                  <Check className="h-5 w-5 text-[#C89F65]" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
       
       {/* Helper text */}
       <div className="text-center text-sm text-gray-500 mt-4">

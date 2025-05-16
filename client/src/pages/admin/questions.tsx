@@ -5,6 +5,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 import {
   Table,
   TableBody,
@@ -473,38 +474,20 @@ export default function AdminQuestions() {
                   </div>
                   
                   <div>
-                    <Label htmlFor={`option-icon-${index}`}>Icon (optional)</Label>
-                    <Select
-                      value={option.icon || 'none'}
-                      onValueChange={(value) => {
-                        const newOptions = [...options];
-                        newOptions[index].icon = value;
-                        setOptions(newOptions);
-                        // Update the entire options array to include the icon
-                        form.setValue('options', newOptions);
-                      }}
-                    >
-                      <SelectTrigger id={`option-icon-${index}`}>
-                        <SelectValue placeholder="Select an icon" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">No Icon</SelectItem>
-                        <SelectItem value="star">★ Star</SelectItem>
-                        <SelectItem value="heart">♥ Heart</SelectItem>
-                        <SelectItem value="flower">✿ Flower</SelectItem>
-                        <SelectItem value="sun">☀ Sun</SelectItem>
-                        <SelectItem value="moon">☽ Moon</SelectItem>
-                        <SelectItem value="cloud">☁ Cloud</SelectItem>
-                        <SelectItem value="water">≈ Water</SelectItem>
-                        <SelectItem value="fire">▲ Fire</SelectItem>
-                        <SelectItem value="leaf">❦ Leaf</SelectItem>
-                        <SelectItem value="gem">◆ Gem</SelectItem>
-                        <SelectItem value="crown">♛ Crown</SelectItem>
-                        <SelectItem value="note">♪ Music Note</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor={`option-image-${index}`}>Option Image</Label>
+                    <div className="mt-2">
+                      <ImageUploader 
+                        currentImageUrl={option.imageUrl}
+                        onImageUploaded={(imageUrl) => {
+                          const newOptions = [...options];
+                          newOptions[index].imageUrl = imageUrl;
+                          setOptions(newOptions);
+                          form.setValue(`options.${index}.imageUrl`, imageUrl);
+                        }}
+                      />
+                    </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      This icon will be shown instead of "BRANCH" text in quiz options
+                      Upload gambar untuk opsi kuis ini
                     </p>
                   </div>
                 </div>
