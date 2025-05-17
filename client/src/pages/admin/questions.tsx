@@ -426,7 +426,7 @@ export default function AdminQuestions() {
                           </FormControl>
                           <SelectContent>
                             {questions?.find(q => q.id === form.watch('parentId'))?.options.map(option => (
-                              <SelectItem key={option.id} value={option.id}>
+                              <SelectItem key={option.id} value={option.id || ''}>
                                 {option.text}
                               </SelectItem>
                             ))}

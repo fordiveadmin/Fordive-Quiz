@@ -56,6 +56,8 @@ export const questions = pgTable("questions", {
 
 export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
+}).extend({
+  layout: z.enum(['standard', 'grid', 'carousel']).default('standard'),
 });
 
 // Zodiac mapping model
