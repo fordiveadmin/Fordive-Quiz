@@ -96,7 +96,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   
   // Calculate slide width in pixels for more reliable positioning
   const slideWidth = windowWidth < 768 
-    ? windowWidth - 32 // Mobile: full width minus padding
+    ? windowWidth - 64 // Mobile: reduced width untuk tampilan yang lebih baik
     : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
   
   // Debugging output
@@ -155,7 +155,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                     'text-gray-800 shadow-lg'}
                 `}
                 style={{ 
-                  minHeight: '250px',
+                  minHeight: windowWidth < 768 ? '180px' : '250px',
                   width: slideWidth,
                   display: 'flex',
                   flexDirection: 'column',
@@ -169,7 +169,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
               >
                 <div className="flex flex-col items-center justify-center h-full w-full">
                   {/* Option Title */}
-                  <h3 className="text-2xl font-medium text-center mb-4">{option.text}</h3>
+                  <h3 className="text-2xl md:text-2xl font-playfair font-medium text-center mb-4">{option.text}</h3>
                   
                   {/* Description */}
                   {option.description && (
