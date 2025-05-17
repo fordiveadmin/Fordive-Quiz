@@ -160,20 +160,31 @@ export default function QuizContainer() {
     const questionText = question.type !== 'zodiac' ? (question as QuizQuestion).text.toLowerCase() : '';
     const isGenderQuestion = questionText.includes('gender') || questionText.includes('jenis kelamin');
     
+    // Check for layout type (if available in the question data)
+    const layout = (question as any).layout || 'standard';
+    
+    // Special case for gender question
+    if (isGenderQuestion && question.type === 'multiple_choice') {
+      return <GenderChoice question={question as QuizQuestion} />;
+    }
+    
+    // First check for layout type
+    if (layout === 'grid') {
+      return <GridLayout question={question as QuizQuestion} />;
+    }
+    
+    if (layout === 'carousel') {
+      return <CarouselLayout question={question as QuizQuestion} />;
+    }
+    
+    // If no special layout, use the standard components based on type
     switch (question.type) {
       case 'multiple_choice':
-        // Use specialized component for gender questions
-        if (isGenderQuestion) {
-          return <GenderChoice question={question as QuizQuestion} />;
-        }
-        // Use ImageChoice for better visual layout for other questions
         return <ImageChoice question={question as QuizQuestion} />;
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;
-      // Slider type removed
       case 'zodiac':
         return <ZodiacInput />;
-      // Image choice type removed
       default:
         return <div>Unsupported question type</div>;
     }
