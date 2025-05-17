@@ -10,7 +10,6 @@ import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
 import ImageChoice from '@/components/quiz/questions/ImageChoice';
 import GenderChoice from '@/components/quiz/questions/GenderChoice';
-import RatingScale from '@/components/quiz/questions/RatingScale';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
@@ -170,8 +169,6 @@ export default function QuizContainer() {
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;
       // Slider type removed
-      case 'rating_scale':
-        return <RatingScale question={question as QuizQuestion} />;
       case 'zodiac':
         return <ZodiacInput />;
       // Image choice type removed
