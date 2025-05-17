@@ -25,7 +25,7 @@ export default function Slider({ question }: SliderProps) {
   const defaultValue = Math.ceil(totalPoints / 2);
   
   const [value, setValue] = useState(defaultValue);
-  const [selectedOption, setSelectedOption] = useState(question.options[defaultValue - 1]); // Index 0-based
+  const [selectedOption, setSelectedOption] = useState(question.options[defaultValue - 1] || question.options[0]); 
   
   // Set initial state from stored answers
   useEffect(() => {
@@ -35,12 +35,12 @@ export default function Slider({ question }: SliderProps) {
       const storedValue = answers[questionId].value;
       if (storedValue >= 1 && storedValue <= totalPoints) {
         setValue(storedValue);
-        setSelectedOption(question.options[storedValue - 1]);
+        setSelectedOption(question.options[storedValue - 1] || question.options[0]);
       }
     } else {
       // Default to middle value
       setValue(defaultValue);
-      setSelectedOption(question.options[defaultValue - 1]);
+      setSelectedOption(question.options[defaultValue - 1] || question.options[0]);
     }
   }, [answers, question.id, defaultValue, question.options, totalPoints]);
   
@@ -100,9 +100,9 @@ export default function Slider({ question }: SliderProps) {
           {/* Show first, middle (if available), and last label */}
           {totalPoints > 2 ? (
             <>
-              <span>{question.options[0].text}</span>
-              {totalPoints > 3 && <span>{question.options[Math.floor(totalPoints/2)].text}</span>}
-              <span>{question.options[totalPoints-1].text}</span>
+              <span>{question.options[0]?.text || ''}</span>
+              {totalPoints > 3 && <span>{question.options[Math.floor(totalPoints/2)]?.text || ''}</span>}
+              <span>{question.options[totalPoints-1]?.text || ''}</span>
             </>
           ) : (
             // For 2 points, just show both
