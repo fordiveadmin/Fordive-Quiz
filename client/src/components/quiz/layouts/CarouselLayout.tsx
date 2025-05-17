@@ -53,7 +53,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   };
 
   const nextSlide = () => {
-    if (currentIndex < totalOptions - visibleItems) {
+    // Periksa apakah masih ada slide berikutnya
+    if (currentIndex < totalSlides - 1) {
       setCurrentIndex(prev => prev + 1);
     }
   };
@@ -90,8 +91,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     ? windowWidth - 32 // Mobile: full width minus padding
     : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
   
-  // Get actual visible items for better calculations
-  const actualTotalItems = question.options.length;
+  // Menghitung jumlah maksimum slide yang mungkin
+  const totalSlides = Math.max(0, question.options.length - visibleItems + 1);
   
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
@@ -190,7 +191,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
         </div>
         
         {/* Right Arrow */}
-        {currentIndex < actualTotalItems - 1 && (
+        {currentIndex < totalSlides - 1 && (
           <button 
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
@@ -203,15 +204,15 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
       
       {/* Carousel Dots */}
       <div className="flex justify-center mt-4 space-x-2">
-        {Array.from({ length: Math.ceil(totalOptions / visibleItems) }).map((_, idx) => (
+        {Array.from({ length: totalSlides }).map((_, idx) => (
           <button
             key={idx}
             className={`h-2 rounded-full transition-all ${
-              idx === Math.floor(currentIndex / visibleItems) 
+              idx === currentIndex 
                 ? "w-8 bg-[#C89F65]" 
                 : "w-2 bg-gray-300"
             }`}
-            onClick={() => setCurrentIndex(idx * visibleItems)}
+            onClick={() => setCurrentIndex(idx)}
             aria-label={`Carousel page ${idx + 1}`}
           />
         ))}
