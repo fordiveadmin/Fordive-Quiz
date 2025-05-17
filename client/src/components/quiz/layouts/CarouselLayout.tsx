@@ -32,8 +32,12 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
+    
+    // Reset current index when options change to avoid empty screen issues
+    setCurrentIndex(0);
+    
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [question.options]);
   
   const totalOptions = question.options.length;
   const visibleItems = windowWidth < 768 ? 1 : 2; // Show 1 item on mobile, 2 on desktop
@@ -86,6 +90,9 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     ? windowWidth - 32 // Mobile: full width minus padding
     : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
   
+  // Get actual visible items for better calculations
+  const actualTotalItems = question.options.length;
+  
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       <motion.h2 
@@ -122,6 +129,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
             animate={{ 
               x: -currentIndex * (slideWidth + (windowWidth < 768 ? 16 : 24))
             }}
+            style={{ paddingRight: "80px" }} // Add extra padding to ensure all slides are visible
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {question.options.map((option) => (
@@ -182,7 +190,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
         </div>
         
         {/* Right Arrow */}
-        {currentIndex < totalOptions - visibleItems && (
+        {currentIndex < actualTotalItems - 1 && (
           <button 
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
