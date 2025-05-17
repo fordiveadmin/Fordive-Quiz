@@ -88,14 +88,14 @@ export default function Hero() {
               variants={fadeInUp}
               className="text-5xl md:text-7xl font-playfair font-medium text-[#C17A50] mb-6 leading-tight"
             >
-              <span className="block">Love More</span>
+              <span className="block">Find the Scent</span>
               <motion.span 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="block italic relative"
               >
-                Live More
+                That Defines You
                 <motion.span 
                   initial={{ width: 0 }}
                   animate={{ width: "70%" }}
@@ -109,8 +109,7 @@ export default function Hero() {
               variants={fadeInUp}
               className="text-lg text-gray-700 mb-8 max-w-lg"
             >
-              Since the first day we believe that <span className="font-medium">Fordive</span> is not just a Product, we are a brand with vision. 
-              <span className="italic text-[#C17A50] font-semibold"> "Always have a positive impact on society".</span> So we deliver the importance of self love and share it with others.
+              <span className="italic text-[#C17A50] font-semibold">"Because fragrance isn't just a smell—it's a signature."</span> Discover the aroma that reflects your personality and becomes part of your story.
             </motion.p>
             
             <motion.div
