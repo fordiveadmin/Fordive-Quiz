@@ -18,44 +18,46 @@ interface SliderProps {
 
 export default function Slider({ question }: SliderProps) {
   const { answers, setAnswer } = useStore();
-  
-  // Total points akan ditentukan dari jumlah options yang ada
-  const totalPoints = question.options.length;
-  // Default to middle point
-  const defaultValue = Math.ceil(totalPoints / 2);
-  
-  const [value, setValue] = useState(defaultValue);
-  const [selectedOption, setSelectedOption] = useState(question.options[defaultValue - 1] || question.options[0]); 
+  const [value, setValue] = useState(3);
+  const [displayText, setDisplayText] = useState('Balanced');
   
   // Set initial state from stored answers
   useEffect(() => {
+    // With our new format, the slider needs special handling to restore state
     const questionId = question.id.toString();
     if (answers[questionId] && answers[questionId].value) {
-      // Restore the previous value
       const storedValue = answers[questionId].value;
-      if (storedValue >= 1 && storedValue <= totalPoints) {
-        setValue(storedValue);
-        setSelectedOption(question.options[storedValue - 1] || question.options[0]);
-      }
+      setValue(storedValue);
+      updateDisplayText(storedValue);
     } else {
-      // Default to middle value
-      setValue(defaultValue);
-      setSelectedOption(question.options[defaultValue - 1] || question.options[0]);
+      // Default to middle value if we have an answer but can't determine the value
+      setValue(3);
+      updateDisplayText(3);
     }
-  }, [answers, question.id, defaultValue, question.options, totalPoints]);
+  }, [answers, question.id]);
+  
+  const updateDisplayText = (val: number) => {
+    let text = 'Balanced';
+    
+    if (val === 1) text = 'Very Calm & Relaxed';
+    else if (val === 2) text = 'Calm & Relaxed';
+    else if (val === 4) text = 'Energetic';
+    else if (val === 5) text = 'Very Energetic & Lively';
+    
+    setDisplayText(text);
+  };
   
   const handleValueChange = (newValue: number[]) => {
     const val = newValue[0];
-    if (val < 1 || val > totalPoints) return;
-    
     setValue(val);
-    const option = question.options[val - 1];
-    setSelectedOption(option);
+    updateDisplayText(val);
+    
+    // Get the option object
+    const option = question.options[0]; // Sliders typically have one option with mappings
     
     // Store both the slider value and the scent mappings
     const answer = {
       value: val,
-      optionId: option.id,
       scentMappings: option.scentMappings
     };
     
@@ -78,11 +80,10 @@ export default function Slider({ question }: SliderProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mt-8"
         >
           <SliderInput
             value={[value]}
-            max={totalPoints}
+            max={5}
             min={1}
             step={1}
             onValueChange={handleValueChange}
@@ -90,26 +91,15 @@ export default function Slider({ question }: SliderProps) {
           />
         </motion.div>
         
-        {/* Labels for slider points */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="flex justify-between text-sm text-muted-foreground px-2"
         >
-          {/* Show first, middle (if available), and last label */}
-          {totalPoints > 2 ? (
-            <>
-              <span>{question.options[0]?.text || ''}</span>
-              {totalPoints > 3 && <span>{question.options[Math.floor(totalPoints/2)]?.text || ''}</span>}
-              <span>{question.options[totalPoints-1]?.text || ''}</span>
-            </>
-          ) : (
-            // For 2 points, just show both
-            question.options.map((option, idx) => (
-              <span key={idx}>{option.text}</span>
-            ))
-          )}
+          <span>Calm & Relaxed</span>
+          <span>Balanced</span>
+          <span>Energetic & Lively</span>
         </motion.div>
         
         <motion.div 
@@ -118,10 +108,8 @@ export default function Slider({ question }: SliderProps) {
           transition={{ delay: 0.4 }}
           className="text-center mt-6"
         >
-          <p className="font-medium text-lg">{selectedOption?.text || ''}</p>
-          {selectedOption?.description && (
-            <p className="text-sm text-muted-foreground mt-2">{selectedOption.description}</p>
-          )}
+          <p className="font-medium text-lg">{displayText}</p>
+          <p className="text-sm text-muted-foreground mt-2">Your energy affects how you experience scents</p>
         </motion.div>
       </div>
     </div>
