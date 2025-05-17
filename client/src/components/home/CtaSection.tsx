@@ -1,18 +1,18 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import bannerImage from "../../assets/banner-image.png";
+import productImage from "../../assets/fordive-product.jpg";
 
 export default function CtaSection() {
   return (
     <section className="relative py-24 px-6 overflow-hidden">
       <div 
         style={{
-          backgroundImage: `url(${bannerImage})`
+          backgroundImage: `url(${productImage})`
         }} 
         className="absolute inset-0 bg-cover bg-center z-0 parallax-bg"
       ></div>
-      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+      <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto text-center">
         <motion.h2 
