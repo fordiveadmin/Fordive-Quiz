@@ -166,6 +166,16 @@ export default function Results() {
               zodiacSign={zodiacSign?.name || ''}
             />
             
+            <div className="flex justify-center mt-8">
+              <Button 
+                onClick={() => navigate('/quiz?retake=true')}
+                variant="outline"
+                className="bg-white hover:bg-gray-100 text-gray-800 font-semibold px-6 py-2 border border-gray-300 rounded-md shadow-sm transition-all hover:border-gray-400"
+              >
+                Retake Quiz
+              </Button>
+            </div>
+            
             <SimilarScents 
               currentScentId={matchedScent.id}
               category={matchedScent.category}
