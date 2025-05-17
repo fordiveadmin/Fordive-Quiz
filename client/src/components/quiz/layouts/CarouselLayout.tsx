@@ -144,32 +144,23 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
                     'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65]' : 
-                    'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg'}
+                    question.options.indexOf(option) % 2 === 0 ?
+                      'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg' :
+                      'bg-[#e6ddca] hover:bg-[#d7ceb9] text-gray-800 shadow-lg'}
                 `}
                 style={{ 
-                  minHeight: '300px',
-                  width: slideWidth
+                  minHeight: '250px',
+                  width: slideWidth,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
                 onClick={() => handleSelect(option.id, option)}
               >
-                <div className="flex flex-col items-center justify-start h-full">
-                  {/* Image if available */}
-                  {option.imageUrl ? (
-                    <div className="mb-4 w-full h-40 overflow-hidden rounded-md">
-                      <img 
-                        src={option.imageUrl} 
-                        alt={option.text} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="mb-4 w-full h-40 bg-gradient-to-r from-[#e6ddca] to-[#f5f1e9] rounded-md">
-                      {/* Placeholder kosong tanpa huruf */}
-                    </div>
-                  )}
-                  
+                <div className="flex flex-col items-center justify-center h-full w-full">
                   {/* Option Title */}
-                  <h3 className="text-xl font-medium text-center mt-2 mb-3">{option.text}</h3>
+                  <h3 className="text-2xl font-medium text-center mb-4">{option.text}</h3>
                   
                   {/* Description */}
                   {option.description && (
@@ -178,7 +169,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   
                   {/* Selection indicator */}
                   {option.id === selectedOption && (
-                    <div className="mt-auto pt-4">
+                    <div className="mt-6">
                       <div className="bg-[#C89F65] rounded-full h-8 w-8 mx-auto flex items-center justify-center">
                         <Check className="h-5 w-5 text-white" />
                       </div>
