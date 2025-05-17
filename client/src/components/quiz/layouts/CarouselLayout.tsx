@@ -26,9 +26,17 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchEndX, setTouchEndX] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768);
+  
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const totalOptions = question.options.length;
-  const visibleItems = window.innerWidth < 768 ? 1 : 2; // Show 1 item on mobile, 2 on desktop
+  const visibleItems = windowWidth < 768 ? 1 : 2; // Show 1 item on mobile, 2 on desktop
   
   const handleSelect = (optionId: string, option: Option) => {
     setAnswer(
@@ -73,6 +81,11 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     }
   };
   
+  // Calculate slide width in pixels rather than percentages for more reliable positioning
+  const slideWidth = windowWidth < 768 
+    ? windowWidth - 32 // Mobile: full width minus padding
+    : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
+  
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       <motion.h2 
@@ -107,7 +120,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
           <motion.div 
             className="flex gap-4 md:gap-6"
             animate={{ 
-              x: `-${currentIndex * (100 / visibleItems)}%` 
+              x: -currentIndex * (slideWidth + (windowWidth < 768 ? 16 : 24))
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
@@ -118,14 +131,17 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
                 className={`
-                  flex-shrink-0 w-full sm:w-[calc(100%/${visibleItems})] p-6 rounded-lg cursor-pointer
+                  flex-shrink-0 p-6 rounded-lg cursor-pointer
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
                     'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65]' : 
                     'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg'}
                 `}
+                style={{ 
+                  minHeight: '300px',
+                  width: slideWidth
+                }}
                 onClick={() => handleSelect(option.id, option)}
-                style={{ minHeight: '300px' }}
               >
                 <div className="flex flex-col items-center justify-start h-full">
                   {/* Image if available */}
