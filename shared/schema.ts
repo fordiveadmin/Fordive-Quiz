@@ -37,8 +37,9 @@ export const insertScentSchema = createInsertSchema(scents).omit({
 export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text").notNull(),
-  type: text("type").notNull(), // multiple_choice, checkbox, slider
+  type: text("type").notNull(), // multiple_choice, checkbox
   order: integer("order").notNull(),
+  layout: text("layout").default("standard"), // standard, grid, carousel
   
   // Untuk struktur pertanyaan bercabang
   isMainQuestion: boolean("is_main_question").default(false),

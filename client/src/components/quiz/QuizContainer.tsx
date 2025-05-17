@@ -10,6 +10,8 @@ import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
 import ImageChoice from '@/components/quiz/questions/ImageChoice';
 import GenderChoice from '@/components/quiz/questions/GenderChoice';
+import GridLayout from '@/components/quiz/layouts/GridLayout';
+import CarouselLayout from '@/components/quiz/layouts/CarouselLayout';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
