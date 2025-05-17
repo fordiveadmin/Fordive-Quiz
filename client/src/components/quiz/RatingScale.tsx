@@ -4,19 +4,20 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useStore } from "@/store/quizStore";
 
-// Interface untuk Rating Scale Question
+interface ScaleOption {
+  id: string;
+  value: string;
+  text: string;
+  label?: string;
+  description?: string;
+  scentMappings: Record<string, number>;
+}
+
 interface RatingScaleProps {
   question: {
     id: number;
     text: string;
-    options: {
-      id: string;
-      text: string;
-      value?: string;
-      label?: string;
-      description?: string;
-      scentMappings: Record<string, number>;
-    }[];
+    options: ScaleOption[];
     scaleMin?: string;
     scaleMax?: string;
     scaleSteps?: number;
@@ -27,7 +28,10 @@ export default function RatingScale({ question }: RatingScaleProps) {
   const { answers, setAnswer } = useStore();
   const [selectedValue, setSelectedValue] = useState<string>("");
   
-  // Set nilai awal dari state answers jika sudah ada
+  // Get number of scale steps (default to 5 if not specified)
+  const scaleSteps = question.scaleSteps || 5;
+  
+  // Set initial state from stored answers
   useEffect(() => {
     if (answers[question.id]?.optionId) {
       setSelectedValue(answers[question.id].optionId);
@@ -37,15 +41,15 @@ export default function RatingScale({ question }: RatingScaleProps) {
   const handleSelect = (value: string) => {
     setSelectedValue(value);
     
-    // Cari opsi yang dipilih
-    const selectedOption = question.options.find(opt => opt.value === value || opt.id === value);
+    // Find the selected option
+    const selectedOption = question.options.find(opt => opt.value === value);
     
     if (selectedOption) {
       setAnswer(
         question.id.toString(),
         {
           optionId: value,
-          scaleValue: parseInt(value) || parseInt(selectedOption.text),
+          scaleValue: parseInt(value),
           scentMappings: selectedOption.scentMappings
         }
       );
@@ -77,16 +81,16 @@ export default function RatingScale({ question }: RatingScaleProps) {
           <div className="grid grid-cols-5 gap-2">
             {question.options.map((option) => (
               <div 
-                key={option.id} 
+                key={option.value} 
                 className="flex flex-col items-center"
               >
                 <RadioGroupItem 
-                  value={option.value || option.id} 
-                  id={`option-${option.id}`} 
+                  value={option.value} 
+                  id={`option-${option.value}`} 
                   className="peer sr-only" 
                 />
                 <Label 
-                  htmlFor={`option-${option.id}`} 
+                  htmlFor={`option-${option.value}`} 
                   className={`
                     flex flex-col items-center justify-center 
                     w-12 h-12 rounded-full border-2 cursor-pointer
@@ -94,12 +98,12 @@ export default function RatingScale({ question }: RatingScaleProps) {
                     peer-data-[state=checked]:border-[#C89F65]
                     peer-data-[state=checked]:bg-[#C89F65]
                     peer-data-[state=checked]:text-white
-                    ${selectedValue === (option.value || option.id) 
+                    ${selectedValue === option.value 
                       ? 'border-[#C89F65] bg-[#C89F65] text-white' 
                       : 'border-gray-300 hover:border-[#C89F65] hover:bg-[#f5f1e9]'}
                   `}
                 >
-                  {option.value || option.text}
+                  {option.value}
                 </Label>
                 {option.label && (
                   <span className="text-xs mt-1 text-center">{option.label}</span>
@@ -116,7 +120,7 @@ export default function RatingScale({ question }: RatingScaleProps) {
             className="mt-6 text-center"
           >
             <p className="font-medium text-[#C89F65]">
-              {selectedValue && question.options.find(o => (o.value || o.id) === selectedValue)?.description}
+              {selectedValue && question.options.find(o => o.value === selectedValue)?.description}
             </p>
           </motion.div>
         )}

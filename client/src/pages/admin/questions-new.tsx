@@ -52,9 +52,6 @@ import {
   Loader2,
   AlertCircle
 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -64,39 +61,55 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-// Validation schemas
-const optionSchema = z.object({
+// Schema untuk validasi form pertanyaan
+const questionOptionSchema = z.object({
   id: z.string().optional(),
-  text: z.string().min(1, 'Option text is required'),
+  text: z.string().min(1, { message: "Teks opsi wajib diisi" }),
+  value: z.string().optional(),
+  label: z.string().optional(),
   description: z.string().optional(),
-  scentMappings: z.record(z.string(), z.number())
+  scentMappings: z.record(z.string(), z.number()).default({})
 });
 
 const questionSchema = z.object({
-  text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
-  order: z.number().min(1, 'Order is required'),
+  text: z.string().min(3, { message: "Pertanyaan harus diisi minimal 3 karakter" }),
+  type: z.enum(['multiple_choice', 'checkbox', 'rating_scale']),
+  order: z.number().min(1, { message: "Urutan harus minimal 1" }),
   isMainQuestion: z.boolean().default(false),
-  parentId: z.number().nullable().optional(),
-  parentOptionId: z.string().nullable().optional(),
-  options: z.array(optionSchema).min(1, 'At least one option is required')
+  parentId: z.number().nullable(),
+  parentOptionId: z.string().nullable(),
+  options: z.array(questionOptionSchema),
+  
+  // Rating scale properties
+  scaleMin: z.string().optional(),
+  scaleMax: z.string().optional(),
+  scaleSteps: z.number().optional()
 });
 
-type Question = z.infer<typeof questionSchema> & { id: number };
+type Question = {
+  id: number;
+  text: string;
+  type: 'multiple_choice' | 'checkbox' | 'rating_scale';
+  order: number;
+  isMainQuestion: boolean;
+  parentId: number | null;
+  parentOptionId: string | null;
+  options: {
+    id: string;
+    text: string;
+    value?: string;
+    label?: string;
+    description?: string;
+    scentMappings: Record<string, number>;
+  }[];
+  scaleMin?: string;
+  scaleMax?: string;
+  scaleSteps?: number;
+};
 
-export default function AdminQuestions() {
+export default function QuestionsPage() {
   const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -144,11 +157,9 @@ export default function AdminQuestions() {
   // Update question
   const updateQuestion = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: z.infer<typeof questionSchema> }) => {
-      console.log('Updating question data:', data);
-      const res = await apiRequest('PUT', `/api/questions/${id}`, data);
-      const jsonResponse = await res.json();
-      console.log('API update response:', jsonResponse);
-      return jsonResponse;
+      console.log('Updating question:', id, data);
+      return apiRequest('PUT', `/api/questions/${id}`, data)
+        .then(res => res.json());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
@@ -172,7 +183,8 @@ export default function AdminQuestions() {
   // Delete question
   const deleteQuestion = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest('DELETE', `/api/questions/${id}`);
+      return apiRequest('DELETE', `/api/questions/${id}`)
+        .then(res => res.json());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
@@ -182,10 +194,12 @@ export default function AdminQuestions() {
       });
       setDeleteId(null);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Error in deleteQuestion:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
       toast({
         title: 'Error',
-        description: `Failed to delete question: ${error.message}`,
+        description: `Failed to delete question: ${errorMsg}`,
         variant: 'destructive',
       });
     },
@@ -208,7 +222,10 @@ export default function AdminQuestions() {
         isMainQuestion: currentQuestion.isMainQuestion || false,
         parentId: currentQuestion.parentId || null,
         parentOptionId: currentQuestion.parentOptionId || null,
-        options: currentQuestion.options
+        options: currentQuestion.options,
+        scaleMin: currentQuestion.scaleMin || '',
+        scaleMax: currentQuestion.scaleMax || '',
+        scaleSteps: currentQuestion.scaleSteps || 5
       } : {
         text: '',
         type: 'multiple_choice',
@@ -216,7 +233,10 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }],
+        scaleMin: '',
+        scaleMax: '',
+        scaleSteps: 5
       },
     });
     
@@ -239,6 +259,13 @@ export default function AdminQuestions() {
       form.setValue('options', newOptions);
     };
     
+    const updateOption = (index: number, field: string, value: any) => {
+      const newOptions = [...options];
+      newOptions[index][field] = value;
+      setOptions(newOptions);
+      form.setValue(`options.${index}.${field}`, value);
+    };
+    
     const updateScentMapping = (optionIndex: number, scentName: string, value: number) => {
       const newOptions = [...options];
       newOptions[optionIndex].scentMappings[scentName] = value;
@@ -254,6 +281,28 @@ export default function AdminQuestions() {
         updateQuestion.mutate({ id: currentQuestion.id, data });
       } else {
         createQuestion.mutate(data);
+      }
+    };
+
+    // When type changes to rating_scale, update options accordingly
+    const handleTypeChange = (type: string) => {
+      form.setValue('type', type as any);
+      
+      if (type === 'rating_scale') {
+        const steps = form.getValues('scaleSteps') || 5;
+        const newOptions = [];
+        for (let i = 1; i <= steps; i++) {
+          newOptions.push({
+            id: `option_${Date.now()}_${i}`,
+            text: `${i}`,
+            value: `${i}`,
+            label: '',
+            description: '',
+            scentMappings: {}
+          });
+        }
+        setOptions(newOptions);
+        form.setValue('options', newOptions);
       }
     };
     
@@ -285,7 +334,7 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => handleTypeChange(value)}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -366,15 +415,15 @@ export default function AdminQuestions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {questions?.filter(q => q.isMainQuestion).map(q => (
-                            <SelectItem key={q.id} value={q.id.toString()}>
-                              {q.text}
+                          {questions?.filter(q => q.id !== (currentQuestion?.id || 0)).map(question => (
+                            <SelectItem key={question.id} value={question.id.toString()}>
+                              {question.text}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       <FormDescription>
-                        Select which main question this branch belongs to
+                        This question will show up as part of the branch from the parent question
                       </FormDescription>
                     </FormItem>
                   )}
@@ -386,7 +435,7 @@ export default function AdminQuestions() {
                     name="parentOptionId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Option from Parent</FormLabel>
+                        <FormLabel>Parent Option</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value || undefined}
@@ -425,7 +474,7 @@ export default function AdminQuestions() {
                   <Input
                     id="scale-min"
                     placeholder="Contoh: Tidak Sama Sekali"
-                    value={form.watch('scaleMin') || ''}
+                    value={form.getValues('scaleMin') || ''}
                     onChange={(e) => form.setValue('scaleMin', e.target.value)}
                   />
                 </div>
@@ -434,7 +483,7 @@ export default function AdminQuestions() {
                   <Input
                     id="scale-max"
                     placeholder="Contoh: Sangat"
-                    value={form.watch('scaleMax') || ''}
+                    value={form.getValues('scaleMax') || ''}
                     onChange={(e) => form.setValue('scaleMax', e.target.value)}
                   />
                 </div>
@@ -446,7 +495,7 @@ export default function AdminQuestions() {
                     min="2"
                     max="10"
                     placeholder="5"
-                    value={form.watch('scaleSteps') || 5}
+                    value={form.getValues('scaleSteps') || 5}
                     onChange={(e) => {
                       const steps = parseInt(e.target.value) || 5;
                       form.setValue('scaleSteps', steps);
@@ -456,8 +505,8 @@ export default function AdminQuestions() {
                       for (let i = 1; i <= steps; i++) {
                         newOptions.push({
                           id: `option_${Date.now()}_${i}`,
-                          value: i.toString(),
-                          text: i.toString(),
+                          text: `${i}`,
+                          value: `${i}`,
                           label: '',
                           description: '',
                           scentMappings: {}
@@ -536,41 +585,40 @@ export default function AdminQuestions() {
                       </div>
                     </div>
                   ) : (
-                    <div>
-                      <Label htmlFor={`option-text-${index}`}>Text</Label>
-                      <Input
-                        id={`option-text-${index}`}
-                        value={option.text}
-                        onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index].text = e.target.value;
-                        setOptions(newOptions);
-                        form.setValue(`options.${index}.text`, e.target.value);
-                      }}
-                      placeholder="Option text"
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
-                    <Input
-                      id={`option-desc-${index}`}
-                      value={option.description || ''}
-                      onChange={(e) => {
-                        const newOptions = [...options];
-                        newOptions[index].description = e.target.value;
-                        setOptions(newOptions);
-                        form.setValue(`options.${index}.description`, e.target.value);
-                      }}
-                      placeholder="Description"
-                    />
-                  </div>
+                    <>
+                      <div>
+                        <Label htmlFor={`option-text-${index}`}>Text</Label>
+                        <Input
+                          id={`option-text-${index}`}
+                          value={option.text}
+                          onChange={(e) => {
+                            updateOption(index, 'text', e.target.value);
+                          }}
+                          placeholder="Option text"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
+                        <Input
+                          id={`option-desc-${index}`}
+                          value={option.description || ''}
+                          onChange={(e) => {
+                            updateOption(index, 'description', e.target.value);
+                          }}
+                          placeholder="Description for this option"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
                 
-                <div>
-                  <Label className="mb-2 block">Scent Mappings</Label>
+                <div className="space-y-2">
+                  <Label>Scent Mappings</Label>
+                  <p className="text-sm text-gray-500">
+                    Set how strongly this option maps to each scent
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {scents && scents.map((scent) => (
+                    {scents && scents.map((scent: any) => (
                       <div key={scent.id} className="flex items-center gap-2">
                         <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
                           {scent.name}
@@ -597,12 +645,12 @@ export default function AdminQuestions() {
           </div>
           
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button variant="outline" type="button" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={createQuestion.isPending || updateQuestion.isPending}>
               {(createQuestion.isPending || updateQuestion.isPending) && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               )}
               {isEdit ? 'Update' : 'Create'} Question
             </Button>
@@ -612,175 +660,98 @@ export default function AdminQuestions() {
     );
   };
   
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-  
-  if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <div className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              <CardTitle>Error Loading Questions</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p>An error occurred while loading questions. Please try again later.</p>
-          </CardContent>
-          <CardFooter>
-            <Button variant="outline" onClick={() => queryClient.invalidateQueries({ queryKey: ['/api/questions'] })}>
-              Retry
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-  
   return (
     <>
       <Helmet>
-        <title>Manage Questions | Fordive Admin</title>
-        <meta name="description" content="Manage quiz questions for the Fordive Scent Finder." />
+        <title>Fordive Admin - Questions</title>
       </Helmet>
       
-      <div className="min-h-screen bg-background p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <Link href="/admin">
-                <Button variant="ghost" className="pl-0">
-                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
-                </Button>
-              </Link>
-              <h1 className="text-3xl font-playfair font-bold mt-2">Questions Management</h1>
-              <p className="text-muted-foreground">Manage quiz questions and their options</p>
-            </div>
-            
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" /> Add Question
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Add New Question</DialogTitle>
-                  <DialogDescription>
-                    Create a new question for the quiz. Questions can have multiple choice, checkbox, or slider options.
-                  </DialogDescription>
-                </DialogHeader>
-                <QuestionForm onClose={() => setIsAddDialogOpen(false)} />
-              </DialogContent>
-            </Dialog>
+      <div className="container py-6">
+        <div className="flex items-center mb-6">
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold">Questions Management</h1>
+            <p className="text-gray-500">
+              Create and manage quiz questions
+            </p>
+          </div>
+          <Link href="/admin">
+            <Button variant="ghost">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Admin
+            </Button>
+          </Link>
+        </div>
+        
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">All Questions</h2>
+            <Button onClick={() => setIsAddDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" /> Add Question
+            </Button>
           </div>
           
-          {questions && questions.length > 0 ? (
-            <div className="bg-white shadow rounded-lg overflow-hidden">
+          {isError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Failed to load questions. Please try again later.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {isLoading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : questions && questions.length > 0 ? (
+            <div className="overflow-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-12">#</TableHead>
+                    <TableHead className="w-12">ID</TableHead>
                     <TableHead>Question</TableHead>
-                    <TableHead className="w-28">Type</TableHead>
-                    <TableHead className="w-24">Options</TableHead>
-                    <TableHead className="w-28">Branch Status</TableHead>
-                    <TableHead className="w-28 text-right">Actions</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Order</TableHead>
+                    <TableHead>Branch</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {questions.sort((a, b) => a.order - b.order).map((question) => (
-                    <TableRow key={question.id} className={question.isMainQuestion ? "bg-primary/5" : ""}>
-                      <TableCell>{question.order}</TableCell>
+                  {questions.map((question) => (
+                    <TableRow key={question.id}>
+                      <TableCell>{question.id}</TableCell>
                       <TableCell>{question.text}</TableCell>
                       <TableCell>
-                        <div className="capitalize">
-                          {question.type.replace('_', ' ')}
-                        </div>
+                        <span className="capitalize">{question.type.replace('_', ' ')}</span>
                       </TableCell>
-                      <TableCell>{question.options?.length || 0}</TableCell>
+                      <TableCell>{question.order}</TableCell>
                       <TableCell>
                         {question.isMainQuestion ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
-                            Main Question
-                          </span>
+                          <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Main</span>
                         ) : question.parentId ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                            Branch Question
-                          </span>
+                          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Child</span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                            Standard Question
-                          </span>
+                          <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Standard</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                            {currentQuestion?.id === question.id && (
-                              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                                <DialogHeader>
-                                  <DialogTitle>Edit Question</DialogTitle>
-                                  <DialogDescription>
-                                    Update this question and its options.
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <QuestionForm isEdit={true} onClose={() => setIsEditDialogOpen(false)} />
-                              </DialogContent>
-                            )}
-                          </Dialog>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setCurrentQuestion(question);
-                              setIsEditDialogOpen(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          
-                          <AlertDialog open={deleteId === question.id} onOpenChange={(open) => !open && setDeleteId(null)}>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDeleteId(question.id)}
-                              >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete the question and all of its options.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => deleteQuestion.mutate(question.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                >
-                                  {deleteQuestion.isPending ? (
-                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                  ) : (
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                  )}
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setCurrentQuestion(question);
+                            setIsEditDialogOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4 text-primary" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeleteId(question.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -788,8 +759,8 @@ export default function AdminQuestions() {
               </Table>
             </div>
           ) : (
-            <Card className="bg-secondary">
-              <CardHeader>
+            <Card>
+              <CardHeader className="text-center">
                 <CardTitle>No Questions Found</CardTitle>
                 <CardDescription>
                   There are no questions yet. Click the "Add Question" button to create your first quiz question.
@@ -804,6 +775,65 @@ export default function AdminQuestions() {
           )}
         </div>
       </div>
+      
+      {/* Add Question Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="sm:max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Add New Question</DialogTitle>
+            <DialogDescription>
+              Create a new question for the quiz. Fill in all required fields.
+            </DialogDescription>
+          </DialogHeader>
+          <QuestionForm onClose={() => setIsAddDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
+      
+      {/* Edit Question Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-2xl overflow-y-auto max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Edit Question</DialogTitle>
+            <DialogDescription>
+              Update the details of this question.
+            </DialogDescription>
+          </DialogHeader>
+          <QuestionForm 
+            isEdit 
+            onClose={() => {
+              setIsEditDialogOpen(false);
+              setCurrentQuestion(null);
+            }} 
+          />
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this question? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteId(null)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => deleteId && deleteQuestion.mutate(deleteId)}
+              disabled={deleteQuestion.isPending}
+            >
+              {deleteQuestion.isPending && (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              )}
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
