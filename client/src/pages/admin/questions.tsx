@@ -294,6 +294,7 @@ export default function AdminQuestions() {
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
                       <SelectItem value="image_choice">Image Choice</SelectItem>
+                      <SelectItem value="image_preference">Image Preference</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

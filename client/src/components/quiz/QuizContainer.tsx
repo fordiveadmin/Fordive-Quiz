@@ -10,6 +10,7 @@ import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
 import ImageChoice from '@/components/quiz/questions/ImageChoice';
 import GenderChoice from '@/components/quiz/questions/GenderChoice';
+import ImagePreference from '@/components/quiz/questions/ImagePreference';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';
@@ -173,6 +174,16 @@ export default function QuizContainer() {
         return <ZodiacInput />;
       case 'image_choice':
         return <ImageChoice question={question as QuizQuestion} />;
+      case 'image_preference':
+        // Make sure all required props are passed for ImagePreference
+        return <ImagePreference question={{
+          id: question.id,
+          text: question.text,
+          options: question.options.map(opt => ({
+            ...opt,
+            imageUrl: opt.imageUrl || '' // Ensure imageUrl is provided
+          }))
+        }} />;
       default:
         return <div>Unsupported question type</div>;
     }
