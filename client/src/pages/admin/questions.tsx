@@ -1,9 +1,10 @@
-// Gunakan file questions-new.tsx sebagai gantinya
-// File ini perlu diubah karena terdapat banyak masalah pada struktur kode
-// File questions-new.tsx mendukung tipe pertanyaan Rating Scale
-
-import { useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link, useLocation } from 'wouter';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { queryClient } from '@/lib/queryClient';
 import {
   Table,
   TableBody,
