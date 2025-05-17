@@ -412,24 +412,83 @@ export default function AdminQuestions() {
             )}
           </div>
           
+          {/* Rating Scale Configuration */}
+          {form.watch('type') === 'rating_scale' && (
+            <div className="space-y-4 border p-4 rounded-md my-6 bg-gray-50">
+              <h3 className="text-lg font-medium">Rating Scale Configuration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="scale-min">Label Minimum</Label>
+                  <Input
+                    id="scale-min"
+                    placeholder="Contoh: Tidak Sama Sekali"
+                    value={form.watch('scaleMin') || ''}
+                    onChange={(e) => form.setValue('scaleMin', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="scale-max">Label Maximum</Label>
+                  <Input
+                    id="scale-max"
+                    placeholder="Contoh: Sangat"
+                    value={form.watch('scaleMax') || ''}
+                    onChange={(e) => form.setValue('scaleMax', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="scale-steps">Jumlah Skala</Label>
+                  <Input
+                    id="scale-steps"
+                    type="number"
+                    min="2"
+                    max="10"
+                    placeholder="5"
+                    value={form.watch('scaleSteps') || 5}
+                    onChange={(e) => {
+                      const steps = parseInt(e.target.value) || 5;
+                      form.setValue('scaleSteps', steps);
+                      
+                      // Buat options otomatis berdasarkan jumlah langkah
+                      const newOptions = [];
+                      for (let i = 1; i <= steps; i++) {
+                        newOptions.push({
+                          id: `option_${Date.now()}_${i}`,
+                          value: i.toString(),
+                          text: i.toString(),
+                          label: '',
+                          description: '',
+                          scentMappings: {}
+                        });
+                      }
+                      setOptions(newOptions);
+                      form.setValue('options', newOptions);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div>
             <div className="flex justify-between items-center mb-2">
               <Label>Options</Label>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addOption}
-              >
-                <Plus className="h-4 w-4 mr-2" /> Add Option
-              </Button>
+              {form.watch('type') !== 'rating_scale' && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addOption}
+                >
+                  <Plus className="h-4 w-4 mr-2" /> Add Option
+                </Button>
+              )}
             </div>
             
             {options.map((option, index) => (
               <div key={option.id} className="border p-4 rounded-md mb-4">
                 <div className="flex justify-between items-start mb-2">
                   <Label className="text-sm font-medium">Option {index + 1}</Label>
-                  {options.length > 1 && (
+                  {options.length > 1 && form.watch('type') !== 'rating_scale' && (
                     <Button
                       type="button"
                       variant="ghost"
@@ -442,12 +501,44 @@ export default function AdminQuestions() {
                 </div>
                 
                 <div className="grid gap-4 mb-4">
-                  <div>
-                    <Label htmlFor={`option-text-${index}`}>Text</Label>
-                    <Input
-                      id={`option-text-${index}`}
-                      value={option.text}
-                      onChange={(e) => {
+                  {form.watch('type') === 'rating_scale' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor={`option-value-${index}`}>Nilai</Label>
+                        <Input
+                          id={`option-value-${index}`}
+                          value={option.value || (index + 1).toString()}
+                          disabled={true}
+                          className="bg-gray-100"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Nilai ini ditetapkan secara otomatis</p>
+                      </div>
+                      <div>
+                        <Label htmlFor={`option-label-${index}`}>Label (opsional)</Label>
+                        <Input
+                          id={`option-label-${index}`}
+                          value={option.label || ''}
+                          onChange={(e) => updateOption(index, 'label', e.target.value)}
+                          placeholder="Label untuk titik rating ini"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label htmlFor={`option-desc-${index}`}>Deskripsi (opsional)</Label>
+                        <Input
+                          id={`option-desc-${index}`}
+                          value={option.description || ''}
+                          onChange={(e) => updateOption(index, 'description', e.target.value)}
+                          placeholder="Ditampilkan saat titik ini dipilih"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <Label htmlFor={`option-text-${index}`}>Text</Label>
+                      <Input
+                        id={`option-text-${index}`}
+                        value={option.text}
+                        onChange={(e) => {
                         const newOptions = [...options];
                         newOptions[index].text = e.target.value;
                         setOptions(newOptions);
