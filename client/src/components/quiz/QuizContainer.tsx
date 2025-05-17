@@ -168,7 +168,8 @@ export default function QuizContainer() {
         return <ImageChoice question={question as QuizQuestion} />;
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;
-      // Slider type removed
+      case 'slider':
+        return <Slider question={question as QuizQuestion} />;
       case 'zodiac':
         return <ZodiacInput />;
       // Image choice type removed
