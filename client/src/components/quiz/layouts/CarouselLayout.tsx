@@ -3,12 +3,12 @@ import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Gradien backgrounds untuk carousel
-const gradientBackgrounds = [
-  '/images/gradients/Light Gradient 01.png',
-  '/images/gradients/Light Gradient 04.png',
-  '/images/gradients/Light Gradient 07.png',
-  '/images/gradients/Light Gradient 10.png',
+// Gradien colors untuk carousel (lebih bervariasi dan elegan)
+const gradientColors = [
+  'linear-gradient(135deg, #f8f3e9 0%, #e6d2af 100%)',
+  'linear-gradient(135deg, #e6d2af 0%, #c8a97b 100%)',
+  'linear-gradient(135deg, #f1e8db 0%, #d9c0a1 100%)',
+  'linear-gradient(135deg, #f7efe0 0%, #e0c7a8 100%)',
 ];
 
 interface Option {
@@ -161,11 +161,9 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundImage: option.id === selectedOption 
-                    ? 'linear-gradient(rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.9)), url(' + gradientBackgrounds[question.options.indexOf(option) % gradientBackgrounds.length] + ')'
-                    : 'url(' + gradientBackgrounds[question.options.indexOf(option) % gradientBackgrounds.length] + ')',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
+                  background: option.id === selectedOption 
+                    ? 'linear-gradient(rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.9)), ' + gradientColors[question.options.indexOf(option) % gradientColors.length]
+                    : gradientColors[question.options.indexOf(option) % gradientColors.length]
                 }}
                 onClick={() => handleSelect(option.id, option)}
               >
