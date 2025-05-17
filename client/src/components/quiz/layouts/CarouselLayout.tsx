@@ -28,7 +28,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768);
   
-  // Update window width on resize
+  // Update window width on resize and reset index when question changes
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -39,7 +39,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, [question.options]);
   
-  const totalOptions = question.options.length;
+  // Number of visible items based on screen size
   const visibleItems = windowWidth < 768 ? 1 : 2; // Show 1 item on mobile, 2 on desktop
   
   const handleSelect = (optionId: string, option: Option) => {
@@ -53,8 +53,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   };
 
   const nextSlide = () => {
-    // Periksa apakah masih ada slide berikutnya
-    if (currentIndex < totalSlides - 1) {
+    // Only move if we're not at the last option
+    if (currentIndex < question.options.length - 1) {
       setCurrentIndex(prev => prev + 1);
     }
   };
@@ -86,13 +86,13 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     }
   };
   
-  // Calculate slide width in pixels rather than percentages for more reliable positioning
+  // Calculate slide width in pixels for more reliable positioning
   const slideWidth = windowWidth < 768 
     ? windowWidth - 32 // Mobile: full width minus padding
     : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
   
-  // Menghitung jumlah maksimum slide yang mungkin
-  const totalSlides = Math.max(0, question.options.length - visibleItems + 1);
+  // Debugging output
+  console.log("Options:", question.options.length, "Current index:", currentIndex);
   
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
@@ -130,7 +130,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
             animate={{ 
               x: -currentIndex * (slideWidth + (windowWidth < 768 ? 16 : 24))
             }}
-            style={{ paddingRight: "80px" }} // Add extra padding to ensure all slides are visible
+            style={{ paddingRight: "80px" }} // Extra padding to ensure all slides are visible
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {question.options.map((option) => (
@@ -190,8 +190,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
           </motion.div>
         </div>
         
-        {/* Right Arrow */}
-        {currentIndex < totalSlides - 1 && (
+        {/* Right Arrow - Show until we reach the last option */}
+        {currentIndex < question.options.length - 1 && (
           <button 
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
@@ -204,7 +204,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
       
       {/* Carousel Dots */}
       <div className="flex justify-center mt-4 space-x-2">
-        {Array.from({ length: totalSlides }).map((_, idx) => (
+        {Array.from({ length: question.options.length }).map((_, idx) => (
           <button
             key={idx}
             className={`h-2 rounded-full transition-all ${
