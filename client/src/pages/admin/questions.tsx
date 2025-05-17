@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import ImagePreferenceHelp from '@/components/admin/ImagePreferenceHelp';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { queryClient } from '@/lib/queryClient';
@@ -223,17 +222,11 @@ export default function AdminQuestions() {
         id: `option_${Date.now()}`, 
         text: '', 
         description: '', 
-        imageUrl: '',
         scentMappings: {} 
       };
       setOptions([...options, newOption]);
       const currentOptions = form.getValues('options');
       form.setValue('options', [...currentOptions, newOption]);
-    };
-    
-    const addMoodImageOptions = (moodOptions: any[]) => {
-      setOptions(moodOptions);
-      form.setValue('options', moodOptions);
     };
     
     const removeOption = (index: number) => {
@@ -301,7 +294,6 @@ export default function AdminQuestions() {
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
                       <SelectItem value="image_choice">Image Choice</SelectItem>
-                      <SelectItem value="image_preference">Image Preference</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
