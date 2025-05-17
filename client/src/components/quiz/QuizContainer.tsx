@@ -171,8 +171,7 @@ export default function QuizContainer() {
       // Slider type removed
       case 'zodiac':
         return <ZodiacInput />;
-      case 'image_choice':
-        return <ImageChoice question={question as QuizQuestion} />;
+      // Image choice type removed
       default:
         return <div>Unsupported question type</div>;
     }
