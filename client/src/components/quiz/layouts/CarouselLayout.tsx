@@ -3,6 +3,14 @@ import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Gradien backgrounds untuk carousel
+const gradientBackgrounds = [
+  '/images/gradients/Light Gradient 01.png',
+  '/images/gradients/Light Gradient 04.png',
+  '/images/gradients/Light Gradient 07.png',
+  '/images/gradients/Light Gradient 10.png',
+];
+
 interface Option {
   id: string;
   text: string;
@@ -143,10 +151,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   flex-shrink-0 p-6 rounded-lg cursor-pointer
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
-                    'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65]' : 
-                    question.options.indexOf(option) % 2 === 0 ?
-                      'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg' :
-                      'bg-[#e6ddca] hover:bg-[#d7ceb9] text-gray-800 shadow-lg'}
+                    'text-white shadow-xl border-2 border-[#C89F65]' : 
+                    'text-gray-800 shadow-lg'}
                 `}
                 style={{ 
                   minHeight: '250px',
@@ -154,7 +160,12 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  backgroundImage: option.id === selectedOption 
+                    ? 'linear-gradient(rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.9)), url(' + gradientBackgrounds[question.options.indexOf(option) % gradientBackgrounds.length] + ')'
+                    : 'url(' + gradientBackgrounds[question.options.indexOf(option) % gradientBackgrounds.length] + ')',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
                 }}
                 onClick={() => handleSelect(option.id, option)}
               >
