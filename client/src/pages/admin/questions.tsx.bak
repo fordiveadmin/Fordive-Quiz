@@ -1,121 +1,183 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { 
-  Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
-} from '@/components/ui';
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
-} from '@/components/ui/dialog';
-import { 
-  Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage 
-} from '@/components/ui/form';
-import { Trash2, Plus, Loader2, PencilLine } from 'lucide-react';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { apiRequest } from '@/lib/queryClient';
+import { queryClient } from '@/lib/queryClient';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { 
+  ArrowLeft, 
+  Edit, 
+  Trash2, 
+  Plus, 
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
+// Validation schemas
+const optionSchema = z.object({
+  id: z.string().optional(),
+  text: z.string().min(1, 'Option text is required'),
+  description: z.string().optional(),
+  scentMappings: z.record(z.string(), z.number())
+});
 
 const questionSchema = z.object({
-  text: z.string().min(1, "Question text is required"),
-  type: z.string(),
-  order: z.number().int().positive(),
+  text: z.string().min(3, 'Question text is required'),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
+  order: z.number().min(1, 'Order is required'),
   isMainQuestion: z.boolean().default(false),
-  parentId: z.number().nullable(),
-  parentOptionId: z.string().nullable(),
-  options: z.array(
-    z.object({
-      id: z.string(),
-      text: z.string().min(1, "Option text is required"),
-      description: z.string().optional(),
-      scentMappings: z.record(z.string(), z.number())
-    })
-  )
+  parentId: z.number().nullable().optional(),
+  parentOptionId: z.string().nullable().optional(),
+  options: z.array(optionSchema).min(1, 'At least one option is required')
 });
+
+type Question = z.infer<typeof questionSchema> & { id: number };
 
 export default function AdminQuestions() {
   const { toast } = useToast();
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState<any>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   
-  // Fetch Questions
-  const { data: questions, isLoading: isLoadingQuestions } = useQuery({
+  // Get all questions
+  const { data: questions, isLoading, isError } = useQuery<Question[]>({
     queryKey: ['/api/questions'],
-    refetchOnWindowFocus: false,
   });
   
-  // Fetch Scents for mapping
+  // Get all scents for mapping
   const { data: scents } = useQuery({
     queryKey: ['/api/scents'],
-    refetchOnWindowFocus: false,
   });
   
-  // Create Question
+  // Create question
   const createQuestion = useMutation({
     mutationFn: async (data: z.infer<typeof questionSchema>) => {
-      await apiRequest('/api/questions', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      console.log('Submitting data to API:', data);
+      const res = await apiRequest('POST', '/api/questions', data);
+      const jsonResponse = await res.json();
+      console.log('API response:', jsonResponse);
+      return jsonResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
-      setIsAddOpen(false);
       toast({
-        title: 'Question created',
-        description: 'The question has been created successfully.',
+        title: 'Success',
+        description: 'Question created successfully',
       });
+      setIsAddDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Error in createQuestion:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
       toast({
         title: 'Error',
-        description: `Failed to create question: ${error.message}`,
+        description: `Failed to create question: ${errorMsg}`,
         variant: 'destructive',
       });
     },
   });
   
-  // Update Question
+  // Update question
   const updateQuestion = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: z.infer<typeof questionSchema> }) => {
-      await apiRequest(`/api/questions/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      });
+      console.log('Updating question data:', data);
+      const res = await apiRequest('PUT', `/api/questions/${id}`, data);
+      const jsonResponse = await res.json();
+      console.log('API update response:', jsonResponse);
+      return jsonResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
-      setIsEditOpen(false);
       toast({
-        title: 'Question updated',
-        description: 'The question has been updated successfully.',
+        title: 'Success',
+        description: 'Question updated successfully',
       });
+      setIsEditDialogOpen(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error('Error in updateQuestion:', error);
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
       toast({
         title: 'Error',
-        description: `Failed to update question: ${error.message}`,
+        description: `Failed to update question: ${errorMsg}`,
         variant: 'destructive',
       });
     },
   });
   
-  // Delete Question
+  // Delete question
   const deleteQuestion = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/questions/${id}`, {
-        method: 'DELETE',
-      });
+      await apiRequest('DELETE', `/api/questions/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/questions'] });
-      setIsDeleteOpen(false);
       toast({
-        title: 'Question deleted',
-        description: 'The question has been deleted successfully.',
+        title: 'Success',
+        description: 'Question deleted successfully',
       });
+      setDeleteId(null);
     },
     onError: (error) => {
       toast({
@@ -182,15 +244,15 @@ export default function AdminQuestions() {
     
     const updateScentMapping = (optionIndex: number, scentName: string, value: number) => {
       const newOptions = [...options];
-      if (!newOptions[optionIndex].scentMappings) {
-        newOptions[optionIndex].scentMappings = {};
-      }
       newOptions[optionIndex].scentMappings[scentName] = value;
       setOptions(newOptions);
       form.setValue('options', newOptions);
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
+      // Pastikan data yang dikirim valid
+      console.log('Form data to submit:', data);
+      
       if (isEdit && currentQuestion) {
         updateQuestion.mutate({ id: currentQuestion.id, data });
       } else {
@@ -208,7 +270,10 @@ export default function AdminQuestions() {
               <FormItem>
                 <FormLabel>Question Text</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Textarea 
+                    placeholder="Enter your question here..." 
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -361,11 +426,8 @@ export default function AdminQuestions() {
                     <FormItem>
                       <FormLabel>Parent Question</FormLabel>
                       <Select
-                        onValueChange={(value) => {
-                          field.onChange(parseInt(value));
-                          form.setValue('parentOptionId', null);
-                        }}
-                        value={field.value?.toString() || ''}
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        value={field.value ? field.value.toString() : undefined}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -373,29 +435,30 @@ export default function AdminQuestions() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {questions && questions
-                            .filter((q: any) => q.id !== (currentQuestion?.id || -1))
-                            .map((question: any) => (
-                              <SelectItem key={question.id} value={question.id.toString()}>
-                                {question.text}
-                              </SelectItem>
-                            ))}
+                          {questions?.filter(q => q.isMainQuestion).map(q => (
+                            <SelectItem key={q.id} value={q.id.toString()}>
+                              {q.text}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
+                      <FormDescription>
+                        Select which main question this branch belongs to
+                      </FormDescription>
                     </FormItem>
                   )}
                 />
-                
+
                 {form.watch('parentId') && (
                   <FormField
                     control={form.control}
                     name="parentOptionId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Parent Option</FormLabel>
+                        <FormLabel>Option from Parent</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          value={field.value || ''}
+                          value={field.value || undefined}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -403,14 +466,11 @@ export default function AdminQuestions() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {questions && 
-                              questions
-                                .find((q: any) => q.id === form.watch('parentId'))
-                                ?.options.map((option: any) => (
-                                  <SelectItem key={option.id} value={option.id}>
-                                    {option.text}
-                                  </SelectItem>
-                                ))}
+                            {questions?.find(q => q.id === form.watch('parentId'))?.options.map(option => (
+                              <SelectItem key={option.id} value={option.id}>
+                                {option.text}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormDescription>
@@ -427,16 +487,14 @@ export default function AdminQuestions() {
           <div>
             <div className="flex justify-between items-center mb-2">
               <Label>Options</Label>
-              {form.watch('type') !== 'slider' && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addOption}
-                >
-                  <Plus className="h-4 w-4 mr-2" /> Add Option
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addOption}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Option
+              </Button>
             </div>
             
             {form.watch('type') === 'slider' ? (
@@ -476,7 +534,7 @@ export default function AdminQuestions() {
                         <p className="text-sm font-medium mb-2">Scent Mappings for this point:</p>
                         {scents ? (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {Array.isArray(scents) && scents.map((scent) => (
+                            {scents.map(scent => (
                               <div key={`${option.id}-${scent.id}`} className="flex items-center gap-2">
                                 <Label htmlFor={`scent-${option.id}-${scent.id}`} className="w-24 truncate">
                                   {scent.name}:
@@ -487,9 +545,7 @@ export default function AdminQuestions() {
                                   min="0"
                                   max="10"
                                   value={option.scentMappings[scent.name] || 0}
-                                  onChange={(e) => updateScentMapping(index, scent.name, 
-                                    parseInt(e.target.value) || 0
-                                  )}
+                                  onChange={(e) => updateScentMapping(index, scent.name, parseInt(e.target.value) || 0)}
                                   className="w-20"
                                 />
                               </div>
@@ -532,56 +588,54 @@ export default function AdminQuestions() {
                         newOptions[index].text = e.target.value;
                         setOptions(newOptions);
                         form.setValue(`options.${index}.text`, e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor={`option-description-${index}`}>Description (optional)</Label>
-                      <Input
-                        id={`option-description-${index}`}
-                        value={option.description || ''}
-                        onChange={(e) => {
-                          const newOptions = [...options];
-                          newOptions[index].description = e.target.value;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.description`, e.target.value);
-                        }}
-                      />
-                    </div>
+                      }}
+                      placeholder="Option text"
+                    />
                   </div>
                   
                   <div>
-                    <Label>Scent Mappings</Label>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Assign points for each scent to determine which scent is recommended when this option is selected.
-                    </p>
-                    
-                    {scents ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        {Array.isArray(scents) && scents.map((scent) => (
-                          <div key={`${option.id}-${scent.id}`} className="flex items-center gap-1">
-                            <Label htmlFor={`scent-${option.id}-${scent.id}`} className="w-24 truncate">
-                              {scent.name}:
-                            </Label>
-                            <Input
-                              id={`scent-${option.id}-${scent.id}`}
-                              type="number"
-                              min="0"
-                              max="10"
-                              value={option.scentMappings[scent.name] || 0}
-                              onChange={(e) => updateScentMapping(index, scent.name, parseInt(e.target.value) || 0)}
-                              className="w-20"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">Loading scents...</p>
-                    )}
+                    <Label htmlFor={`option-desc-${index}`}>Description (optional)</Label>
+                    <Input
+                      id={`option-desc-${index}`}
+                      value={option.description || ''}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].description = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.description`, e.target.value);
+                      }}
+                      placeholder="Description"
+                    />
                   </div>
                 </div>
-              ))
-            )}
+                
+                <div>
+                  <Label className="mb-2 block">Scent Mappings</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {scents && scents.map((scent) => (
+                      <div key={scent.id} className="flex items-center gap-2">
+                        <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
+                          {scent.name}
+                        </Label>
+                        <Input
+                          id={`scent-${scent.id}-option-${index}`}
+                          type="number"
+                          min="0"
+                          max="5"
+                          className="w-1/2"
+                          value={option.scentMappings[scent.name] || 0}
+                          onChange={(e) => updateScentMapping(
+                            index, 
+                            scent.name, 
+                            parseInt(e.target.value) || 0
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
           
           <DialogFooter>
@@ -600,160 +654,198 @@ export default function AdminQuestions() {
     );
   };
   
-  const handleEdit = (question: any) => {
-    setCurrentQuestion(question);
-    setIsEditOpen(true);
-  };
-  
-  const handleDelete = (question: any) => {
-    setCurrentQuestion(question);
-    setIsDeleteOpen(true);
-  };
-  
-  // Find parent question and option text for display
-  const getParentInfo = (parentId: number, parentOptionId: string) => {
-    if (!questions) return { parentText: 'Unknown', optionText: 'Unknown' };
-    
-    const parent = questions.find((q: any) => q.id === parentId);
-    if (!parent) return { parentText: 'Unknown', optionText: 'Unknown' };
-    
-    const option = parent.options.find((o: any) => o.id === parentOptionId);
-    
-    return {
-      parentText: parent.text,
-      optionText: option ? option.text : 'Unknown option'
-    };
-  };
-
-  return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Quiz Questions</h1>
-        <Button onClick={() => setIsAddOpen(true)}>Add Question</Button>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
+    );
+  }
+  
+  if (isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <div className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+              <CardTitle>Error Loading Questions</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p>An error occurred while loading questions. Please try again later.</p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" onClick={() => queryClient.invalidateQueries({ queryKey: ['/api/questions'] })}>
+              Retry
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+  
+  return (
+    <>
+      <Helmet>
+        <title>Manage Questions | Fordive Admin</title>
+        <meta name="description" content="Manage quiz questions for the Fordive Scent Finder." />
+      </Helmet>
       
-      {isLoadingQuestions ? (
-        <div className="flex justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border p-4 rounded-md">
-              <h2 className="text-lg font-medium mb-4">Main Questions</h2>
-              {questions && questions
-                .filter((q: any) => q.isMainQuestion)
-                .sort((a: any, b: any) => a.order - b.order)
-                .map((question: any) => (
-                  <div key={question.id} className="border-b pb-2 mb-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium">{question.text}</p>
-                        <div className="flex gap-2 text-sm text-muted-foreground">
-                          <p>Type: {question.type}</p>
-                          <p>Order: {question.order}</p>
-                        </div>
-                        <p className="text-sm mt-1">Options: {question.options.length}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(question)}>
-                          <PencilLine className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(question)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <Link href="/admin">
+                <Button variant="ghost" className="pl-0">
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Dashboard
+                </Button>
+              </Link>
+              <h1 className="text-3xl font-playfair font-bold mt-2">Questions Management</h1>
+              <p className="text-muted-foreground">Manage quiz questions and their options</p>
             </div>
             
-            <div className="border p-4 rounded-md">
-              <h2 className="text-lg font-medium mb-4">Child Questions</h2>
-              {questions && questions
-                .filter((q: any) => !q.isMainQuestion)
-                .sort((a: any, b: any) => a.order - b.order)
-                .map((question: any) => {
-                  const { parentText, optionText } = question.parentId && question.parentOptionId 
-                    ? getParentInfo(question.parentId, question.parentOptionId)
-                    : { parentText: 'None', optionText: 'None' };
-                  
-                  return (
-                    <div key={question.id} className="border-b pb-2 mb-2">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium">{question.text}</p>
-                          <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-                            <p>Type: {question.type}</p>
-                            <p>Order: {question.order}</p>
-                          </div>
-                          <div className="text-sm mt-1">
-                            <p>Parent: {parentText}</p>
-                            <p>Displays on option: {optionText}</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleEdit(question)}>
-                            <PencilLine className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => handleDelete(question)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" /> Add Question
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Add New Question</DialogTitle>
+                  <DialogDescription>
+                    Create a new question for the quiz. Questions can have multiple choice, checkbox, or slider options.
+                  </DialogDescription>
+                </DialogHeader>
+                <QuestionForm onClose={() => setIsAddDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
           </div>
+          
+          {questions && questions.length > 0 ? (
+            <div className="bg-white shadow rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">#</TableHead>
+                    <TableHead>Question</TableHead>
+                    <TableHead className="w-28">Type</TableHead>
+                    <TableHead className="w-24">Options</TableHead>
+                    <TableHead className="w-28">Branch Status</TableHead>
+                    <TableHead className="w-28 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {questions.sort((a, b) => a.order - b.order).map((question) => (
+                    <TableRow key={question.id} className={question.isMainQuestion ? "bg-primary/5" : ""}>
+                      <TableCell>{question.order}</TableCell>
+                      <TableCell>{question.text}</TableCell>
+                      <TableCell>
+                        <div className="capitalize">
+                          {question.type.replace('_', ' ')}
+                        </div>
+                      </TableCell>
+                      <TableCell>{question.options?.length || 0}</TableCell>
+                      <TableCell>
+                        {question.isMainQuestion ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
+                            Main Question
+                          </span>
+                        ) : question.parentId ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                            Branch Question
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                            Standard Question
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                            {currentQuestion?.id === question.id && (
+                              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Edit Question</DialogTitle>
+                                  <DialogDescription>
+                                    Update this question and its options.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <QuestionForm isEdit={true} onClose={() => setIsEditDialogOpen(false)} />
+                              </DialogContent>
+                            )}
+                          </Dialog>
+                          
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setCurrentQuestion(question);
+                              setIsEditDialogOpen(true);
+                            }}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          
+                          <AlertDialog open={deleteId === question.id} onOpenChange={(open) => !open && setDeleteId(null)}>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteId(question.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the question and all of its options.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteQuestion.mutate(question.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  {deleteQuestion.isPending ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                  ) : (
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                  )}
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <Card className="bg-secondary">
+              <CardHeader>
+                <CardTitle>No Questions Found</CardTitle>
+                <CardDescription>
+                  There are no questions yet. Click the "Add Question" button to create your first quiz question.
+                </CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Button onClick={() => setIsAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" /> Add Question
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
         </div>
-      )}
-      
-      {/* Add Question Dialog */}
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Add New Question</DialogTitle>
-          </DialogHeader>
-          <QuestionForm onClose={() => setIsAddOpen(false)} />
-        </DialogContent>
-      </Dialog>
-      
-      {/* Edit Question Dialog */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Question</DialogTitle>
-          </DialogHeader>
-          <QuestionForm isEdit onClose={() => setIsEditOpen(false)} />
-        </DialogContent>
-      </Dialog>
-      
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
-          </DialogHeader>
-          <p>Are you sure you want to delete the question "{currentQuestion?.text}"?</p>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsDeleteOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              type="button" 
-              variant="destructive" 
-              onClick={() => currentQuestion && deleteQuestion.mutate(currentQuestion.id)}
-              disabled={deleteQuestion.isPending}
-            >
-              {deleteQuestion.isPending && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
