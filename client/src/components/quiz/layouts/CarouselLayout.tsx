@@ -143,10 +143,11 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   flex-shrink-0 p-6 rounded-lg cursor-pointer
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
-                    'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65]' : 
+                    'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65] bg-wave-pattern' : 
                     question.options.indexOf(option) % 2 === 0 ?
-                      'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg' :
-                      'bg-[#e6ddca] hover:bg-[#d7ceb9] text-gray-800 shadow-lg'}
+                      'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg bg-wave-pattern' :
+                      'bg-[#e6ddca] hover:bg-[#d7ceb9] text-gray-800 shadow-lg bg-wave-pattern-dark'}
+                  relative overflow-hidden
                 `}
                 style={{ 
                   minHeight: '250px',
