@@ -37,7 +37,7 @@ export const insertScentSchema = createInsertSchema(scents).omit({
 export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text").notNull(),
-  type: text("type").notNull(), // multiple_choice, checkbox, rating_scale
+  type: text("type").notNull(), // multiple_choice, checkbox, slider
   order: integer("order").notNull(),
   
   // Untuk struktur pertanyaan bercabang
@@ -48,16 +48,9 @@ export const questions = pgTable("questions", {
   options: json("options").$type<{
     id: string;
     text: string;
-    value?: string;
-    label?: string;
     description?: string;
     scentMappings: Record<string, number>;
   }[]>(),
-  
-  // Untuk Rating Scale
-  scaleMin: text("scale_min"),
-  scaleMax: text("scale_max"),
-  scaleSteps: integer("scale_steps"),
 });
 
 export const insertQuestionSchema = createInsertSchema(questions).omit({

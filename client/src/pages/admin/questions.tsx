@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -196,6 +196,12 @@ export default function AdminQuestions() {
         [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
     );
     
+    // State untuk jumlah titik pada slider (default: 5)
+    const [sliderPoints, setSliderPoints] = useState<number>(
+      isEdit && currentQuestion?.type === 'slider' ? 
+        currentQuestion.options.length : 5
+    );
+    
     const form = useForm<z.infer<typeof questionSchema>>({
       resolver: zodResolver(questionSchema),
       defaultValues: isEdit && currentQuestion ? {
@@ -282,7 +288,23 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      
+                      // Jika tipe pertanyaan adalah 'slider', inisialisasi ulang opsi
+                      if (value === 'slider') {
+                        // Buat array opsi sesuai jumlah titik slider
+                        const newOptions = Array.from({ length: sliderPoints }, (_, i) => ({
+                          id: `slider_option_${i+1}_${Date.now()}`,
+                          text: `Point ${i+1}`,
+                          description: '',
+                          scentMappings: {}
+                        }));
+                        
+                        setOptions(newOptions);
+                        form.setValue('options', newOptions);
+                      }
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -293,7 +315,7 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="rating_scale">Rating Scale</SelectItem>
+                      <SelectItem value="slider">Slider</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -320,6 +342,56 @@ export default function AdminQuestions() {
               )}
             />
           </div>
+
+          {/* Konfigurasi Slider jika tipe pertanyaan adalah 'slider' */}
+          {form.watch('type') === 'slider' && (
+            <div className="space-y-4 border p-4 rounded-md mb-4">
+              <h3 className="font-medium">Slider Settings</h3>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <Label htmlFor="slider-points">Number of Points</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="slider-points"
+                      type="number"
+                      min="2"
+                      max="10"
+                      value={sliderPoints}
+                      onChange={(e) => {
+                        const newPoints = parseInt(e.target.value) || 2;
+                        // Batasi jumlah poin antara 2 dan 10
+                        const validPoints = Math.min(Math.max(newPoints, 2), 10);
+                        setSliderPoints(validPoints);
+                        
+                        // Buat array opsi baru sesuai jumlah titik yang diinginkan
+                        const newOptions = Array.from({ length: validPoints }, (_, i) => {
+                          // Pertahankan opsi yang sudah ada jika ada
+                          if (i < options.length) {
+                            return options[i];
+                          }
+                          // Buat opsi baru jika diperlukan
+                          return {
+                            id: `slider_option_${i+1}_${Date.now()}`,
+                            text: `Point ${i+1}`,
+                            description: '',
+                            scentMappings: {}
+                          };
+                        });
+                        
+                        setOptions(newOptions);
+                        form.setValue('options', newOptions);
+                      }}
+                      className="w-24"
+                    />
+                    <span className="text-sm text-gray-500">Min: 2, Max: 10</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Set the number of points on the slider (e.g., 5 for a 5-point scale)
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-4 border p-4 rounded-md">
             <h3 className="font-medium">Branching Settings</h3>
@@ -412,127 +484,100 @@ export default function AdminQuestions() {
             )}
           </div>
           
-          {/* Rating Scale Configuration */}
-          {form.watch('type') === 'rating_scale' && (
-            <div className="space-y-4 border p-4 rounded-md my-6 bg-gray-50">
-              <h3 className="text-lg font-medium">Rating Scale Configuration</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="scale-min">Label Minimum</Label>
-                  <Input
-                    id="scale-min"
-                    placeholder="Contoh: Tidak Sama Sekali"
-                    value={form.watch('scaleMin') || ''}
-                    onChange={(e) => form.setValue('scaleMin', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="scale-max">Label Maximum</Label>
-                  <Input
-                    id="scale-max"
-                    placeholder="Contoh: Sangat"
-                    value={form.watch('scaleMax') || ''}
-                    onChange={(e) => form.setValue('scaleMax', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="scale-steps">Jumlah Skala</Label>
-                  <Input
-                    id="scale-steps"
-                    type="number"
-                    min="2"
-                    max="10"
-                    placeholder="5"
-                    value={form.watch('scaleSteps') || 5}
-                    onChange={(e) => {
-                      const steps = parseInt(e.target.value) || 5;
-                      form.setValue('scaleSteps', steps);
-                      
-                      // Buat options otomatis berdasarkan jumlah langkah
-                      const newOptions = [];
-                      for (let i = 1; i <= steps; i++) {
-                        newOptions.push({
-                          id: `option_${Date.now()}_${i}`,
-                          value: i.toString(),
-                          text: i.toString(),
-                          label: '',
-                          description: '',
-                          scentMappings: {}
-                        });
-                      }
-                      setOptions(newOptions);
-                      form.setValue('options', newOptions);
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-          
           <div>
             <div className="flex justify-between items-center mb-2">
               <Label>Options</Label>
-              {form.watch('type') !== 'rating_scale' && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addOption}
-                >
-                  <Plus className="h-4 w-4 mr-2" /> Add Option
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addOption}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Option
+              </Button>
             </div>
             
-            {options.map((option, index) => (
-              <div key={option.id} className="border p-4 rounded-md mb-4">
+            {form.watch('type') === 'slider' ? (
+              // Tampilan khusus untuk opsi slider - membatasi penambahan/penghapusan opsi
+              <div className="border p-4 rounded-md mb-4">
                 <div className="flex justify-between items-start mb-2">
-                  <Label className="text-sm font-medium">Option {index + 1}</Label>
-                  {options.length > 1 && form.watch('type') !== 'rating_scale' && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeOption(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  )}
+                  <Label className="text-sm font-medium">Slider Labels and Values</Label>
                 </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  Label each point on your slider scale and assign scent mappings for each value.
+                </p>
                 
-                <div className="grid gap-4 mb-4">
-                  {form.watch('type') === 'rating_scale' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor={`option-value-${index}`}>Nilai</Label>
+                <div className="space-y-4">
+                  {options.map((option, index) => (
+                    <div key={option.id} className="border-b pb-4 mb-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center">
+                          {index + 1}
+                        </div>
+                        <Label htmlFor={`slider-label-${index}`}>Point {index + 1} Label:</Label>
                         <Input
-                          id={`option-value-${index}`}
-                          value={option.value || (index + 1).toString()}
-                          disabled={true}
-                          className="bg-gray-100"
+                          id={`slider-label-${index}`}
+                          value={option.text}
+                          onChange={(e) => {
+                            const newOptions = [...options];
+                            newOptions[index].text = e.target.value;
+                            setOptions(newOptions);
+                            form.setValue('options', newOptions);
+                          }}
+                          className="w-full"
+                          placeholder={`e.g., ${index === 0 ? 'Strongly Disagree' : index === options.length - 1 ? 'Strongly Agree' : 'Neutral'}`}
                         />
-                        <p className="text-xs text-gray-500 mt-1">Nilai ini ditetapkan secara otomatis</p>
                       </div>
-                      <div>
-                        <Label htmlFor={`option-label-${index}`}>Label (opsional)</Label>
-                        <Input
-                          id={`option-label-${index}`}
-                          value={option.label || ''}
-                          onChange={(e) => updateOption(index, 'label', e.target.value)}
-                          placeholder="Label untuk titik rating ini"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <Label htmlFor={`option-desc-${index}`}>Deskripsi (opsional)</Label>
-                        <Input
-                          id={`option-desc-${index}`}
-                          value={option.description || ''}
-                          onChange={(e) => updateOption(index, 'description', e.target.value)}
-                          placeholder="Ditampilkan saat titik ini dipilih"
-                        />
+                      
+                      {/* Scent Mappings untuk titik slider ini */}
+                      <div className="ml-10 mt-2">
+                        <p className="text-sm font-medium mb-2">Scent Mappings for this point:</p>
+                        {scents ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {scents.map(scent => (
+                              <div key={`${option.id}-${scent.id}`} className="flex items-center gap-2">
+                                <Label htmlFor={`scent-${option.id}-${scent.id}`} className="w-24 truncate">
+                                  {scent.name}:
+                                </Label>
+                                <Input
+                                  id={`scent-${option.id}-${scent.id}`}
+                                  type="number"
+                                  min="0"
+                                  max="10"
+                                  value={option.scentMappings[scent.name] || 0}
+                                  onChange={(e) => updateScentMapping(index, scent.name, parseInt(e.target.value) || 0)}
+                                  className="w-20"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">Loading scents...</p>
+                        )}
                       </div>
                     </div>
-                  ) : (
+                  ))}
+                </div>
+              </div>
+            ) : (
+              // Tampilan normal untuk opsi multiple choice/checkbox
+              options.map((option, index) => (
+                <div key={option.id} className="border p-4 rounded-md mb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <Label className="text-sm font-medium">Option {index + 1}</Label>
+                    {options.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeOption(index)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid gap-4 mb-4">
                     <div>
                       <Label htmlFor={`option-text-${index}`}>Text</Label>
                       <Input
