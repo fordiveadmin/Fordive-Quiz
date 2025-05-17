@@ -1,17 +1,18 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import bannerImage from "../../assets/banner-image.png";
 
 export default function CtaSection() {
   return (
     <section className="relative py-24 px-6 overflow-hidden">
       <div 
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1600612253971-422e7f7faeb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080&q=80')"
+          backgroundImage: `url(${bannerImage})`
         }} 
         className="absolute inset-0 bg-cover bg-center z-0 parallax-bg"
       ></div>
-      <div className="absolute inset-0 bg-charcoal opacity-50 z-0"></div>
+      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
       
       <div className="relative z-10 max-w-7xl mx-auto text-center">
         <motion.h2 
