@@ -163,8 +163,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                       />
                     </div>
                   ) : (
-                    <div className="mb-4 w-full h-40 bg-gradient-to-r from-[#e6ddca] to-[#f5f1e9] rounded-md flex items-center justify-center">
-                      <span className="text-4xl text-[#C89F65] font-playfair">{option.text.charAt(0)}</span>
+                    <div className="mb-4 w-full h-40 bg-gradient-to-r from-[#e6ddca] to-[#f5f1e9] rounded-md">
+                      {/* Placeholder kosong tanpa huruf */}
                     </div>
                   )}
                   
