@@ -247,13 +247,18 @@ export default function AdminQuestions() {
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
-      // Pastikan data yang dikirim valid
-      console.log('Form data to submit:', data);
+      // Pastikan data yang dikirim valid dan layout disertakan
+      const formattedData = {
+        ...data,
+        layout: data.layout || 'standard' // Pastikan nilai layout selalu disertakan
+      };
+      
+      console.log('Form data to submit:', formattedData);
       
       if (isEdit && currentQuestion) {
-        updateQuestion.mutate({ id: currentQuestion.id, data });
+        updateQuestion.mutate({ id: currentQuestion.id, data: formattedData });
       } else {
-        createQuestion.mutate(data);
+        createQuestion.mutate(formattedData);
       }
     };
     
@@ -507,7 +512,7 @@ export default function AdminQuestions() {
                 <div>
                   <Label className="mb-2 block">Scent Mappings</Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {scents && scents.map((scent) => (
+                    {scents && Array.isArray(scents) && scents.map((scent: any) => (
                       <div key={scent.id} className="flex items-center gap-2">
                         <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
                           {scent.name}
