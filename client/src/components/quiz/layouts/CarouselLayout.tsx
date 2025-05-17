@@ -151,7 +151,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   flex-shrink-0 p-6 rounded-lg cursor-pointer
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
-                    'text-white shadow-xl border-2 border-[#C89F65]' : 
+                    'text-white shadow-xl' : 
                     'text-gray-800 shadow-lg'}
                 `}
                 style={{ 
@@ -163,7 +163,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   alignItems: 'center',
                   background: option.id === selectedOption 
                     ? 'linear-gradient(rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.9)), ' + gradientColors[question.options.indexOf(option) % gradientColors.length]
-                    : gradientColors[question.options.indexOf(option) % gradientColors.length]
+                    : gradientColors[question.options.indexOf(option) % gradientColors.length],
+                  border: option.id === selectedOption ? '2px solid #C89F65' : 'none'
                 }}
                 onClick={() => handleSelect(option.id, option)}
               >
@@ -179,8 +180,8 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   {/* Selection indicator */}
                   {option.id === selectedOption && (
                     <div className="mt-6">
-                      <div className="bg-[#C89F65] rounded-full h-8 w-8 mx-auto flex items-center justify-center">
-                        <Check className="h-5 w-5 text-white" />
+                      <div className="bg-[#C89F65] rounded-full h-10 w-10 mx-auto flex items-center justify-center">
+                        <Check className="h-6 w-6 text-white" />
                       </div>
                     </div>
                   )}
