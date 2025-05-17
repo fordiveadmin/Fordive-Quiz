@@ -91,8 +91,23 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
     ? windowWidth - 32 // Mobile: full width minus padding
     : (windowWidth - 32) / 2 - 12; // Desktop: half width minus padding and gap
   
-  // Debugging output
-  console.log("Options:", question.options.length, "Current index:", currentIndex);
+  // Fungsi untuk menghasilkan gradient warna berbeda untuk setiap kartu
+  const getGradientForOption = (optionId: string) => {
+    // Extract a number from the option ID to get consistent colors for same options
+    const numStr = optionId.replace(/\D/g, '');
+    const num = parseInt(numStr, 10) || 0;
+    
+    // Beberapa pilihan gradien dengan warna keemasan dan beige premium
+    const gradients = [
+      'linear-gradient(135deg, #f5f1e9 0%, #e6ddca 100%)',
+      'linear-gradient(135deg, #ebe5d9 0%, #d8ceb8 100%)',
+      'linear-gradient(135deg, #e2d9c5 0%, #cab99f 100%)',
+      'linear-gradient(135deg, #f2e8d9 0%, #e0d1b8 100%)',
+      'linear-gradient(135deg, #f7f3e9 0%, #e6dcc7 100%)'
+    ];
+    
+    return gradients[num % gradients.length];
+  };
   
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
@@ -143,28 +158,32 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   flex-shrink-0 p-6 rounded-lg cursor-pointer
                   transition-all duration-300 transform hover:-translate-y-2
                   ${option.id === selectedOption ? 
-                    'bg-[#1f1f1f] text-white shadow-xl border-2 border-[#C89F65]' : 
-                    'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 shadow-lg'}
+                    'text-white shadow-xl border-2 border-[#C89F65]' : 
+                    'text-gray-800 shadow-lg'}
                 `}
-                style={{ 
-                  minHeight: '300px',
-                  width: slideWidth
-                }}
                 onClick={() => handleSelect(option.id, option)}
+                style={{ 
+                  minHeight: '220px',
+                  width: slideWidth,
+                  background: option.id === selectedOption ? 
+                    '#1f1f1f' : 
+                    getGradientForOption(option.id),
+                  backgroundSize: '100% 100%',
+                  backgroundImage: option.id === selectedOption ? 
+                    'none' : 
+                    'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z\' fill=\'%23c89f65\' fill-opacity=\'0.06\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
+                  backgroundBlendMode: 'overlay'
+                }}
               >
-                <div className="flex flex-col items-center justify-start h-full">
-                  {/* Image if available */}
-                  {option.imageUrl ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  {/* Only show image if provided */}
+                  {option.imageUrl && (
                     <div className="mb-4 w-full h-40 overflow-hidden rounded-md">
                       <img 
                         src={option.imageUrl} 
                         alt={option.text} 
                         className="w-full h-full object-cover"
                       />
-                    </div>
-                  ) : (
-                    <div className="mb-4 w-full h-40 bg-gradient-to-r from-[#e6ddca] to-[#f5f1e9] rounded-md">
-                      {/* Placeholder kosong tanpa huruf */}
                     </div>
                   )}
                   
