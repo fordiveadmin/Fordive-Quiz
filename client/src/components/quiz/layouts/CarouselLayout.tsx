@@ -162,7 +162,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   justifyContent: 'center',
                   alignItems: 'center',
                   background: option.id === selectedOption 
-                    ? 'linear-gradient(rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.9)), ' + gradientColors[question.options.indexOf(option) % gradientColors.length]
+                    ? 'linear-gradient(rgba(200, 159, 101, 0.9), rgba(200, 159, 101, 0.9)), ' + gradientColors[question.options.indexOf(option) % gradientColors.length]
                     : gradientColors[question.options.indexOf(option) % gradientColors.length]
                 }}
                 onClick={() => handleSelect(option.id, option)}
