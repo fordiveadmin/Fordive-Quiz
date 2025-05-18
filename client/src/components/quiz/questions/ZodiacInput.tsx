@@ -144,8 +144,8 @@ export default function ZodiacInput() {
             className="mt-6 text-center"
           >
             <div className="flex justify-center mb-2">
-              <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center">
-                <i className={`${zodiacSign.iconClass} text-primary text-2xl`}></i>
+              <div className="w-16 h-16 rounded-full bg-white border-2 border-[#C89F65] shadow-md flex items-center justify-center">
+                <i className={`${zodiacSign.iconClass} text-[#C89F65] text-2xl`}></i>
               </div>
             </div>
             <p className="font-playfair font-semibold text-xl">
