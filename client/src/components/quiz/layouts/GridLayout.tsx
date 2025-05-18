@@ -21,7 +21,7 @@ interface GridLayoutProps {
 }
 
 export default function GridLayout({ question }: GridLayoutProps) {
-  const { answers, setAnswer } = useStore();
+  const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
   const selectedOption = answers[question.id]?.optionId;
   
   // Animation variants for staggered children
@@ -48,6 +48,14 @@ export default function GridLayout({ question }: GridLayoutProps) {
         scentMappings: option.scentMappings,
       }
     );
+    
+    // Auto-proceed to next question if this is a main question
+    if (question.isMainQuestion) {
+      // Use setTimeout to give visual feedback that the option was selected
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion + 1);
+      }, 300);
+    }
   };
   
   return (
@@ -74,7 +82,7 @@ export default function GridLayout({ question }: GridLayoutProps) {
             className={`
               relative p-6 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg
               ${option.id === selectedOption ? 
-                'bg-[#1f1f1f] text-white shadow-md' : 
+                'bg-[#C89F65] text-white shadow-md' : 
                 'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
             `}
             onClick={() => handleSelect(option.id, option)}
