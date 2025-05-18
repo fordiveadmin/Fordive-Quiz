@@ -47,78 +47,78 @@ export default function Footer() {
           </div>
           
           <div className="slide-up" style={{ animationDelay: '0.1s' }}>
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Shop</h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Company</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  All Fragrances
+                <a href="https://fordive.id/aboutus/" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Best Sellers
+                <a href="https://fordive.id/mission/" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Impact
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  New Arrivals
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Gift Sets
+                <a href="https://fordive.id/shop/" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Product
                 </a>
               </li>
             </ul>
           </div>
           
           <div className="slide-up" style={{ animationDelay: '0.2s' }}>
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">About</h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Shop</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Our Story
+                <a href="https://shopee.co.id/fordive.id" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Shopee
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Ingredients
+                <a href="https://www.tokopedia.com/fordiveid" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Tokopedia
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Sustainability
+                <a href="https://www.lazada.co.id/shop/fordive" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Lazada
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Press
+                <a href="https://www.tiktok.com/@fordive.id" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  TikTok Shop
+                </a>
+              </li>
+              <li>
+                <a href="https://fordive.id/distributor/" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Distributor
                 </a>
               </li>
             </ul>
           </div>
           
           <div className="slide-up" style={{ animationDelay: '0.3s' }}>
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Customer Care</h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Let's Talk</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Contact Us
+                <a href="https://www.instagram.com/fordive.id/" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Instagram
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Shipping & Returns
+                <a href="https://www.tiktok.com/@fordive.id" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  TikTok
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  FAQs
+                <a href="https://twitter.com/fordive_id" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  X (Twitter)
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
-                  Privacy Policy
+                <a href="https://www.facebook.com/fordive.id" className="text-gray-600 hover:text-[#C89F65] transition-colors duration-300">
+                  Facebook
                 </a>
               </li>
             </ul>
