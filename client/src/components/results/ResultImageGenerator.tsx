@@ -98,13 +98,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           
           {/* Footer */}
           <div className="text-center mb-4 bg-black/30 backdrop-blur-sm py-3 px-6 rounded-xl">
-            <p className="text-lg font-medium text-[#C89F65]">
+            <p className="text-lg font-medium text-white">
               {userName}'s Signature Scent
             </p>
             {zodiacSign && (
-              <p className="text-sm text-[#C89F65]">{zodiacSign} ✨</p>
+              <p className="text-sm text-white">{zodiacSign} ✨</p>
             )}
-            <p className="text-xs mt-4 text-[#C89F65]">fordive.com</p>
+            <p className="text-xs mt-4 text-white">fordive.com</p>
           </div>
         </div>
       </div>
