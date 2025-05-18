@@ -79,8 +79,8 @@ export default function GridLayout({ question }: GridLayoutProps) {
             onClick={() => handleSelect(option.id, option)}
             style={{ minHeight: '220px' }}
           >
-            {/* Top section */}
-            <div className="flex flex-col items-center justify-start h-full">
+            {/* Content section - centered vertically and horizontally */}
+            <div className="flex flex-col items-center justify-center h-full">
               {/* Image if available */}
               {option.imageUrl && (
                 <div className="mb-4 w-full h-32 overflow-hidden rounded-md">
