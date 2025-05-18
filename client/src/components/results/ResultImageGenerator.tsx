@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { getScentImageUrl } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Download } from 'lucide-react';
+import logoImage from "../../assets/logo.png";
 
 interface ResultImageGeneratorProps {
   scent: {
@@ -70,7 +71,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-6 text-white">
           {/* Header */}
           <div className="text-center mt-4">
-            <h3 className="text-xl font-semibold">FORDIVE</h3>
+            <div className="flex justify-center">
+              <img src={logoImage} alt="Fordive Logo" className="h-10 mb-1" />
+            </div>
             <p className="text-sm opacity-90">Scent Finder Results</p>
           </div>
           
