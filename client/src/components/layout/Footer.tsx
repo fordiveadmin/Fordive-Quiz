@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="mb-4">
-              <img src={logoImage} alt="Fordive Logo" className="h-10" />
+              <img src={logoImage} alt="Fordive Logo" className="h-16" />
             </div>
             <p className="text-gray-600 mb-6">
               Discover your signature scent that matches your personality and zodiac sign.
@@ -126,7 +126,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-[#E9E5D9] mt-12 pt-8 text-center text-gray-500">
-          <p>© {new Date().getFullYear()} <img src={logoImage} alt="Fordive" className="inline-block h-4 mx-1" /> All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Fordive. All rights reserved.</p>
         </div>
       </div>
     </footer>
