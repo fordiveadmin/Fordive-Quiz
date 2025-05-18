@@ -85,7 +85,7 @@ const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
   type: z.enum(['multiple_choice', 'checkbox', 'slider']),
   order: z.number().min(1, 'Order is required'),
-  layout: z.enum(['standard', 'grid', 'carousel']).default('standard'),
+  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
@@ -93,6 +93,15 @@ const questionSchema = z.object({
 });
 
 type Question = z.infer<typeof questionSchema> & { id: number };
+
+// Define a type for the scent objects
+interface Scent {
+  id: number;
+  name: string;
+  notes: string[];
+  description: string;
+  imageUrl?: string;
+}
 
 export default function AdminQuestions() {
   const { toast } = useToast();
@@ -107,7 +116,7 @@ export default function AdminQuestions() {
   });
   
   // Get all scents for mapping
-  const { data: scents } = useQuery({
+  const { data: scents } = useQuery<Scent[]>({
     queryKey: ['/api/scents'],
   });
   
@@ -513,7 +522,7 @@ export default function AdminQuestions() {
                 <div>
                   <Label className="mb-2 block">Scent Mappings</Label>
                   <div className="grid grid-cols-2 gap-2">
-                    {scents && Array.isArray(scents) && scents.map((scent: any) => (
+                    {scents && Array.isArray(scents) && scents.map((scent: Scent) => (
                       <div key={scent.id} className="flex items-center gap-2">
                         <Label htmlFor={`scent-${scent.id}-option-${index}`} className="w-1/2">
                           {scent.name}
