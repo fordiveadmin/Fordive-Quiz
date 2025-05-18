@@ -346,6 +346,7 @@ export default function AdminQuestions() {
                       <SelectItem value="standard">Standard Layout</SelectItem>
                       <SelectItem value="grid">Grid Cards Layout</SelectItem>
                       <SelectItem value="carousel">Carousel Layout</SelectItem>
+                      <SelectItem value="cardstack">3D Card Stack Layout</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>
