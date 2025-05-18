@@ -1,7 +1,6 @@
 import { Link } from "wouter";
 import { FaInstagram, FaFacebookF, FaTwitter, FaPinterestP } from "react-icons/fa";
 import logoImage from "../../assets/logo.png";
-import newLogoImage from "../../assets/logoonly.png";
 
 export default function Footer() {
   return (
@@ -10,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="mb-4">
-              <img src={newLogoImage} alt="Fordive Logo" className="h-16" />
+              <img src={logoImage} alt="Fordive Logo" className="h-16" />
             </div>
             <p className="text-gray-600 mb-6">
               Discover your signature scent that matches your personality and zodiac sign.
