@@ -35,14 +35,25 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
     
     // Make sure zodiacMappings is an array before using find
     const mappingsArray = Array.isArray(zodiacMappings) ? zodiacMappings : [];
+    
+    // Debug the mapping process
+    console.log("Scent ID:", scent.id);
+    console.log("Zodiac mappings:", mappingsArray);
+    
     const mapping = mappingsArray.find((m: any) => m.scentId === scent.id);
-    if (mapping) return mapping.description;
+    if (mapping) {
+      console.log("Found mapping:", mapping);
+      return mapping.description;
+    }
     
     // Fallback to generic description if no mapping exists
-    return getZodiacDescription(
+    console.log("No specific mapping found, using generic description");
+    const fallbackDescription = getZodiacDescription(
       zodiacSign?.name || zodiacSignState?.name || '', 
       scent.name
     );
+    console.log("Fallback description:", fallbackDescription);
+    return fallbackDescription;
   };
   
   const zodiacDescription = getZodiacMappingDescription();
