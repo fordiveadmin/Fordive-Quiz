@@ -24,36 +24,46 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
   const { zodiacSign: zodiacSignState } = useStore();
   
   // Get zodiac mapping for this scent and sign
+  const currentZodiacSign = zodiacSign?.name || zodiacSignState?.name;
+  
+  // Use the specific endpoint with the zodiac sign in the URL
   const { data: zodiacMappings, isLoading } = useQuery({
-    queryKey: ['/api/zodiac-mappings/sign', zodiacSign?.name || zodiacSignState?.name],
-    enabled: !!(zodiacSign?.name || zodiacSignState?.name),
+    queryKey: ['/api/zodiac-mappings/sign', currentZodiacSign],
+    queryFn: async () => {
+      if (!currentZodiacSign) return [];
+      
+      try {
+        const response = await fetch(`/api/zodiac-mappings/sign/${currentZodiacSign}`);
+        if (!response.ok) {
+          console.error(`Failed to fetch zodiac mappings: ${response.status}`);
+          return [];
+        }
+        return response.json();
+      } catch (error) {
+        console.error("Error fetching zodiac mappings:", error);
+        return [];
+      }
+    },
+    enabled: !!currentZodiacSign,
   });
   
   // Find the specific mapping for this scent
   const getZodiacMappingDescription = () => {
-    if (!zodiacMappings || !scent) return null;
+    if (!scent) return "";
     
     // Make sure zodiacMappings is an array before using find
     const mappingsArray = Array.isArray(zodiacMappings) ? zodiacMappings : [];
     
-    // Debug the mapping process
-    console.log("Scent ID:", scent.id);
-    console.log("Zodiac mappings:", mappingsArray);
-    
+    // 1. First try to find exact match for this scent
     const mapping = mappingsArray.find((m: any) => m.scentId === scent.id);
-    if (mapping) {
-      console.log("Found mapping:", mapping);
+    if (mapping && mapping.description) {
       return mapping.description;
     }
     
-    // Fallback to generic description if no mapping exists
-    console.log("No specific mapping found, using generic description");
-    const fallbackDescription = getZodiacDescription(
-      zodiacSign?.name || zodiacSignState?.name || '', 
-      scent.name
-    );
-    console.log("Fallback description:", fallbackDescription);
-    return fallbackDescription;
+    // 2. If no mapping exists, use the built-in zodiac description
+    const zodiacDesc = getZodiacDescription(currentZodiacSign || 'Gemini', scent.name);
+    
+    return zodiacDesc || `${currentZodiacSign || 'Your zodiac sign'} pairs beautifully with ${scent.name}, creating a unique fragrance experience that enhances your natural traits.`;
   };
   
   const zodiacDescription = getZodiacMappingDescription();
