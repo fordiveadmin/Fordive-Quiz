@@ -7,6 +7,7 @@ interface MultipleChoiceProps {
   question: {
     id: number;
     text: string;
+    isMainQuestion?: boolean;
     options: {
       id: string;
       text: string;
@@ -17,7 +18,7 @@ interface MultipleChoiceProps {
 }
 
 export default function MultipleChoice({ question }: MultipleChoiceProps) {
-  const { answers, setAnswer } = useStore();
+  const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   
   // Set initial state from stored answers
@@ -42,6 +43,14 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
       };
       
       setAnswer(question.id.toString(), answer);
+      
+      // Auto-proceed to next question if this is a main question
+      if (question.isMainQuestion) {
+        // Use setTimeout to give visual feedback that the option was selected
+        setTimeout(() => {
+          setCurrentQuestion(currentQuestion + 1);
+        }, 300);
+      }
     }
   };
   
@@ -77,8 +86,8 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
             key={option.id}
             variants={item}
             className={cn(
-              "border-2 hover:border-primary rounded-lg p-6 cursor-pointer bg-white transition duration-300 hover:-translate-y-1 hover:shadow-md",
-              selectedOption === option.id ? "border-primary bg-primary/5" : "border-border"
+              "border-2 hover:border-[#C89F65] rounded-lg p-6 cursor-pointer bg-white transition duration-300 hover:-translate-y-1 hover:shadow-md",
+              selectedOption === option.id ? "border-[#C89F65] bg-[#C89F65]/10" : "border-border"
             )}
             onClick={() => handleSelect(option.id)}
           >

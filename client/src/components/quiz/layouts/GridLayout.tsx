@@ -15,6 +15,7 @@ interface GridLayoutProps {
   question: {
     id: number;
     text: string;
+    isMainQuestion?: boolean;
     options: Option[];
   };
 }
