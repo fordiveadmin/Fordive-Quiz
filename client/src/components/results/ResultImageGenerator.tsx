@@ -54,7 +54,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       {/* Story container - this will be captured as an image */}
       <div 
         ref={storyRef}
-        className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-amber-50 border-2 border-white"
+        className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-purple-100 to-amber-50"
         style={{ fontFamily: '"Playfair Display", "Montserrat", sans-serif' }}
       >
         {/* Background image with darker gradient overlay */}
