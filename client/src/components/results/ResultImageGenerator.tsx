@@ -26,8 +26,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
     if (!storyRef.current) return;
     
     try {
-      // Add a small delay to ensure all styles are applied
-      const dataUrl = await toPng(storyRef.current, { quality: 0.95 });
+      // Use higher quality settings for better resolution
+      const dataUrl = await toPng(storyRef.current, { 
+        quality: 1.0, 
+        pixelRatio: 3,  // Increase pixel ratio for higher resolution
+        canvasWidth: 1050, // 3x the visual width
+        canvasHeight: 1860 // 3x the visual height
+      });
       
       // Create a download link and trigger download
       const link = document.createElement('a');
@@ -36,8 +41,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       link.click();
       
       toast({
-        title: 'Image Downloaded',
-        description: 'Your personalized result image has been downloaded',
+        title: 'HD Image Downloaded',
+        description: 'Your high-quality personalized result image has been downloaded',
       });
     } catch (error) {
       console.error('Error generating image:', error);
