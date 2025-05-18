@@ -138,7 +138,7 @@ export default function Results() {
         <meta name="description" content={`Based on your personality and preferences, ${matchedScent.name} is your signature Fordive fragrance. ${matchedScent.mood}`} />
       </Helmet>
       
-      <div className="min-h-screen flex flex-col bg-secondary">
+      <div className="min-h-screen flex flex-col bg-[#F9F7F2]">
         <Navigation />
         
         <div className="flex-grow flex items-center justify-center pt-28 pb-12 px-4 sm:px-6 lg:px-8">
