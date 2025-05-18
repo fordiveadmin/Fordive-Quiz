@@ -256,7 +256,7 @@ export default function QuizContainer() {
               <div></div> // Empty div for spacing
             )}
             
-            {!isLastQuestion && getCurrentQuestion() && !('isMainQuestion' in getCurrentQuestion() && getCurrentQuestion().isMainQuestion) ? (
+            {!isLastQuestion ? (
               <Button
                 onClick={handleNext}
                 disabled={!isCurrentQuestionAnswered()}
