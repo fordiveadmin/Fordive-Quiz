@@ -141,7 +141,7 @@ export default function Results() {
       <div className="min-h-screen flex flex-col bg-secondary">
         <Navigation />
         
-        <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="flex-grow flex items-center justify-center pt-28 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl w-full space-y-12">
             <motion.div 
               initial={{ opacity: 0 }}
