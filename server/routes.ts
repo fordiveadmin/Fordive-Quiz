@@ -1,4 +1,4 @@
-import type { Express, Request, Response, NextFunction } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -11,8 +11,67 @@ import {
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import nodemailer from "nodemailer";
+import multer from "multer";
+import path from "path";
+import fs from "fs-extra";
+
+// Configure file upload storage
+const uploadDir = path.join(__dirname, "../public/uploads");
+fs.ensureDirSync(uploadDir); // Create upload directory if it doesn't exist
+
+const storage_upload = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ 
+  storage: storage_upload,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+  },
+  fileFilter: function (req: any, file: any, cb: any) {
+    // Accept only image files
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+      return cb(null, false);
+    }
+    return cb(null, true);
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files
+  app.use('/uploads', (req, res, next) => {
+    // Set proper cache headers for images
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    next();
+  }, express.static(uploadDir));
+
+  // Image Upload endpoint
+  app.post('/api/upload', upload.single('image'), (req: Request, res: Response) => {
+    try {
+      const file = req.file as Express.Multer.File;
+      if (!file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+      
+      // Return the file path that can be used to access the image
+      const filePath = `/uploads/${path.basename(file.path)}`;
+      return res.status(200).json({ 
+        success: true, 
+        filePath,
+        fileName: file.originalname,
+        fileSize: file.size
+      });
+    } catch (error: any) {
+      return res.status(500).json({ message: 'File upload failed', error: error.message });
+    }
+  });
   // Routes for API endpoints
   
   // Users
