@@ -24,14 +24,14 @@ interface Props {
 }
 
 export function ImageChoiceComponent({ question }: Props) {
-  const { answers, addAnswer } = useStore();
+  const { answers, setAnswer } = useStore();
   const [selectedOption, setSelectedOption] = useState<string | null>(
     answers[question.id] ? answers[question.id][0] : null
   );
 
   const handleSelect = (optionId: string, option: Option) => {
     setSelectedOption(optionId);
-    addAnswer(question.id, [optionId, option.text, option.scentMappings]);
+    setAnswer(question.id.toString(), [optionId, option.text, option.scentMappings]);
 
     // If this is in the QuizContainer component, auto navigation would happen here
   };

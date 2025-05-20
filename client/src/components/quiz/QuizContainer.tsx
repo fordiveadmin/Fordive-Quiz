@@ -170,6 +170,11 @@ export default function QuizContainer() {
       return <GenderChoice question={question as QuizQuestion} />;
     }
     
+    // Check for image_choice question type
+    if (question.type === 'image_choice') {
+      return <ImageChoiceComponent question={question as QuizQuestion} />;
+    }
+    
     // First check for layout type
     if (layout === 'grid') {
       return <GridLayout question={question as QuizQuestion} />;
