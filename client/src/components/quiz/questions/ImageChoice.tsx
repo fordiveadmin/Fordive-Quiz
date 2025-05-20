@@ -1,125 +1,101 @@
-import { useState } from 'react';
-import { useStore } from '@/store/quizStore';
-import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
-
-interface Option {
-  id: string;
-  text: string;
-  description?: string;
-  imageUrl?: string;
-  scentMappings: Record<string, number>;
-}
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface ImageChoiceProps {
   question: {
     id: number;
     text: string;
-    options: Option[];
+    options: {
+      id: string;
+      text: string;
+      imageUrl?: string;
+      description?: string;
+    }[];
   };
+  selectedOptionId: string | null;
+  onOptionSelect: (optionId: string) => void;
+  autoNavigate?: boolean;
 }
 
-export default function ImageChoice({ question }: ImageChoiceProps) {
-  const { answers, setAnswer } = useStore();
-  const selectedOption = answers[question.id]?.optionId;
+export function ImageChoice({ 
+  question, 
+  selectedOptionId, 
+  onOptionSelect,
+  autoNavigate = false 
+}: ImageChoiceProps) {
+  // Local state to handle selection animation before navigation
+  const [localSelectedId, setLocalSelectedId] = useState<string | null>(selectedOptionId);
 
-  const handleSelect = (optionId: string, option: Option) => {
-    setAnswer(
-      question.id.toString(),
-      {
-        optionId: optionId,
-        scentMappings: option.scentMappings,
-      }
-    );
+  useEffect(() => {
+    setLocalSelectedId(selectedOptionId);
+  }, [selectedOptionId]);
+
+  const handleOptionClick = (optionId: string) => {
+    setLocalSelectedId(optionId);
+    
+    if (autoNavigate) {
+      // Short delay for visual feedback before navigation
+      setTimeout(() => {
+        onOptionSelect(optionId);
+      }, 300);
+    } else {
+      onOptionSelect(optionId);
+    }
   };
 
-  // Determine if we should use the split or grid layout based on number of options
-  const isGridLayout = question.options.length > 2;
-  
   return (
-    <div className="w-full space-y-6">
-      <motion.h2 
-        className="text-2xl md:text-3xl font-playfair text-center mb-10 px-4" 
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {question.text}
-      </motion.h2>
-
-      {!isGridLayout ? (
-        // Split layout (half screen per option) - good for 2 options
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {question.options.map((option) => (
-            <motion.div
-              key={option.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className={`
-                relative flex flex-col items-center justify-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
-                ${option.id === selectedOption ? 
-                  'bg-[#1f1f1f] text-white' : 
-                  'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
-              `}
-              onClick={() => handleSelect(option.id, option)}
-              style={{ minHeight: '200px' }}
-            >
-              {/* Option Text */}
-              <h3 className="text-lg md:text-xl font-medium uppercase tracking-wide text-center mb-2" style={{ width: '100%', textAlign: 'center' }}>{option.text}</h3>
-              
-              {/* Description if available */}
-              {option.description && (
-                <p className="text-sm text-center">{option.description}</p>
-              )}
-              
-              {/* Selected indicator */}
-              {option.id === selectedOption && (
-                <div className="absolute right-4 top-4">
-                  <Check className="h-6 w-6 text-white" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      ) : (
-        // Grid layout for 3+ options
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {question.options.map((option) => (
-            <motion.div
-              key={option.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className={`
-                relative border rounded-lg p-6 cursor-pointer transition-all
-                ${option.id === selectedOption ? 
-                  'bg-[#f5f1e9] border-[#C89F65] shadow-md' : 
-                  'bg-white border-gray-200 hover:border-[#C89F65]'}
-              `}
-              onClick={() => handleSelect(option.id, option)}
-            >
-              <h3 className="text-lg font-medium uppercase text-center mb-2">{option.text}</h3>
-              
-              {/* Description if available */}
-              {option.description && (
-                <p className="text-sm text-gray-600">{option.description}</p>
-              )}
-              
-              {/* Selected indicator */}
-              {option.id === selectedOption && (
-                <div className="absolute right-4 top-4">
-                  <Check className="h-5 w-5 text-[#C89F65]" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      )}
+    <div className="w-full">
+      <h3 className="text-xl md:text-2xl font-medium mb-6">{question.text}</h3>
       
-      {/* Helper text */}
-      <div className="text-center text-sm text-gray-500 mt-4">
-        {selectedOption ? '' : 'Select one option to continue'}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {question.options.map((option) => (
+          <div
+            key={option.id}
+            onClick={() => handleOptionClick(option.id)}
+            className={cn(
+              "group relative flex flex-col items-center cursor-pointer rounded-xl border-2 transition-all duration-300 h-full overflow-hidden",
+              localSelectedId === option.id
+                ? "border-primary shadow-md" 
+                : "border-border hover:border-primary/50"
+            )}
+          >
+            {/* Image container */}
+            <div className="relative w-full aspect-square overflow-hidden">
+              {option.imageUrl ? (
+                <img 
+                  src={option.imageUrl} 
+                  alt={option.text}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="w-full h-full bg-muted flex items-center justify-center">
+                  <p className="text-muted-foreground">No image</p>
+                </div>
+              )}
+              
+              {/* Selection indicator */}
+              {localSelectedId === option.id && (
+                <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                  <div className="bg-primary text-white p-2 rounded-full">
+                    <Check className="h-6 w-6" />
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Option text */}
+            <div className={cn(
+              "w-full p-4 text-center transition-colors",
+              localSelectedId === option.id ? "bg-primary/10" : "bg-card"
+            )}>
+              <h4 className="font-medium">{option.text}</h4>
+              {option.description && (
+                <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

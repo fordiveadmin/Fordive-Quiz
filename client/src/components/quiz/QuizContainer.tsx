@@ -30,6 +30,7 @@ interface QuizQuestion {
     id: string;
     text: string;
     description?: string;
+    imageUrl?: string;
     scentMappings: Record<string, number>;
   }[];
 }
@@ -185,7 +186,9 @@ export default function QuizContainer() {
     // If no special layout, use the standard components based on type
     switch (question.type) {
       case 'multiple_choice':
-        return <ImageChoice question={question as QuizQuestion} />;
+        return <MultipleChoice question={question as QuizQuestion} selectedOptionId={answers[question.id] || null} onOptionSelect={(optionId) => handleOptionSelect(question.id, optionId)} autoNavigate={question.isMainQuestion} />;
+      case 'image_choice':
+        return <ImageChoice question={question as QuizQuestion} selectedOptionId={answers[question.id] || null} onOptionSelect={(optionId) => handleOptionSelect(question.id, optionId)} autoNavigate={question.isMainQuestion} />;
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;
       case 'zodiac':
