@@ -9,14 +9,11 @@ import {
   type InsertZodiacMapping,
   type QuizResult,
   type InsertQuizResult,
-  type Image,
-  type InsertImage,
   users, 
   scents, 
   questions, 
   zodiacMappings, 
-  quizResults,
-  images
+  quizResults
 } from "@shared/schema";
 
 import fs from 'fs';
@@ -51,11 +48,6 @@ export interface IStorage {
   updateQuestion(id: number, question: Partial<InsertQuestion>): Promise<Question | undefined>;
   deleteQuestion(id: number): Promise<boolean>;
   
-  // Image operations
-  getImage(id: number): Promise<Image | undefined>;
-  createImage(image: InsertImage): Promise<Image>;
-  deleteImage(id: number): Promise<boolean>;
-  
   // Scent operations
   getScents(): Promise<Scent[]>;
   getScent(id: number): Promise<Scent | undefined>;
@@ -88,14 +80,12 @@ export class MemStorage implements IStorage {
   private scents: Map<number, Scent>;
   private zodiacMappings: Map<number, ZodiacMapping>;
   private quizResults: Map<number, QuizResult>;
-  private images: Map<number, Image>;
   
   private userId: number;
   private questionId: number;
   private scentId: number;
   private zodiacMappingId: number;
   private quizResultId: number;
-  private imageId: number;
   
   private dataDir: string;
   
@@ -105,14 +95,12 @@ export class MemStorage implements IStorage {
     this.scents = new Map();
     this.zodiacMappings = new Map();
     this.quizResults = new Map();
-    this.images = new Map();
     
     this.userId = 1;
     this.questionId = 1;
     this.scentId = 1;
     this.zodiacMappingId = 1;
     this.quizResultId = 1;
-    this.imageId = 1;
     
     this.dataDir = path.join(process.cwd(), 'client', 'src', 'data');
     this.loadData();
@@ -241,23 +229,6 @@ export class MemStorage implements IStorage {
     return newUser;
   }
   
-  // Image methods
-  async getImage(id: number): Promise<Image | undefined> {
-    return this.images.get(id);
-  }
-  
-  async createImage(image: InsertImage): Promise<Image> {
-    const id = this.imageId++;
-    const timestamp = new Date();
-    const newImage: Image = { ...image, id, createdAt: timestamp };
-    this.images.set(id, newImage);
-    return newImage;
-  }
-  
-  async deleteImage(id: number): Promise<boolean> {
-    return this.images.delete(id);
-  }
-
   // Question methods
   async getQuestions(): Promise<Question[]> {
     return Array.from(this.questions.values())
@@ -457,28 +428,6 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
-  }
-  
-  // Image operations
-  async getImage(id: number): Promise<Image | undefined> {
-    const [image] = await db.select().from(images).where(eq(images.id, id));
-    return image || undefined;
-  }
-  
-  async createImage(imageData: InsertImage): Promise<Image> {
-    const [image] = await db
-      .insert(images)
-      .values(imageData)
-      .returning();
-    return image;
-  }
-  
-  async deleteImage(id: number): Promise<boolean> {
-    const result = await db
-      .delete(images)
-      .where(eq(images.id, id))
-      .returning();
-    return result.length > 0;
   }
   
   // Question operations

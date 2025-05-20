@@ -78,14 +78,12 @@ const optionSchema = z.object({
   id: z.string().optional(),
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
-  imageUrl: z.string().optional(),
-  imageId: z.number().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
   isMainQuestion: z.boolean().default(false),
@@ -227,7 +225,7 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
       },
     });
     
@@ -236,7 +234,6 @@ export default function AdminQuestions() {
         id: `option_${Date.now()}`, 
         text: '', 
         description: '', 
-        imageUrl: '',
         scentMappings: {} 
       };
       setOptions([...options, newOption]);
@@ -313,7 +310,6 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="image_choice">Image Choice</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -521,80 +517,6 @@ export default function AdminQuestions() {
                       placeholder="Description"
                     />
                   </div>
-                  
-                  {form.watch('type') === 'image_choice' && (
-                    <div>
-                      <Label htmlFor={`option-imageUrl-${index}`}>Gambar Opsi</Label>
-                      <div className="space-y-2">
-                        <Input
-                          id={`option-imageUrl-${index}`}
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onload = async (event) => {
-                                // Convert file to base64
-                                const base64String = event.target?.result as string;
-                                
-                                try {
-                                  // Upload image to database
-                                  const response = await apiRequest('POST', '/api/images', {
-                                    filename: file.name,
-                                    data: base64String,
-                                    mimeType: file.type
-                                  });
-                                  
-                                  const imageData = await response.json();
-                                  
-                                  // Update the option with image ID and temporary URL for preview
-                                  const newOptions = [...options];
-                                  newOptions[index].imageId = imageData.id;
-                                  newOptions[index].imageUrl = base64String; // for preview purposes
-                                  setOptions(newOptions);
-                                  
-                                  form.setValue(`options.${index}`, {
-                                    ...options[index],
-                                    imageId: imageData.id,
-                                    imageUrl: base64String
-                                  });
-                                  // We've already set the complete option object above
-                                  
-                                  toast({
-                                    title: 'Sukses',
-                                    description: 'Gambar berhasil diupload',
-                                  });
-                                } catch (error) {
-                                  console.error('Error uploading image:', error);
-                                  toast({
-                                    title: 'Error',
-                                    description: 'Gagal mengupload gambar',
-                                    variant: 'destructive',
-                                  });
-                                }
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                        
-                        {option.imageUrl && (
-                          <div className="mt-2 rounded-md overflow-hidden border border-border">
-                            <img 
-                              src={option.imageUrl} 
-                              alt="Preview" 
-                              className="w-full h-40 object-cover"
-                            />
-                          </div>
-                        )}
-                        
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Upload gambar untuk ditampilkan pada opsi ini
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
                 
                 <div>
