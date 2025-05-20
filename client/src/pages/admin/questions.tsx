@@ -50,6 +50,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -201,14 +202,10 @@ export default function AdminQuestions() {
   
   // Form for adding/editing questions
   const QuestionForm = ({ isEdit = false, onClose }: { isEdit?: boolean; onClose: () => void }) => {
-    const [questionType, setQuestionType] = useState<string>(
-      isEdit && currentQuestion?.type ? currentQuestion.type : 'multiple_choice'
-    );
-    
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
-        [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
+        [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -230,7 +227,7 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
       },
     });
     
@@ -242,36 +239,59 @@ export default function AdminQuestions() {
         imageUrl: '',
         scentMappings: {} 
       };
-      setOptions([...options, newOption]);
-      const currentOptions = form.getValues('options');
-      form.setValue('options', [...currentOptions, newOption]);
+      
+      // Log current state before update
+      console.log("Before adding option - current options:", JSON.stringify(options));
+      
+      // Create deep copy of options and add new option
+      const newOptions = [...options.map(opt => ({...opt})), newOption];
+      
+      // Update state
+      setOptions(newOptions);
+      
+      // Update form values
+      form.setValue('options', newOptions);
+      
+      console.log("After adding option - new options:", JSON.stringify(newOptions));
     };
     
     const removeOption = (index: number) => {
-      const newOptions = [...options];
+      console.log("Removing option at index:", index);
+      
+      // Buat salinan baru dari array options dengan cara yang aman
+      const newOptions = [...options.map(opt => ({...opt}))];
       newOptions.splice(index, 1);
+      
+      console.log("New options after removal:", JSON.stringify(newOptions));
+      
+      // Update state options
       setOptions(newOptions);
+      
+      // Update nilai form
       form.setValue('options', newOptions);
     };
     
     const updateScentMapping = (optionIndex: number, scentName: string, value: number) => {
-      const newOptions = [...options];
-      newOptions[optionIndex].scentMappings[scentName] = value;
-      setOptions(newOptions);
-      form.setValue('options', newOptions);
+      // Buat salinan baru dari array options dengan cara yang aman
+      const newOptions = [...options.map(opt => ({...opt}))];
+      
+      // Update nilai scent mapping
+      if (newOptions[optionIndex]) {
+        newOptions[optionIndex].scentMappings[scentName] = value;
+        
+        // Update state options
+        setOptions(newOptions);
+        
+        // Update form values secara aman
+        form.setValue('options', newOptions);
+      }
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
       // Pastikan data yang dikirim valid dan layout disertakan
-      // Gunakan options state langsung untuk memastikan data gambar terupload
-      // Dan pastikan tipe pertanyaan sesuai dengan yang kita inginkan
-      
-      // Override tipe pertanyaan dengan nilai dari state lokal yang lebih dapat diandalkan
       const formattedData = {
         ...data,
-        type: questionType, // Paksa gunakan questionType dari state lokal
-        layout: data.layout || 'standard', // Pastikan nilai layout selalu disertakan
-        options: options // Gunakan options dari state lokal yang sudah diupdate saat upload gambar
+        layout: data.layout || 'standard' // Pastikan nilai layout selalu disertakan
       };
       
       console.log('Form data to submit:', formattedData);
@@ -311,13 +331,8 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={(value) => {
-                      // Update both the form field and our local state
-                      field.onChange(value);
-                      setQuestionType(value);
-                    }}
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
-                    value={questionType}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -327,7 +342,7 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="image_choice">Image Choice</SelectItem>
+                      <SelectItem value="image_choice">Image Options</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -536,115 +551,71 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {(form.watch('type') === 'image_choice' || questionType === 'image_choice') && (
-                    <div className="space-y-3">
-                      <div>
-                        <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
-                        <div className="flex mt-1">
-                          <Input
-                            id={`option-imageUrl-${index}`}
-                            value={option.imageUrl || ''}
-                            onChange={(e) => {
-                              const newOptions = [...options];
-                              newOptions[index].imageUrl = e.target.value;
-                              setOptions(newOptions);
-                              form.setValue(`options.${index}.imageUrl`, e.target.value);
-                            }}
-                            placeholder="https://example.com/image.jpg"
-                            className="flex-1"
-                          />
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Masukkan URL gambar untuk ditampilkan pada opsi ini
-                        </p>
-                      </div>
-                      
-                      {/* Image upload option */}
-                      <div className="mt-2">
-                        <Label>Atau Upload Gambar</Label>
-                        <div className="mt-1">
-                          <div className="flex items-center space-x-2">
-                            <Input 
-                              type="file" 
-                              accept="image/*"
-                              id={`image-upload-${index}`}
-                              onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (!file) return;
-                                
-                                // Create a FormData object to send the file
-                                const formData = new FormData();
-                                formData.append('image', file);
-                                
-                                try {
-                                  // Show loading state
-                                  toast({
-                                    title: 'Uploading...',
-                                    description: 'Mohon tunggu, gambar sedang diupload.',
-                                  });
-                                  
-                                  // Upload the image
-                                  const response = await fetch('/api/upload/image', {
-                                    method: 'POST',
-                                    body: formData,
-                                  });
-                                  
-                                  if (!response.ok) {
-                                    throw new Error('Upload gagal');
-                                  }
-                                  
-                                  const data = await response.json();
-                                  
-                                  // Update the imageUrl with the uploaded image URL
-                                  const newOptions = [...options];
-                                  newOptions[index].imageUrl = data.imageUrl;
-                                  setOptions(newOptions);
-                                  
-                                  // Pastikan juga update data di form
-                                  form.setValue(`options.${index}.imageUrl`, data.imageUrl);
-                                  
-                                  // Pastikan question type tetap "image_choice" jika sudah dipilih
-                                  if (questionType === 'image_choice') {
-                                    form.setValue('type', 'image_choice');
-                                  }
-                                  
-                                  toast({
-                                    title: 'Success',
-                                    description: 'Gambar berhasil diupload!',
-                                  });
-                                } catch (error) {
-                                  console.error('Error uploading image:', error);
-                                  toast({
-                                    title: 'Error',
-                                    description: 'Gagal mengupload gambar. Silahkan coba lagi.',
-                                    variant: 'destructive',
-                                  });
-                                }
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Pilih file gambar dari komputer anda (JPG, PNG, GIF)
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Preview the image if available */}
-                      {option.imageUrl && (
-                        <div className="mt-2">
-                          <p className="text-sm font-medium mb-1">Preview:</p>
-                          <div className="border rounded-md overflow-hidden h-40 w-40">
-                            <img 
-                              src={option.imageUrl} 
-                              alt="Preview" 
-                              className="h-full w-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/a0aec0?text=Image+Not+Found';
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
+                  {/* Image upload field - shown only when question type is image_choice */}
+                  {form.watch('type') === 'image_choice' && (
+                    <div className="mt-2">
+                      <ImageUploadField 
+                        label="Option Image"
+                        currentImageUrl={option.imageUrl}
+                        onChange={(imageUrl) => {
+                          console.log("Image upload triggered for index:", index);
+                          console.log("Current options:", JSON.stringify(options));
+                          console.log("Current question type:", form.getValues("type"));
+                          
+                          // Pastikan tipe pertanyaan tetap image_choice
+                          if (form.getValues("type") !== "image_choice") {
+                            form.setValue("type", "image_choice");
+                          }
+                          
+                          // Buat salinan baru dari array options dengan cara yang aman
+                          const newOptions = [...options.map(opt => ({...opt}))];
+                          console.log("New options before update:", JSON.stringify(newOptions));
+                          
+                          // Update imageUrl di opsi yang sesuai
+                          if (newOptions[index]) {
+                            newOptions[index].imageUrl = imageUrl;
+                            console.log("Updated options:", JSON.stringify(newOptions));
+                            
+                            // Update state options
+                            setOptions(newOptions);
+                            
+                            // Update form values satu per satu untuk menghindari reset
+                            form.setValue(`options.${index}.imageUrl`, imageUrl);
+                            
+                            console.log("Form values after update:", form.getValues('options'));
+                            console.log("Question type after update:", form.getValues("type"));
+                          } else {
+                            console.error("Option index not found:", index);
+                          }
+                        }}
+                        onClear={() => {
+                          console.log("Clear image triggered for index:", index);
+                          console.log("Current question type:", form.getValues("type"));
+                          
+                          // Pastikan tipe pertanyaan tetap image_choice
+                          if (form.getValues("type") !== "image_choice") {
+                            form.setValue("type", "image_choice");
+                          }
+                          
+                          // Buat salinan baru dari array options dengan cara yang aman
+                          const newOptions = [...options.map(opt => ({...opt}))];
+                          
+                          // Update imageUrl di opsi yang sesuai
+                          if (newOptions[index]) {
+                            newOptions[index].imageUrl = '';
+                            
+                            // Update state options
+                            setOptions(newOptions);
+                            
+                            // Update form values satu per satu untuk menghindari reset
+                            form.setValue(`options.${index}.imageUrl`, '');
+                            
+                            console.log("Question type after clear:", form.getValues("type"));
+                          } else {
+                            console.error("Option index not found:", index);
+                          }
+                        }}
+                      />
                     </div>
                   )}
                 </div>

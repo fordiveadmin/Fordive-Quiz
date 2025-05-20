@@ -9,6 +9,7 @@ import Checkbox from '@/components/quiz/questions/Checkbox';
 import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
 import ImageChoice from '@/components/quiz/questions/ImageChoice';
+import { ImageChoiceComponent } from '@/components/quiz/questions/ImageChoiceComponent';
 import GenderChoice from '@/components/quiz/questions/GenderChoice';
 import GridLayout from '@/components/quiz/layouts/GridLayout';
 import CarouselLayout from '@/components/quiz/layouts/CarouselLayout';
@@ -30,7 +31,6 @@ interface QuizQuestion {
     id: string;
     text: string;
     description?: string;
-    imageUrl?: string;
     scentMappings: Record<string, number>;
   }[];
 }
@@ -170,6 +170,11 @@ export default function QuizContainer() {
       return <GenderChoice question={question as QuizQuestion} />;
     }
     
+    // Check for image_choice question type
+    if (question.type === 'image_choice') {
+      return <ImageChoiceComponent question={question as QuizQuestion} />;
+    }
+    
     // First check for layout type
     if (layout === 'grid') {
       return <GridLayout question={question as QuizQuestion} />;
@@ -186,8 +191,6 @@ export default function QuizContainer() {
     // If no special layout, use the standard components based on type
     switch (question.type) {
       case 'multiple_choice':
-        return <MultipleChoice question={question as QuizQuestion} />;
-      case 'image_choice':
         return <ImageChoice question={question as QuizQuestion} />;
       case 'checkbox':
         return <Checkbox question={question as QuizQuestion} />;

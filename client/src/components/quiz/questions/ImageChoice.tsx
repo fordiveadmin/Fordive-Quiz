@@ -1,127 +1,126 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Check } from "lucide-react";
+import { Check } from 'lucide-react';
+
+interface Option {
+  id: string;
+  text: string;
+  description?: string;
+  imageUrl?: string;
+  scentMappings: Record<string, number>;
+}
 
 interface ImageChoiceProps {
   question: {
     id: number;
     text: string;
-    isMainQuestion?: boolean;
-    options: {
-      id: string;
-      text: string;
-      imageUrl?: string;
-      description?: string;
-      scentMappings: Record<string, number>;
-    }[];
+    options: Option[];
   };
 }
 
-// Export as default to match other components
 export default function ImageChoice({ question }: ImageChoiceProps) {
-  const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  
-  // Set initial state from stored answers
-  useEffect(() => {
-    if (answers[question.id]) {
-      setSelectedOption(answers[question.id].optionId);
-    }
-  }, [answers, question.id]);
-  
-  const handleSelect = (optionId: string) => {
-    setSelectedOption(optionId);
-    
-    // Create answer with scent mappings
-    const option = question.options.find(opt => opt.id === optionId);
-    if (option) {
-      // Store both the option ID and its scent mappings
-      const answer = {
+  const { answers, setAnswer } = useStore();
+  const selectedOption = answers[question.id]?.optionId;
+
+  const handleSelect = (optionId: string, option: Option) => {
+    setAnswer(
+      question.id.toString(),
+      {
         optionId: optionId,
-        scentMappings: option.scentMappings
-      };
-      
-      setAnswer(question.id.toString(), answer);
-      
-      // Auto-proceed to next question if this is a main question
-      if (question.isMainQuestion) {
-        // Use setTimeout to give visual feedback that the option was selected
-        setTimeout(() => {
-          setCurrentQuestion(currentQuestion + 1);
-        }, 300);
+        scentMappings: option.scentMappings,
       }
-    }
+    );
   };
-  
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-  
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+
+  // Determine if we should use the split or grid layout based on number of options
+  const isGridLayout = question.options.length > 2;
   
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl md:text-3xl font-playfair font-semibold text-center text-foreground">
-        {question.text}
-      </h2>
-      
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+    <div className="w-full space-y-6">
+      <motion.h2 
+        className="text-2xl md:text-3xl font-playfair text-center mb-10 px-4" 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        {question.options.map((option) => (
-          <motion.div
-            key={option.id}
-            variants={item}
-            className={cn(
-              "group border-2 hover:border-[#C89F65] rounded-lg overflow-hidden cursor-pointer transition duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col h-full",
-              selectedOption === option.id ? "border-[#C89F65] bg-[#C89F65]/10" : "border-border"
-            )}
-            onClick={() => handleSelect(option.id)}
-          >
-            {/* Image container */}
-            {option.imageUrl && (
-              <div className="relative w-full aspect-square overflow-hidden">
-                <img 
-                  src={option.imageUrl} 
-                  alt={option.text}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                
-                {/* Selection indicator */}
-                {selectedOption === option.id && (
-                  <div className="absolute inset-0 bg-[#C89F65]/20 flex items-center justify-center">
-                    <div className="bg-[#C89F65] text-white p-2 rounded-full">
-                      <Check className="h-6 w-6" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {/* Option text */}
-            <div className="p-4">
-              <h3 className="font-semibold font-playfair">{option.text}</h3>
+        {question.text}
+      </motion.h2>
+
+      {!isGridLayout ? (
+        // Split layout (half screen per option) - good for 2 options
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {question.options.map((option) => (
+            <motion.div
+              key={option.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className={`
+                relative flex flex-col items-center justify-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
+                ${option.id === selectedOption ? 
+                  'bg-[#1f1f1f] text-white' : 
+                  'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
+              `}
+              onClick={() => handleSelect(option.id, option)}
+              style={{ minHeight: '200px' }}
+            >
+              {/* Option Text */}
+              <h3 className="text-lg md:text-xl font-medium uppercase tracking-wide text-center mb-2" style={{ width: '100%', textAlign: 'center' }}>{option.text}</h3>
+              
+              {/* Description if available */}
               {option.description && (
-                <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
+                <p className="text-sm text-center">{option.description}</p>
               )}
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+              
+              {/* Selected indicator */}
+              {option.id === selectedOption && (
+                <div className="absolute right-4 top-4">
+                  <Check className="h-6 w-6 text-white" />
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        // Grid layout for 3+ options
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {question.options.map((option) => (
+            <motion.div
+              key={option.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className={`
+                relative border rounded-lg p-6 cursor-pointer transition-all
+                ${option.id === selectedOption ? 
+                  'bg-[#f5f1e9] border-[#C89F65] shadow-md' : 
+                  'bg-white border-gray-200 hover:border-[#C89F65]'}
+              `}
+              onClick={() => handleSelect(option.id, option)}
+            >
+              <h3 className="text-lg font-medium uppercase text-center mb-2">{option.text}</h3>
+              
+              {/* Description if available */}
+              {option.description && (
+                <p className="text-sm text-gray-600">{option.description}</p>
+              )}
+              
+              {/* Selected indicator */}
+              {option.id === selectedOption && (
+                <div className="absolute right-4 top-4">
+                  <Check className="h-5 w-5 text-[#C89F65]" />
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      )}
+      
+      {/* Helper text */}
+      <div className="text-center text-sm text-gray-500 mt-4">
+        {selectedOption ? '' : 'Select one option to continue'}
+      </div>
     </div>
   );
 }
