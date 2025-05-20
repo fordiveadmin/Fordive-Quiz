@@ -548,11 +548,31 @@ export default function AdminQuestions() {
                                   });
                                   
                                   console.log('Image upload response status:', response.status);
+                                  
+                                  if (!response.ok) {
+                                    throw new Error(`Image upload failed with status: ${response.status}`);
+                                  }
+                                  
                                   const responseText = await response.text();
                                   console.log('Image upload response body:', responseText);
                                   
+                                  if (!responseText) {
+                                    throw new Error('Empty response from server');
+                                  }
+                                  
                                   // Parse the response text to JSON
-                                  const imageData = responseText ? JSON.parse(responseText) : {};
+                                  let imageData = {};
+                                  try {
+                                    imageData = JSON.parse(responseText);
+                                    console.log('Parsed image data:', imageData);
+                                    
+                                    if (!imageData.id) {
+                                      throw new Error('Invalid image response: missing ID');
+                                    }
+                                  } catch (parseError) {
+                                    console.error('Error parsing image response:', parseError);
+                                    throw new Error('Invalid response format');
+                                  }
                                   
                                   // Update the option with image ID and temporary URL for preview
                                   const newOptions = [...options];
