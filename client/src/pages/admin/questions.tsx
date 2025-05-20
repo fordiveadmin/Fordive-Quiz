@@ -50,7 +50,6 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -227,7 +226,7 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
       },
     });
     
@@ -239,52 +238,23 @@ export default function AdminQuestions() {
         imageUrl: '',
         scentMappings: {} 
       };
-      
-      // Log current state before update
-      console.log("Before adding option - current options:", JSON.stringify(options));
-      
-      // Create deep copy of options and add new option
-      const newOptions = [...options.map(opt => ({...opt})), newOption];
-      
-      // Update state
-      setOptions(newOptions);
-      
-      // Update form values
-      form.setValue('options', newOptions);
-      
-      console.log("After adding option - new options:", JSON.stringify(newOptions));
+      setOptions([...options, newOption]);
+      const currentOptions = form.getValues('options');
+      form.setValue('options', [...currentOptions, newOption]);
     };
     
     const removeOption = (index: number) => {
-      console.log("Removing option at index:", index);
-      
-      // Buat salinan baru dari array options dengan cara yang aman
-      const newOptions = [...options.map(opt => ({...opt}))];
+      const newOptions = [...options];
       newOptions.splice(index, 1);
-      
-      console.log("New options after removal:", JSON.stringify(newOptions));
-      
-      // Update state options
       setOptions(newOptions);
-      
-      // Update nilai form
       form.setValue('options', newOptions);
     };
     
     const updateScentMapping = (optionIndex: number, scentName: string, value: number) => {
-      // Buat salinan baru dari array options dengan cara yang aman
-      const newOptions = [...options.map(opt => ({...opt}))];
-      
-      // Update nilai scent mapping
-      if (newOptions[optionIndex]) {
-        newOptions[optionIndex].scentMappings[scentName] = value;
-        
-        // Update state options
-        setOptions(newOptions);
-        
-        // Update form values secara aman
-        form.setValue('options', newOptions);
-      }
+      const newOptions = [...options];
+      newOptions[optionIndex].scentMappings[scentName] = value;
+      setOptions(newOptions);
+      form.setValue('options', newOptions);
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
@@ -342,7 +312,7 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="image_choice">Image Options</SelectItem>
+                      <SelectItem value="image_choice">Image Choice</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -551,71 +521,23 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {/* Image upload field - shown only when question type is image_choice */}
                   {form.watch('type') === 'image_choice' && (
-                    <div className="mt-2">
-                      <ImageUploadField 
-                        label="Option Image"
-                        currentImageUrl={option.imageUrl}
-                        onChange={(imageUrl) => {
-                          console.log("Image upload triggered for index:", index);
-                          console.log("Current options:", JSON.stringify(options));
-                          console.log("Current question type:", form.getValues("type"));
-                          
-                          // Pastikan tipe pertanyaan tetap image_choice
-                          if (form.getValues("type") !== "image_choice") {
-                            form.setValue("type", "image_choice");
-                          }
-                          
-                          // Buat salinan baru dari array options dengan cara yang aman
-                          const newOptions = [...options.map(opt => ({...opt}))];
-                          console.log("New options before update:", JSON.stringify(newOptions));
-                          
-                          // Update imageUrl di opsi yang sesuai
-                          if (newOptions[index]) {
-                            newOptions[index].imageUrl = imageUrl;
-                            console.log("Updated options:", JSON.stringify(newOptions));
-                            
-                            // Update state options
-                            setOptions(newOptions);
-                            
-                            // Update form values satu per satu untuk menghindari reset
-                            form.setValue(`options.${index}.imageUrl`, imageUrl);
-                            
-                            console.log("Form values after update:", form.getValues('options'));
-                            console.log("Question type after update:", form.getValues("type"));
-                          } else {
-                            console.error("Option index not found:", index);
-                          }
+                    <div>
+                      <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
+                      <Input
+                        id={`option-imageUrl-${index}`}
+                        value={option.imageUrl || ''}
+                        onChange={(e) => {
+                          const newOptions = [...options];
+                          newOptions[index].imageUrl = e.target.value;
+                          setOptions(newOptions);
+                          form.setValue(`options.${index}.imageUrl`, e.target.value);
                         }}
-                        onClear={() => {
-                          console.log("Clear image triggered for index:", index);
-                          console.log("Current question type:", form.getValues("type"));
-                          
-                          // Pastikan tipe pertanyaan tetap image_choice
-                          if (form.getValues("type") !== "image_choice") {
-                            form.setValue("type", "image_choice");
-                          }
-                          
-                          // Buat salinan baru dari array options dengan cara yang aman
-                          const newOptions = [...options.map(opt => ({...opt}))];
-                          
-                          // Update imageUrl di opsi yang sesuai
-                          if (newOptions[index]) {
-                            newOptions[index].imageUrl = '';
-                            
-                            // Update state options
-                            setOptions(newOptions);
-                            
-                            // Update form values satu per satu untuk menghindari reset
-                            form.setValue(`options.${index}.imageUrl`, '');
-                            
-                            console.log("Question type after clear:", form.getValues("type"));
-                          } else {
-                            console.error("Option index not found:", index);
-                          }
-                        }}
+                        placeholder="https://example.com/image.jpg"
                       />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Masukkan URL gambar untuk ditampilkan pada opsi ini
+                      </p>
                     </div>
                   )}
                 </div>
