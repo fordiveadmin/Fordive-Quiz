@@ -554,8 +554,12 @@ export default function AdminQuestions() {
                                   newOptions[index].imageUrl = base64String; // for preview purposes
                                   setOptions(newOptions);
                                   
-                                  form.setValue(`options.${index}.imageId`, imageData.id);
-                                  form.setValue(`options.${index}.imageUrl`, base64String);
+                                  form.setValue(`options.${index}`, {
+                                    ...options[index],
+                                    imageId: imageData.id,
+                                    imageUrl: base64String
+                                  });
+                                  // We've already set the complete option object above
                                   
                                   toast({
                                     title: 'Sukses',
