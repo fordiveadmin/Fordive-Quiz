@@ -50,6 +50,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { ImageUploadField } from '@/components/admin/ImageUploadField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -520,34 +521,25 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {/* Image URL field - shown only when question type is image_choice */}
+                  {/* Image upload field - shown only when question type is image_choice */}
                   {form.watch('type') === 'image_choice' && (
                     <div className="mt-2">
-                      <Label htmlFor={`option-image-${index}`}>Image URL</Label>
-                      <Input
-                        id={`option-image-${index}`}
-                        value={option.imageUrl || ''}
-                        onChange={(e) => {
+                      <ImageUploadField 
+                        label="Option Image"
+                        currentImageUrl={option.imageUrl}
+                        onChange={(imageUrl) => {
                           const newOptions = [...options];
-                          newOptions[index].imageUrl = e.target.value;
+                          newOptions[index].imageUrl = imageUrl;
                           setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, e.target.value);
+                          form.setValue(`options.${index}.imageUrl`, imageUrl);
                         }}
-                        placeholder="https://example.com/image.jpg"
+                        onClear={() => {
+                          const newOptions = [...options];
+                          newOptions[index].imageUrl = '';
+                          setOptions(newOptions);
+                          form.setValue(`options.${index}.imageUrl`, '');
+                        }}
                       />
-                      {option.imageUrl && (
-                        <div className="mt-2 border rounded p-2">
-                          <p className="text-xs text-muted-foreground mb-1">Image Preview:</p>
-                          <img 
-                            src={option.imageUrl} 
-                            alt={option.text}
-                            className="w-full h-32 object-cover rounded"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://placehold.co/400x300?text=Image+Not+Found';
-                            }}
-                          />
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
