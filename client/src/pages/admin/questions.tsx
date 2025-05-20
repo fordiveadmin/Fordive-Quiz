@@ -528,16 +528,24 @@ export default function AdminQuestions() {
                         label="Option Image"
                         currentImageUrl={option.imageUrl}
                         onChange={(imageUrl) => {
-                          const newOptions = [...options];
+                          // Buat salinan baru dari array options dengan cara yang aman
+                          const newOptions = JSON.parse(JSON.stringify(options));
+                          // Update imageUrl di opsi yang sesuai
                           newOptions[index].imageUrl = imageUrl;
+                          // Update state options
                           setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, imageUrl);
+                          // Update nilai form
+                          form.setValue('options', newOptions);
                         }}
                         onClear={() => {
-                          const newOptions = [...options];
+                          // Buat salinan baru dari array options dengan cara yang aman
+                          const newOptions = JSON.parse(JSON.stringify(options));
+                          // Update imageUrl di opsi yang sesuai
                           newOptions[index].imageUrl = '';
+                          // Update state options
                           setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, '');
+                          // Update nilai form
+                          form.setValue('options', newOptions);
                         }}
                       />
                     </div>
