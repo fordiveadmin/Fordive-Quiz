@@ -226,7 +226,7 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
       },
     });
     
@@ -312,6 +312,7 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
+                      <SelectItem value="image_choice">Image Choice</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
