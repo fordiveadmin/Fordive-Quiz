@@ -540,13 +540,19 @@ export default function AdminQuestions() {
                                 
                                 try {
                                   // Upload image to database
+                                  console.log('Uploading image with size:', base64String.length);
                                   const response = await apiRequest('POST', '/api/images', {
                                     filename: file.name,
                                     data: base64String,
                                     mimeType: file.type
                                   });
                                   
-                                  const imageData = await response.json();
+                                  console.log('Image upload response status:', response.status);
+                                  const responseText = await response.text();
+                                  console.log('Image upload response body:', responseText);
+                                  
+                                  // Parse the response text to JSON
+                                  const imageData = responseText ? JSON.parse(responseText) : {};
                                   
                                   // Update the option with image ID and temporary URL for preview
                                   const newOptions = [...options];
