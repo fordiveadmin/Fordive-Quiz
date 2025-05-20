@@ -243,14 +243,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/quiz-results', async (req: Request, res: Response) => {
     try {
       const resultData = insertQuizResultSchema.parse(req.body);
-      const result = await storage.createQuizResult(resultData);
-      return res.status(201).json(result);
+      
+      // Check if this user already has quiz results
+      const existingResult = await storage.getLatestQuizResultByUserId(resultData.userId);
+      
+      let result;
+      
+      if (existingResult) {
+        // Update existing result instead of creating a new one
+        result = await storage.updateQuizResult(existingResult.id, resultData);
+        return res.status(200).json(result);
+      } else {
+        // Create a new result if no existing one found
+        result = await storage.createQuizResult(resultData);
+        return res.status(201).json(result);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      return res.status(500).json({ message: 'Failed to create quiz result' });
+      return res.status(500).json({ message: 'Failed to process quiz result' });
     }
   });
   

@@ -19,7 +19,7 @@ import {
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { db } from './db';
 
 const readFile = promisify(fs.readFile);
@@ -572,14 +572,14 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getLatestQuizResultByUserId(userId: number): Promise<QuizResult | undefined> {
-    const [result] = await db
+    const results = await db
       .select()
       .from(quizResults)
       .where(eq(quizResults.userId, userId))
-      .orderBy(desc(quizResults.createdAt))
+      .orderBy({ createdAt: 'desc' })
       .limit(1);
     
-    return result || undefined;
+    return results[0] || undefined;
   }
   
   async updateQuizResult(id: number, updateResult: Partial<InsertQuizResult>): Promise<QuizResult | undefined> {
