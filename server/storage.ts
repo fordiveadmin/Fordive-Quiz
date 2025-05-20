@@ -67,6 +67,8 @@ export interface IStorage {
   getQuizResult(id: number): Promise<QuizResult | undefined>;
   getQuizResultsByUserId(userId: number): Promise<QuizResult[]>;
   createQuizResult(result: InsertQuizResult): Promise<QuizResult>;
+  getLatestQuizResultByUserId(userId: number): Promise<QuizResult | undefined>;
+  updateQuizResult(id: number, result: Partial<InsertQuizResult>): Promise<QuizResult | undefined>;
   
   // Analytics operations
   getAllQuizResultsWithUserDetails(): Promise<QuizResultWithUserDetails[]>;
@@ -348,6 +350,34 @@ export class MemStorage implements IStorage {
     return Array.from(this.quizResults.values()).filter(result => result.userId === userId);
   }
   
+  async getLatestQuizResultByUserId(userId: number): Promise<QuizResult | undefined> {
+    const userResults = await this.getQuizResultsByUserId(userId);
+    if (userResults.length === 0) {
+      return undefined;
+    }
+    
+    // Sort by createdAt in descending order and return the most recent one
+    return userResults.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+  }
+  
+  async updateQuizResult(id: number, result: Partial<InsertQuizResult>): Promise<QuizResult | undefined> {
+    const currentResult = this.quizResults.get(id);
+    if (!currentResult) {
+      return undefined;
+    }
+    
+    const updatedResult: QuizResult = { 
+      ...currentResult, 
+      ...result,
+      createdAt: new Date() // Update timestamp when quiz is retaken
+    };
+    
+    this.quizResults.set(id, updatedResult);
+    return updatedResult;
+  }
+  
   async createQuizResult(result: InsertQuizResult): Promise<QuizResult> {
     const id = this.quizResultId++;
     const timestamp = new Date();
@@ -539,6 +569,30 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(quizResults)
       .where(eq(quizResults.userId, userId));
+  }
+  
+  async getLatestQuizResultByUserId(userId: number): Promise<QuizResult | undefined> {
+    const [result] = await db
+      .select()
+      .from(quizResults)
+      .where(eq(quizResults.userId, userId))
+      .orderBy(desc(quizResults.createdAt))
+      .limit(1);
+    
+    return result || undefined;
+  }
+  
+  async updateQuizResult(id: number, updateResult: Partial<InsertQuizResult>): Promise<QuizResult | undefined> {
+    const [result] = await db
+      .update(quizResults)
+      .set({
+        ...updateResult,
+        createdAt: new Date() // Update the timestamp when quiz is retaken
+      })
+      .where(eq(quizResults.id, id))
+      .returning();
+    
+    return result || undefined;
   }
   
   async createQuizResult(insertResult: InsertQuizResult): Promise<QuizResult> {
