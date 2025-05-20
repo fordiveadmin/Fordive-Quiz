@@ -79,7 +79,6 @@ const optionSchema = z.object({
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
   imageUrl: z.string().optional(),
-  imageId: z.number().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
@@ -202,10 +201,14 @@ export default function AdminQuestions() {
   
   // Form for adding/editing questions
   const QuestionForm = ({ isEdit = false, onClose }: { isEdit?: boolean; onClose: () => void }) => {
+    const [questionType, setQuestionType] = useState<string>(
+      isEdit && currentQuestion?.type ? currentQuestion.type : 'multiple_choice'
+    );
+    
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
-        [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -260,9 +263,15 @@ export default function AdminQuestions() {
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
       // Pastikan data yang dikirim valid dan layout disertakan
+      // Gunakan options state langsung untuk memastikan data gambar terupload
+      // Dan pastikan tipe pertanyaan sesuai dengan yang kita inginkan
+      
+      // Override tipe pertanyaan dengan nilai dari state lokal yang lebih dapat diandalkan
       const formattedData = {
         ...data,
-        layout: data.layout || 'standard' // Pastikan nilai layout selalu disertakan
+        type: questionType, // Paksa gunakan questionType dari state lokal
+        layout: data.layout || 'standard', // Pastikan nilai layout selalu disertakan
+        options: options // Gunakan options dari state lokal yang sudah diupdate saat upload gambar
       };
       
       console.log('Form data to submit:', formattedData);
@@ -302,8 +311,13 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      // Update both the form field and our local state
+                      field.onChange(value);
+                      setQuestionType(value);
+                    }}
                     defaultValue={field.value}
+                    value={questionType}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -522,104 +536,115 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {form.watch('type') === 'image_choice' && (
-                    <div>
-                      <Label htmlFor={`option-imageUrl-${index}`}>Gambar Opsi</Label>
-                      <div className="space-y-2">
-                        <Input
-                          id={`option-imageUrl-${index}`}
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onload = async (event) => {
-                                // Convert file to base64
-                                const base64String = event.target?.result as string;
+                  {(form.watch('type') === 'image_choice' || questionType === 'image_choice') && (
+                    <div className="space-y-3">
+                      <div>
+                        <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
+                        <div className="flex mt-1">
+                          <Input
+                            id={`option-imageUrl-${index}`}
+                            value={option.imageUrl || ''}
+                            onChange={(e) => {
+                              const newOptions = [...options];
+                              newOptions[index].imageUrl = e.target.value;
+                              setOptions(newOptions);
+                              form.setValue(`options.${index}.imageUrl`, e.target.value);
+                            }}
+                            placeholder="https://example.com/image.jpg"
+                            className="flex-1"
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Masukkan URL gambar untuk ditampilkan pada opsi ini
+                        </p>
+                      </div>
+                      
+                      {/* Image upload option */}
+                      <div className="mt-2">
+                        <Label>Atau Upload Gambar</Label>
+                        <div className="mt-1">
+                          <div className="flex items-center space-x-2">
+                            <Input 
+                              type="file" 
+                              accept="image/*"
+                              id={`image-upload-${index}`}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                
+                                // Create a FormData object to send the file
+                                const formData = new FormData();
+                                formData.append('image', file);
                                 
                                 try {
-                                  // Upload image to database
-                                  console.log('Uploading image with size:', base64String.length);
-                                  const response = await apiRequest('POST', '/api/images', {
-                                    filename: file.name,
-                                    data: base64String,
-                                    mimeType: file.type
+                                  // Show loading state
+                                  toast({
+                                    title: 'Uploading...',
+                                    description: 'Mohon tunggu, gambar sedang diupload.',
                                   });
                                   
-                                  console.log('Image upload response status:', response.status);
+                                  // Upload the image
+                                  const response = await fetch('/api/upload/image', {
+                                    method: 'POST',
+                                    body: formData,
+                                  });
                                   
                                   if (!response.ok) {
-                                    throw new Error(`Image upload failed with status: ${response.status}`);
+                                    throw new Error('Upload gagal');
                                   }
                                   
-                                  const responseText = await response.text();
-                                  console.log('Image upload response body:', responseText);
+                                  const data = await response.json();
                                   
-                                  if (!responseText) {
-                                    throw new Error('Empty response from server');
-                                  }
-                                  
-                                  // Parse the response text to JSON
-                                  let imageData;
-                                  try {
-                                    imageData = JSON.parse(responseText);
-                                    console.log('Parsed image data:', imageData);
-                                    
-                                    if (!imageData || !imageData.id) {
-                                      console.error('Invalid image data:', imageData);
-                                      throw new Error('Upload berhasil tetapi respon tidak valid: ID tidak ditemukan');
-                                    }
-                                  } catch (parseError) {
-                                    console.error('Error parsing image response:', parseError);
-                                    throw new Error('Format respon tidak valid');
-                                  }
-                                  
-                                  // Update the option with image ID and temporary URL for preview
+                                  // Update the imageUrl with the uploaded image URL
                                   const newOptions = [...options];
-                                  newOptions[index].imageId = imageData.id;
-                                  newOptions[index].imageUrl = base64String; // for preview purposes
+                                  newOptions[index].imageUrl = data.imageUrl;
                                   setOptions(newOptions);
                                   
-                                  form.setValue(`options.${index}`, {
-                                    ...options[index],
-                                    imageId: imageData.id,
-                                    imageUrl: base64String
-                                  });
-                                  // We've already set the complete option object above
+                                  // Pastikan juga update data di form
+                                  form.setValue(`options.${index}.imageUrl`, data.imageUrl);
+                                  
+                                  // Pastikan question type tetap "image_choice" jika sudah dipilih
+                                  if (questionType === 'image_choice') {
+                                    form.setValue('type', 'image_choice');
+                                  }
                                   
                                   toast({
-                                    title: 'Sukses',
-                                    description: 'Gambar berhasil diupload',
+                                    title: 'Success',
+                                    description: 'Gambar berhasil diupload!',
                                   });
                                 } catch (error) {
                                   console.error('Error uploading image:', error);
                                   toast({
                                     title: 'Error',
-                                    description: 'Gagal mengupload gambar',
+                                    description: 'Gagal mengupload gambar. Silahkan coba lagi.',
                                     variant: 'destructive',
                                   });
                                 }
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                        
-                        {option.imageUrl && (
-                          <div className="mt-2 rounded-md overflow-hidden border border-border">
+                              }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Pilih file gambar dari komputer anda (JPG, PNG, GIF)
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Preview the image if available */}
+                      {option.imageUrl && (
+                        <div className="mt-2">
+                          <p className="text-sm font-medium mb-1">Preview:</p>
+                          <div className="border rounded-md overflow-hidden h-40 w-40">
                             <img 
                               src={option.imageUrl} 
                               alt="Preview" 
-                              className="w-full h-40 object-cover"
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/a0aec0?text=Image+Not+Found';
+                              }}
                             />
                           </div>
-                        )}
-                        
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Upload gambar untuk ditampilkan pada opsi ini
-                        </p>
-                      </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
