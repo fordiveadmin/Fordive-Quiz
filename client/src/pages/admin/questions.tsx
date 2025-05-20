@@ -85,7 +85,7 @@ const optionSchema = z.object({
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice', 'image_option']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
   isMainQuestion: z.boolean().default(false),
@@ -342,7 +342,8 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="image_choice">Image Options</SelectItem>
+                      <SelectItem value="image_choice">Image Choice</SelectItem>
+                      <SelectItem value="image_option">Image Option</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -551,8 +552,8 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {/* Image upload field - shown only when question type is image_choice */}
-                  {form.watch('type') === 'image_choice' && (
+                  {/* Image upload field - shown for image_choice or image_option question types */}
+                  {(form.watch('type') === 'image_choice' || form.watch('type') === 'image_option') && (
                     <div className="mt-2">
                       <ImageUploadField 
                         label="Option Image"
@@ -562,16 +563,17 @@ export default function AdminQuestions() {
                           console.log("Current options:", JSON.stringify(options));
                           console.log("Current question type:", form.getValues("type"));
                           
-                          // Pastikan tipe pertanyaan tetap image_choice
-                          if (form.getValues("type") !== "image_choice") {
-                            form.setValue("type", "image_choice");
+                          // Make sure the question type stays consistent
+                          const questionType = form.getValues("type");
+                          if (questionType !== "image_choice" && questionType !== "image_option") {
+                            form.setValue("type", "image_option");
                           }
                           
-                          // Buat salinan baru dari array options dengan cara yang aman
+                          // Create a safe copy of the options array
                           const newOptions = [...options.map(opt => ({...opt}))];
                           console.log("New options before update:", JSON.stringify(newOptions));
                           
-                          // Update imageUrl di opsi yang sesuai
+                          // Update imageUrl for the appropriate option
                           if (newOptions[index]) {
                             newOptions[index].imageUrl = imageUrl;
                             console.log("Updated options:", JSON.stringify(newOptions));
