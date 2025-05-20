@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
-import logoImage from "../../assets/logo.png";
+import logoImage from "../../assets/fordive-logo.png";
 
 export default function Navigation({ transparent = false }) {
   const [scrolled, setScrolled] = useState(false);
