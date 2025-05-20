@@ -78,12 +78,13 @@ const optionSchema = z.object({
   id: z.string().optional(),
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
   isMainQuestion: z.boolean().default(false),
@@ -234,6 +235,7 @@ export default function AdminQuestions() {
         id: `option_${Date.now()}`, 
         text: '', 
         description: '', 
+        imageUrl: '',
         scentMappings: {} 
       };
       setOptions([...options, newOption]);
@@ -517,6 +519,26 @@ export default function AdminQuestions() {
                       placeholder="Description"
                     />
                   </div>
+                  
+                  {form.watch('type') === 'image_choice' && (
+                    <div>
+                      <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
+                      <Input
+                        id={`option-imageUrl-${index}`}
+                        value={option.imageUrl || ''}
+                        onChange={(e) => {
+                          const newOptions = [...options];
+                          newOptions[index].imageUrl = e.target.value;
+                          setOptions(newOptions);
+                          form.setValue(`options.${index}.imageUrl`, e.target.value);
+                        }}
+                        placeholder="https://example.com/image.jpg"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Masukkan URL gambar untuk ditampilkan pada opsi ini
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 <div>
