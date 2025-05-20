@@ -40,7 +40,7 @@ export default function Navigation({ transparent = false }) {
               src={logoImage} 
               alt="Fordive Logo" 
               className={cn(
-                "h-16 md:h-20 w-auto",
+                "h-8 md:h-10 w-auto",
                 transparent && !scrolled ? "brightness-100" : "brightness-100"
               )} 
             />
