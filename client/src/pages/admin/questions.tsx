@@ -201,10 +201,14 @@ export default function AdminQuestions() {
   
   // Form for adding/editing questions
   const QuestionForm = ({ isEdit = false, onClose }: { isEdit?: boolean; onClose: () => void }) => {
+    const [questionType, setQuestionType] = useState<string>(
+      isEdit && currentQuestion?.type ? currentQuestion.type : 'multiple_choice'
+    );
+    
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
-        [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', scentMappings: {} }]
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -303,8 +307,13 @@ export default function AdminQuestions() {
                 <FormItem>
                   <FormLabel>Question Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      // Update both the form field and our local state
+                      field.onChange(value);
+                      setQuestionType(value);
+                    }}
                     defaultValue={field.value}
+                    value={questionType}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -523,7 +532,7 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {form.watch('type') === 'image_choice' && (
+                  {(form.watch('type') === 'image_choice' || questionType === 'image_choice') && (
                     <div className="space-y-3">
                       <div>
                         <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
@@ -586,7 +595,14 @@ export default function AdminQuestions() {
                                   const newOptions = [...options];
                                   newOptions[index].imageUrl = data.imageUrl;
                                   setOptions(newOptions);
+                                  
+                                  // Pastikan juga update data di form
                                   form.setValue(`options.${index}.imageUrl`, data.imageUrl);
+                                  
+                                  // Pastikan question type tetap "image_choice" jika sudah dipilih
+                                  if (questionType === 'image_choice') {
+                                    form.setValue('type', 'image_choice');
+                                  }
                                   
                                   toast({
                                     title: 'Success',
