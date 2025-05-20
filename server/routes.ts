@@ -1,17 +1,56 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage as dbStorage } from "./storage";
 import { 
   insertUserSchema, 
   insertQuestionSchema, 
   insertScentSchema,
   insertZodiacMappingSchema,
-  insertQuizResultSchema,
-  insertImageSchema
+  insertQuizResultSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import nodemailer from "nodemailer";
+
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// Get current directory path for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Setup storage for uploaded images
+const multerStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, '..', 'uploads');
+    // Make sure the directory exists
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, uniqueSuffix + ext);
+  }
+});
+
+const upload = multer({ 
+  storage: multerStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Routes for API endpoints
@@ -20,13 +59,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/users', async (req: Request, res: Response) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      const existingUser = await storage.getUserByEmail(userData.email);
+      const existingUser = await dbStorage.getUserByEmail(userData.email);
       
       if (existingUser) {
         return res.status(200).json({ user: existingUser, isExisting: true });
       }
       
-      const user = await storage.createUser(userData);
+      const user = await dbStorage.createUser(userData);
       return res.status(201).json({ user, isExisting: false });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -40,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Questions
   app.get('/api/questions', async (_req: Request, res: Response) => {
     try {
-      const questions = await storage.getQuestions();
+      const questions = await dbStorage.getQuestions();
       return res.status(200).json(questions);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch questions' });
@@ -50,7 +89,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/questions', async (req: Request, res: Response) => {
     try {
       const questionData = insertQuestionSchema.parse(req.body);
-      const question = await storage.createQuestion(questionData);
+      const question = await dbStorage.createQuestion(questionData);
       return res.status(201).json(question);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -66,7 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const questionData = insertQuestionSchema.partial().parse(req.body);
-      const question = await storage.updateQuestion(id, questionData);
+      const question = await dbStorage.updateQuestion(id, questionData);
       
       if (!question) {
         return res.status(404).json({ message: 'Question not found' });
@@ -85,7 +124,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/questions/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteQuestion(id);
+      const deleted = await dbStorage.deleteQuestion(id);
       
       if (!deleted) {
         return res.status(404).json({ message: 'Question not found' });
@@ -100,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Scents
   app.get('/api/scents', async (_req: Request, res: Response) => {
     try {
-      const scents = await storage.getScents();
+      const scents = await dbStorage.getScents();
       return res.status(200).json(scents);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch scents' });
@@ -110,7 +149,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/scents/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      const scent = await storage.getScent(id);
+      const scent = await dbStorage.getScent(id);
       
       if (!scent) {
         return res.status(404).json({ message: 'Scent not found' });
@@ -125,7 +164,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/scents', async (req: Request, res: Response) => {
     try {
       const scentData = insertScentSchema.parse(req.body);
-      const scent = await storage.createScent(scentData);
+      const scent = await dbStorage.createScent(scentData);
       return res.status(201).json(scent);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -140,7 +179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const scentData = insertScentSchema.partial().parse(req.body);
-      const scent = await storage.updateScent(id, scentData);
+      const scent = await dbStorage.updateScent(id, scentData);
       
       if (!scent) {
         return res.status(404).json({ message: 'Scent not found' });
@@ -159,7 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/scents/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteScent(id);
+      const deleted = await dbStorage.deleteScent(id);
       
       if (!deleted) {
         return res.status(404).json({ message: 'Scent not found' });
@@ -174,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Zodiac Mappings
   app.get('/api/zodiac-mappings', async (_req: Request, res: Response) => {
     try {
-      const mappings = await storage.getZodiacMappings();
+      const mappings = await dbStorage.getZodiacMappings();
       return res.status(200).json(mappings);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch zodiac mappings' });
@@ -184,7 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/zodiac-mappings/sign/:sign', async (req: Request, res: Response) => {
     try {
       const sign = req.params.sign;
-      const mappings = await storage.getZodiacMappingsBySign(sign);
+      const mappings = await dbStorage.getZodiacMappingsBySign(sign);
       return res.status(200).json(mappings);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch zodiac mappings' });
@@ -194,7 +233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/zodiac-mappings', async (req: Request, res: Response) => {
     try {
       const mappingData = insertZodiacMappingSchema.parse(req.body);
-      const mapping = await storage.createZodiacMapping(mappingData);
+      const mapping = await dbStorage.createZodiacMapping(mappingData);
       return res.status(201).json(mapping);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -209,7 +248,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const mappingData = insertZodiacMappingSchema.partial().parse(req.body);
-      const mapping = await storage.updateZodiacMapping(id, mappingData);
+      const mapping = await dbStorage.updateZodiacMapping(id, mappingData);
       
       if (!mapping) {
         return res.status(404).json({ message: 'Zodiac mapping not found' });
@@ -228,7 +267,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/zodiac-mappings/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      const deleted = await storage.deleteZodiacMapping(id);
+      const deleted = await dbStorage.deleteZodiacMapping(id);
       
       if (!deleted) {
         return res.status(404).json({ message: 'Zodiac mapping not found' });
@@ -246,17 +285,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const resultData = insertQuizResultSchema.parse(req.body);
       
       // Check if this user already has quiz results
-      const existingResult = await storage.getLatestQuizResultByUserId(resultData.userId);
+      const existingResult = await dbStorage.getLatestQuizResultByUserId(resultData.userId);
       
       let result;
       
       if (existingResult) {
         // Update existing result instead of creating a new one
-        result = await storage.updateQuizResult(existingResult.id, resultData);
+        result = await dbStorage.updateQuizResult(existingResult.id, resultData);
         return res.status(200).json(result);
       } else {
         // Create a new result if no existing one found
-        result = await storage.createQuizResult(resultData);
+        result = await dbStorage.createQuizResult(resultData);
         return res.status(201).json(result);
       }
     } catch (error) {
@@ -271,7 +310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/quiz-results/user/:userId', async (req: Request, res: Response) => {
     try {
       const userId = parseInt(req.params.userId);
-      const results = await storage.getQuizResultsByUserId(userId);
+      const results = await dbStorage.getQuizResultsByUserId(userId);
       return res.status(200).json(results);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch quiz results' });
@@ -281,10 +320,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all quiz results with user details for analysis
   app.get('/api/analytics/quiz-results', async (_req: Request, res: Response) => {
     try {
-      const results = await storage.getAllQuizResultsWithUserDetails();
+      const results = await dbStorage.getAllQuizResultsWithUserDetails();
       return res.status(200).json(results);
     } catch (error) {
       return res.status(500).json({ message: 'Failed to fetch analytics data' });
+    }
+  });
+  
+  // Image upload endpoint
+  app.post('/api/upload/image', upload.single('image'), (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No image file uploaded' });
+      }
+      
+      // Generate URL for the uploaded image
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const relativePath = '/uploads/' + req.file.filename;
+      const imageUrl = baseUrl + relativePath;
+      
+      return res.status(200).json({ 
+        success: true, 
+        imageUrl,
+        message: 'Image uploaded successfully' 
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return res.status(500).json({ error: 'Failed to upload image' });
     }
   });
 
@@ -349,64 +411,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to send email:', error);
       return res.status(500).json({ message: 'Failed to send email' });
-    }
-  });
-
-  // Image Operations
-  app.post('/api/images', async (req: Request, res: Response) => {
-    try {
-      console.log('Image upload request received');
-      const imageData = insertImageSchema.parse(req.body);
-      console.log(`Image data parsed: filename=${imageData.filename}, mimeType=${imageData.mimeType}, data size=${imageData.data.length}`);
-      
-      const image = await storage.createImage(imageData);
-      console.log(`Image created with ID: ${image.id}`);
-      
-      return res.status(201).json(image);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      if (error instanceof z.ZodError) {
-        const validationError = fromZodError(error);
-        console.error('Validation error:', validationError.message);
-        return res.status(400).json({ message: validationError.message });
-      }
-      return res.status(500).json({ message: 'Failed to upload image' });
-    }
-  });
-  
-  app.get('/api/images/:id', async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: 'Invalid image ID' });
-      }
-      
-      const image = await storage.getImage(id);
-      if (!image) {
-        return res.status(404).json({ message: 'Image not found' });
-      }
-      
-      return res.status(200).json(image);
-    } catch (error) {
-      return res.status(500).json({ message: 'Failed to fetch image' });
-    }
-  });
-  
-  app.delete('/api/images/:id', async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: 'Invalid image ID' });
-      }
-      
-      const success = await storage.deleteImage(id);
-      if (!success) {
-        return res.status(404).json({ message: 'Image not found' });
-      }
-      
-      return res.status(200).json({ message: 'Image deleted successfully' });
-    } catch (error) {
-      return res.status(500).json({ message: 'Failed to delete image' });
     }
   });
 
