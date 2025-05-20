@@ -264,8 +264,12 @@ export default function AdminQuestions() {
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
       // Pastikan data yang dikirim valid dan layout disertakan
       // Gunakan options state langsung untuk memastikan data gambar terupload
+      // Dan pastikan tipe pertanyaan sesuai dengan yang kita inginkan
+      
+      // Override tipe pertanyaan dengan nilai dari state lokal yang lebih dapat diandalkan
       const formattedData = {
         ...data,
+        type: questionType, // Paksa gunakan questionType dari state lokal
         layout: data.layout || 'standard', // Pastikan nilai layout selalu disertakan
         options: options // Gunakan options dari state lokal yang sudah diupdate saat upload gambar
       };
