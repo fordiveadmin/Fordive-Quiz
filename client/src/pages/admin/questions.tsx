@@ -528,24 +528,47 @@ export default function AdminQuestions() {
                         label="Option Image"
                         currentImageUrl={option.imageUrl}
                         onChange={(imageUrl) => {
+                          console.log("Image upload triggered for index:", index);
+                          console.log("Current options:", JSON.stringify(options));
+                          
                           // Buat salinan baru dari array options dengan cara yang aman
-                          const newOptions = JSON.parse(JSON.stringify(options));
+                          const newOptions = [...options.map(opt => ({...opt}))];
+                          console.log("New options before update:", JSON.stringify(newOptions));
+                          
                           // Update imageUrl di opsi yang sesuai
-                          newOptions[index].imageUrl = imageUrl;
-                          // Update state options
-                          setOptions(newOptions);
-                          // Update nilai form
-                          form.setValue('options', newOptions);
+                          if (newOptions[index]) {
+                            newOptions[index].imageUrl = imageUrl;
+                            console.log("Updated options:", JSON.stringify(newOptions));
+                            
+                            // Update state options
+                            setOptions(newOptions);
+                            
+                            // Update form values satu per satu untuk menghindari reset
+                            form.setValue(`options.${index}.imageUrl`, imageUrl);
+                            
+                            console.log("Form values after update:", form.getValues('options'));
+                          } else {
+                            console.error("Option index not found:", index);
+                          }
                         }}
                         onClear={() => {
+                          console.log("Clear image triggered for index:", index);
+                          
                           // Buat salinan baru dari array options dengan cara yang aman
-                          const newOptions = JSON.parse(JSON.stringify(options));
+                          const newOptions = [...options.map(opt => ({...opt}))];
+                          
                           // Update imageUrl di opsi yang sesuai
-                          newOptions[index].imageUrl = '';
-                          // Update state options
-                          setOptions(newOptions);
-                          // Update nilai form
-                          form.setValue('options', newOptions);
+                          if (newOptions[index]) {
+                            newOptions[index].imageUrl = '';
+                            
+                            // Update state options
+                            setOptions(newOptions);
+                            
+                            // Update form values satu per satu untuk menghindari reset
+                            form.setValue(`options.${index}.imageUrl`, '');
+                          } else {
+                            console.error("Option index not found:", index);
+                          }
                         }}
                       />
                     </div>
