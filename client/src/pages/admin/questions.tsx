@@ -523,21 +523,71 @@ export default function AdminQuestions() {
                   
                   {form.watch('type') === 'image_choice' && (
                     <div>
-                      <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
-                      <Input
-                        id={`option-imageUrl-${index}`}
-                        value={option.imageUrl || ''}
-                        onChange={(e) => {
-                          const newOptions = [...options];
-                          newOptions[index].imageUrl = e.target.value;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, e.target.value);
-                        }}
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Masukkan URL gambar untuk ditampilkan pada opsi ini
-                      </p>
+                      <Label htmlFor={`option-imageUrl-${index}`}>Gambar Opsi</Label>
+                      <div className="space-y-2">
+                        <Input
+                          id={`option-imageUrl-${index}`}
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = async (event) => {
+                                // Convert file to base64
+                                const base64String = event.target?.result as string;
+                                
+                                try {
+                                  // Upload image to database
+                                  const response = await apiRequest('POST', '/api/images', {
+                                    filename: file.name,
+                                    data: base64String,
+                                    mimeType: file.type
+                                  });
+                                  
+                                  const imageData = await response.json();
+                                  
+                                  // Update the option with image ID and temporary URL for preview
+                                  const newOptions = [...options];
+                                  newOptions[index].imageId = imageData.id;
+                                  newOptions[index].imageUrl = base64String; // for preview purposes
+                                  setOptions(newOptions);
+                                  
+                                  form.setValue(`options.${index}.imageId`, imageData.id);
+                                  form.setValue(`options.${index}.imageUrl`, base64String);
+                                  
+                                  toast({
+                                    title: 'Sukses',
+                                    description: 'Gambar berhasil diupload',
+                                  });
+                                } catch (error) {
+                                  console.error('Error uploading image:', error);
+                                  toast({
+                                    title: 'Error',
+                                    description: 'Gagal mengupload gambar',
+                                    variant: 'destructive',
+                                  });
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                        
+                        {option.imageUrl && (
+                          <div className="mt-2 rounded-md overflow-hidden border border-border">
+                            <img 
+                              src={option.imageUrl} 
+                              alt="Preview" 
+                              className="w-full h-40 object-cover"
+                            />
+                          </div>
+                        )}
+                        
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Upload gambar untuk ditampilkan pada opsi ini
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>

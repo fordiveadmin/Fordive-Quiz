@@ -6,7 +6,8 @@ import {
   insertQuestionSchema, 
   insertScentSchema,
   insertZodiacMappingSchema,
-  insertQuizResultSchema
+  insertQuizResultSchema,
+  insertImageSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -348,6 +349,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to send email:', error);
       return res.status(500).json({ message: 'Failed to send email' });
+    }
+  });
+
+  // Image Operations
+  app.post('/api/images', async (req: Request, res: Response) => {
+    try {
+      const imageData = insertImageSchema.parse(req.body);
+      const image = await storage.createImage(imageData);
+      return res.status(201).json(image);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      return res.status(500).json({ message: 'Failed to upload image' });
+    }
+  });
+  
+  app.get('/api/images/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid image ID' });
+      }
+      
+      const image = await storage.getImage(id);
+      if (!image) {
+        return res.status(404).json({ message: 'Image not found' });
+      }
+      
+      return res.status(200).json(image);
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to fetch image' });
+    }
+  });
+  
+  app.delete('/api/images/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid image ID' });
+      }
+      
+      const success = await storage.deleteImage(id);
+      if (!success) {
+        return res.status(404).json({ message: 'Image not found' });
+      }
+      
+      return res.status(200).json({ message: 'Image deleted successfully' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Failed to delete image' });
     }
   });
 
