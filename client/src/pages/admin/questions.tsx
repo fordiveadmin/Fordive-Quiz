@@ -78,12 +78,13 @@ const optionSchema = z.object({
   id: z.string().optional(),
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
 const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
-  type: z.enum(['multiple_choice', 'checkbox', 'slider']),
+  type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
   isMainQuestion: z.boolean().default(false),
@@ -310,6 +311,7 @@ export default function AdminQuestions() {
                     <SelectContent>
                       <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
+                      <SelectItem value="image_choice">Image Options</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
