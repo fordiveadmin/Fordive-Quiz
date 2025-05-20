@@ -16,11 +16,22 @@ export function calculateScentScores(answers: Record<string, any>): Record<strin
       const [scentId, points] = answer.split(':');
       scores[scentId] = (scores[scentId] || 0) + Number(points || 1);
     } else if (Array.isArray(answer)) {
-      // Legacy: Multiple selection answer
-      answer.forEach(selection => {
-        const [scentId, points] = selection.split(':');
-        scores[scentId] = (scores[scentId] || 0) + Number(points || 1);
-      });
+      // Check if this is the new format [id, text, scentMappings]
+      if (answer.length >= 3 && typeof answer[2] === 'object' && answer[2] !== null) {
+        // New format with scentMappings in array format
+        const scentMappings = answer[2];
+        Object.entries(scentMappings).forEach(([scentName, points]) => {
+          scores[scentName] = (scores[scentName] || 0) + Number(points || 1);
+        });
+      } else {
+        // Legacy: Multiple selection answer
+        answer.forEach(selection => {
+          if (typeof selection === 'string') {
+            const [scentId, points] = selection.split(':');
+            scores[scentId] = (scores[scentId] || 0) + Number(points || 1);
+          }
+        });
+      }
     } else if (typeof answer === 'object' && answer !== null) {
       // New format: Contains scentMappings object
       if (answer.scentMappings) {
