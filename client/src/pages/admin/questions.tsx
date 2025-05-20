@@ -79,6 +79,7 @@ const optionSchema = z.object({
   text: z.string().min(1, 'Option text is required'),
   description: z.string().optional(),
   imageUrl: z.string().optional(),
+  imageId: z.number().optional(),
   scentMappings: z.record(z.string(), z.number())
 });
 
