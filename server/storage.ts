@@ -9,11 +9,14 @@ import {
   type InsertZodiacMapping,
   type QuizResult,
   type InsertQuizResult,
+  type Image,
+  type InsertImage,
   users, 
   scents, 
   questions, 
   zodiacMappings, 
-  quizResults
+  quizResults,
+  images
 } from "@shared/schema";
 
 import fs from 'fs';
@@ -47,6 +50,11 @@ export interface IStorage {
   createQuestion(question: InsertQuestion): Promise<Question>;
   updateQuestion(id: number, question: Partial<InsertQuestion>): Promise<Question | undefined>;
   deleteQuestion(id: number): Promise<boolean>;
+  
+  // Image operations
+  getImage(id: number): Promise<Image | undefined>;
+  createImage(image: InsertImage): Promise<Image>;
+  deleteImage(id: number): Promise<boolean>;
   
   // Scent operations
   getScents(): Promise<Scent[]>;

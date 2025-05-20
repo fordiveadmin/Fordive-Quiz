@@ -16,6 +16,20 @@ export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
 });
 
+// Images model
+export const images = pgTable("images", {
+  id: serial("id").primaryKey(),
+  filename: text("filename").notNull(),
+  data: text("data").notNull(), // Base64 encoded image data
+  mimeType: text("mime_type").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertImageSchema = createInsertSchema(images).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Scent model
 export const scents = pgTable("scents", {
   id: serial("id").primaryKey(),
@@ -26,6 +40,7 @@ export const scents = pgTable("scents", {
   description: text("description"),
   category: text("category").notNull(),
   imageUrl: text("image_url"),
+  imageId: integer("image_id"), // Reference to the images table
   purchaseUrl: text("purchase_url"),
 });
 
@@ -37,7 +52,7 @@ export const insertScentSchema = createInsertSchema(scents).omit({
 export const questions = pgTable("questions", {
   id: serial("id").primaryKey(),
   text: text("text").notNull(),
-  type: text("type").notNull(), // multiple_choice, checkbox
+  type: text("type").notNull(), // multiple_choice, checkbox, image_choice
   order: integer("order").notNull(),
   layout: text("layout").default("standard"), // standard, grid, carousel, cardstack
   
@@ -51,6 +66,7 @@ export const questions = pgTable("questions", {
     text: string;
     description?: string;
     imageUrl?: string;
+    imageId?: number; // Reference to the images table
     scentMappings: Record<string, number>;
   }[]>(),
 });
@@ -91,6 +107,9 @@ export const insertQuizResultSchema = createInsertSchema(quizResults).omit({
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+
+export type Image = typeof images.$inferSelect;
+export type InsertImage = z.infer<typeof insertImageSchema>;
 
 export type Scent = typeof scents.$inferSelect;
 export type InsertScent = z.infer<typeof insertScentSchema>;
