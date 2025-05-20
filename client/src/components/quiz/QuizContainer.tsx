@@ -9,6 +9,7 @@ import Checkbox from '@/components/quiz/questions/Checkbox';
 import Slider from '@/components/quiz/questions/Slider';
 import ZodiacInput from '@/components/quiz/questions/ZodiacInput';
 import ImageChoice from '@/components/quiz/questions/ImageChoice';
+import { ImageChoiceComponent } from '@/components/quiz/questions/ImageChoiceComponent';
 import GenderChoice from '@/components/quiz/questions/GenderChoice';
 import GridLayout from '@/components/quiz/layouts/GridLayout';
 import CarouselLayout from '@/components/quiz/layouts/CarouselLayout';
