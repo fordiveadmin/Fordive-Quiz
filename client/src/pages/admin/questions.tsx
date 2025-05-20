@@ -236,25 +236,55 @@ export default function AdminQuestions() {
         id: `option_${Date.now()}`, 
         text: '', 
         description: '', 
+        imageUrl: '',
         scentMappings: {} 
       };
-      setOptions([...options, newOption]);
-      const currentOptions = form.getValues('options');
-      form.setValue('options', [...currentOptions, newOption]);
+      
+      // Log current state before update
+      console.log("Before adding option - current options:", JSON.stringify(options));
+      
+      // Create deep copy of options and add new option
+      const newOptions = [...options.map(opt => ({...opt})), newOption];
+      
+      // Update state
+      setOptions(newOptions);
+      
+      // Update form values
+      form.setValue('options', newOptions);
+      
+      console.log("After adding option - new options:", JSON.stringify(newOptions));
     };
     
     const removeOption = (index: number) => {
-      const newOptions = [...options];
+      console.log("Removing option at index:", index);
+      
+      // Buat salinan baru dari array options dengan cara yang aman
+      const newOptions = [...options.map(opt => ({...opt}))];
       newOptions.splice(index, 1);
+      
+      console.log("New options after removal:", JSON.stringify(newOptions));
+      
+      // Update state options
       setOptions(newOptions);
+      
+      // Update nilai form
       form.setValue('options', newOptions);
     };
     
     const updateScentMapping = (optionIndex: number, scentName: string, value: number) => {
-      const newOptions = [...options];
-      newOptions[optionIndex].scentMappings[scentName] = value;
-      setOptions(newOptions);
-      form.setValue('options', newOptions);
+      // Buat salinan baru dari array options dengan cara yang aman
+      const newOptions = [...options.map(opt => ({...opt}))];
+      
+      // Update nilai scent mapping
+      if (newOptions[optionIndex]) {
+        newOptions[optionIndex].scentMappings[scentName] = value;
+        
+        // Update state options
+        setOptions(newOptions);
+        
+        // Update form values secara aman
+        form.setValue('options', newOptions);
+      }
     };
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
