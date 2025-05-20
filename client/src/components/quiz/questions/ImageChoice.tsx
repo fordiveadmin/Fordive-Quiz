@@ -19,8 +19,7 @@ interface ImageChoiceProps {
   };
 }
 
-// Export as default to match other components
-export default function ImageChoice({ question }: ImageChoiceProps) {
+export function ImageChoice({ question }: ImageChoiceProps) {
   const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   
