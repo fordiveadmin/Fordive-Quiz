@@ -355,19 +355,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Image Operations
   app.post('/api/images', async (req: Request, res: Response) => {
     try {
-      console.log('Image upload request received');
       const imageData = insertImageSchema.parse(req.body);
-      console.log(`Image data parsed: filename=${imageData.filename}, mimeType=${imageData.mimeType}, data size=${imageData.data.length}`);
-      
       const image = await storage.createImage(imageData);
-      console.log(`Image created with ID: ${image.id}`);
-      
       return res.status(201).json(image);
     } catch (error) {
-      console.error('Error uploading image:', error);
       if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
-        console.error('Validation error:', validationError.message);
         return res.status(400).json({ message: validationError.message });
       }
       return res.status(500).json({ message: 'Failed to upload image' });
