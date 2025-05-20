@@ -20,7 +20,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
 export const images = pgTable("images", {
   id: serial("id").primaryKey(),
   filename: text("filename").notNull(),
-  data: text("data", { mode: 'json' }).notNull(), // Base64 encoded image data
+  data: text("data").notNull(), // Base64 encoded image data
   mimeType: text("mime_type").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });

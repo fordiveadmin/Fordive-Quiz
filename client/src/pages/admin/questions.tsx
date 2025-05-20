@@ -561,17 +561,18 @@ export default function AdminQuestions() {
                                   }
                                   
                                   // Parse the response text to JSON
-                                  let imageData = {};
+                                  let imageData;
                                   try {
                                     imageData = JSON.parse(responseText);
                                     console.log('Parsed image data:', imageData);
                                     
-                                    if (!imageData.id) {
-                                      throw new Error('Invalid image response: missing ID');
+                                    if (!imageData || !imageData.id) {
+                                      console.error('Invalid image data:', imageData);
+                                      throw new Error('Upload berhasil tetapi respon tidak valid: ID tidak ditemukan');
                                     }
                                   } catch (parseError) {
                                     console.error('Error parsing image response:', parseError);
-                                    throw new Error('Invalid response format');
+                                    throw new Error('Format respon tidak valid');
                                   }
                                   
                                   // Update the option with image ID and temporary URL for preview
