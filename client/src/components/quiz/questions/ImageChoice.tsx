@@ -3,6 +3,7 @@ import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Check } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
 
 interface ImageChoiceProps {
   question: {
@@ -13,16 +14,17 @@ interface ImageChoiceProps {
       id: string;
       text: string;
       imageUrl?: string;
+      imageId?: number;
       description?: string;
       scentMappings: Record<string, number>;
     }[];
   };
 }
 
-// Export as default to match other components
-export default function ImageChoice({ question }: ImageChoiceProps) {
+export function ImageChoice({ question }: ImageChoiceProps) {
   const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [imageDataMap, setImageDataMap] = useState<Record<number, string>>({});
   
   // Set initial state from stored answers
   useEffect(() => {
@@ -30,6 +32,45 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
       setSelectedOption(answers[question.id].optionId);
     }
   }, [answers, question.id]);
+  
+  // Fetch images for options that have imageId
+  useEffect(() => {
+    const fetchImageData = async () => {
+      const newImageMap: Record<number, string> = {...imageDataMap};
+      
+      for (const option of question.options) {
+        if (option.imageId && !option.imageUrl && !newImageMap[option.imageId]) {
+          try {
+            const response = await fetch(`/api/images/${option.imageId}`);
+            if (response.ok) {
+              const imageData = await response.json();
+              if (imageData && imageData.data) {
+                newImageMap[option.imageId] = imageData.data;
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching image:', error);
+          }
+        }
+      }
+      
+      if (Object.keys(newImageMap).length > 0) {
+        setImageDataMap(newImageMap);
+      }
+    };
+    
+    fetchImageData();
+  }, [question.options]);
+  
+  // Get image source for an option (either direct URL or from database)
+  const getImageSource = (option: typeof question.options[0]) => {
+    if (option.imageUrl) {
+      return option.imageUrl;
+    } else if (option.imageId && imageDataMap[option.imageId]) {
+      return imageDataMap[option.imageId];
+    }
+    return '';
+  };
   
   const handleSelect = (optionId: string) => {
     setSelectedOption(optionId);
@@ -93,10 +134,10 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
             onClick={() => handleSelect(option.id)}
           >
             {/* Image container */}
-            {option.imageUrl && (
+            {(option.imageUrl || option.imageId) && (
               <div className="relative w-full aspect-square overflow-hidden">
                 <img 
-                  src={option.imageUrl} 
+                  src={getImageSource(option)} 
                   alt={option.text}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
