@@ -259,9 +259,11 @@ export default function AdminQuestions() {
     
     const onSubmit = (data: z.infer<typeof questionSchema>) => {
       // Pastikan data yang dikirim valid dan layout disertakan
+      // Gunakan options state langsung untuk memastikan data gambar terupload
       const formattedData = {
         ...data,
-        layout: data.layout || 'standard' // Pastikan nilai layout selalu disertakan
+        layout: data.layout || 'standard', // Pastikan nilai layout selalu disertakan
+        options: options // Gunakan options dari state lokal yang sudah diupdate saat upload gambar
       };
       
       console.log('Form data to submit:', formattedData);
