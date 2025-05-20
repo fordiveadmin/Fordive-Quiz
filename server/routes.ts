@@ -14,6 +14,11 @@ import nodemailer from "nodemailer";
 import multer from "multer";
 import path from "path";
 import fs from "fs-extra";
+import { fileURLToPath } from 'url';
+
+// Get current directory equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configure file upload storage
 const uploadDir = path.join(__dirname, "../public/uploads");
