@@ -560,6 +560,12 @@ export default function AdminQuestions() {
                         onChange={(imageUrl) => {
                           console.log("Image upload triggered for index:", index);
                           console.log("Current options:", JSON.stringify(options));
+                          console.log("Current question type:", form.getValues("type"));
+                          
+                          // Pastikan tipe pertanyaan tetap image_choice
+                          if (form.getValues("type") !== "image_choice") {
+                            form.setValue("type", "image_choice");
+                          }
                           
                           // Buat salinan baru dari array options dengan cara yang aman
                           const newOptions = [...options.map(opt => ({...opt}))];
@@ -577,12 +583,19 @@ export default function AdminQuestions() {
                             form.setValue(`options.${index}.imageUrl`, imageUrl);
                             
                             console.log("Form values after update:", form.getValues('options'));
+                            console.log("Question type after update:", form.getValues("type"));
                           } else {
                             console.error("Option index not found:", index);
                           }
                         }}
                         onClear={() => {
                           console.log("Clear image triggered for index:", index);
+                          console.log("Current question type:", form.getValues("type"));
+                          
+                          // Pastikan tipe pertanyaan tetap image_choice
+                          if (form.getValues("type") !== "image_choice") {
+                            form.setValue("type", "image_choice");
+                          }
                           
                           // Buat salinan baru dari array options dengan cara yang aman
                           const newOptions = [...options.map(opt => ({...opt}))];
@@ -596,6 +609,8 @@ export default function AdminQuestions() {
                             
                             // Update form values satu per satu untuk menghindari reset
                             form.setValue(`options.${index}.imageUrl`, '');
+                            
+                            console.log("Question type after clear:", form.getValues("type"));
                           } else {
                             console.error("Option index not found:", index);
                           }
