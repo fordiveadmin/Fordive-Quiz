@@ -522,22 +522,107 @@ export default function AdminQuestions() {
                   </div>
                   
                   {form.watch('type') === 'image_choice' && (
-                    <div>
-                      <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
-                      <Input
-                        id={`option-imageUrl-${index}`}
-                        value={option.imageUrl || ''}
-                        onChange={(e) => {
-                          const newOptions = [...options];
-                          newOptions[index].imageUrl = e.target.value;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, e.target.value);
-                        }}
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Masukkan URL gambar untuk ditampilkan pada opsi ini
-                      </p>
+                    <div className="space-y-3">
+                      <div>
+                        <Label htmlFor={`option-imageUrl-${index}`}>URL Gambar</Label>
+                        <div className="flex mt-1">
+                          <Input
+                            id={`option-imageUrl-${index}`}
+                            value={option.imageUrl || ''}
+                            onChange={(e) => {
+                              const newOptions = [...options];
+                              newOptions[index].imageUrl = e.target.value;
+                              setOptions(newOptions);
+                              form.setValue(`options.${index}.imageUrl`, e.target.value);
+                            }}
+                            placeholder="https://example.com/image.jpg"
+                            className="flex-1"
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Masukkan URL gambar untuk ditampilkan pada opsi ini
+                        </p>
+                      </div>
+                      
+                      {/* Image upload option */}
+                      <div className="mt-2">
+                        <Label>Atau Upload Gambar</Label>
+                        <div className="mt-1">
+                          <div className="flex items-center space-x-2">
+                            <Input 
+                              type="file" 
+                              accept="image/*"
+                              id={`image-upload-${index}`}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                
+                                // Create a FormData object to send the file
+                                const formData = new FormData();
+                                formData.append('image', file);
+                                
+                                try {
+                                  // Show loading state
+                                  toast({
+                                    title: 'Uploading...',
+                                    description: 'Mohon tunggu, gambar sedang diupload.',
+                                  });
+                                  
+                                  // Upload the image
+                                  const response = await fetch('/api/upload/image', {
+                                    method: 'POST',
+                                    body: formData,
+                                  });
+                                  
+                                  if (!response.ok) {
+                                    throw new Error('Upload gagal');
+                                  }
+                                  
+                                  const data = await response.json();
+                                  
+                                  // Update the imageUrl with the uploaded image URL
+                                  const newOptions = [...options];
+                                  newOptions[index].imageUrl = data.imageUrl;
+                                  setOptions(newOptions);
+                                  form.setValue(`options.${index}.imageUrl`, data.imageUrl);
+                                  
+                                  toast({
+                                    title: 'Success',
+                                    description: 'Gambar berhasil diupload!',
+                                  });
+                                } catch (error) {
+                                  console.error('Error uploading image:', error);
+                                  toast({
+                                    title: 'Error',
+                                    description: 'Gagal mengupload gambar. Silahkan coba lagi.',
+                                    variant: 'destructive',
+                                  });
+                                }
+                              }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Pilih file gambar dari komputer anda (JPG, PNG, GIF)
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Preview the image if available */}
+                      {option.imageUrl && (
+                        <div className="mt-2">
+                          <p className="text-sm font-medium mb-1">Preview:</p>
+                          <div className="border rounded-md overflow-hidden h-40 w-40">
+                            <img 
+                              src={option.imageUrl} 
+                              alt="Preview" 
+                              className="h-full w-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/a0aec0?text=Image+Not+Found';
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

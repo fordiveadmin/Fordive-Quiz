@@ -321,6 +321,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ message: 'Failed to fetch analytics data' });
     }
   });
+  
+  // Image upload endpoint
+  app.post('/api/upload/image', upload.single('image'), (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No image file uploaded' });
+      }
+      
+      // Generate URL for the uploaded image
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const relativePath = '/uploads/' + req.file.filename;
+      const imageUrl = baseUrl + relativePath;
+      
+      return res.status(200).json({ 
+        success: true, 
+        imageUrl,
+        message: 'Image uploaded successfully' 
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
+  });
 
   // Email Results
   app.post('/api/email-results', async (req: Request, res: Response) => {
