@@ -11,6 +11,7 @@ import ResultImageGenerator from './ResultImageGenerator';
 
 interface ShareResultsProps {
   scent: {
+    id: number;
     name: string;
     vibes: string[];
     mood: string;

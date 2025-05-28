@@ -234,7 +234,7 @@ export default function QuizContainer() {
         total={totalQuestions}
       />
       
-      <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex-grow flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl w-full space-y-12">
           <AnimatePresence mode="wait">
             <motion.div
