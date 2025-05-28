@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { getZodiacDescription } from '@/lib/zodiac';
 import { getScentImageUrl } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import logoImage from "../../assets/fordive-logo-white.png";
 
 interface ResultsCardProps {
   scent: {
@@ -70,122 +69,83 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
   const zodiacDescription = getZodiacMappingDescription();
   
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)})`
-        }}
-      />
-      
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/60" />
-      
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6 text-center text-white">
-        {/* Logo */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-4"
-        >
-          <img src={logoImage} alt="Fordive Logo" className="h-16 mx-auto" />
-        </motion.div>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 }}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden"
+    >
+      <div className="md:flex">
+        <div className="md:w-2/5">
+          <img 
+            src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
+            alt={`${scent.name} Perfume`} 
+            className="w-full h-full object-cover"
+          />
+        </div>
         
-        {/* Title */}
-        <motion.h2 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-xl font-light mb-12 tracking-wide"
-        >
-          Scent Finder Results
-        </motion.h2>
-        
-        {/* Main Result Card */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="bg-black/40 backdrop-blur-sm rounded-3xl p-8 max-w-md w-full mb-12"
-        >
-          <h3 className="text-lg font-light mb-6 tracking-wide">YOUR SCENT MATCH</h3>
-          
-          {/* Scent Name */}
-          <h1 className="text-4xl font-playfair font-bold mb-6">{scent.name}</h1>
-          
-          {/* Notes */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
-            {scent.notes.slice(0, 4).map((note, index) => (
-              <div key={index} className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm">
-                {note}
+        <div className="md:w-3/5 p-8 md:p-10">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-3xl font-playfair font-bold">{scent.name}</h3>
+            {zodiacSign && (
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-white border-2 border-[#C89F65] shadow-md flex items-center justify-center mr-2">
+                  <i className={`${zodiacSign.iconClass} text-[#C89F65] text-lg`}></i>
+                </div>
+                <span className="font-medium">{zodiacSign.name}</span>
               </div>
-            ))}
+            )}
           </div>
           
-          {/* Tagline/Mood */}
-          <div className="italic text-lg mb-2 font-light">
-            "{scent.mood}"
-          </div>
-        </motion.div>
-        
-        {/* Zodiac Section */}
-        {zodiacSign && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-center mb-8"
-          >
-            <h3 className="text-xl font-light mb-2">{useStore().user?.name || 'Your'}'s Signature Scent</h3>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-lg">{zodiacSign.name}</span>
-              <span className="text-[#C89F65] text-xl">✨</span>
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {scent.notes.map((note, index) => (
+                <Badge key={index} variant="secondary" className="px-3 py-1 rounded-full">
+                  {note}
+                </Badge>
+              ))}
             </div>
             
+            <div className="mb-4">
+              <h4 className="font-semibold mb-2">Vibes</h4>
+              <p className="text-muted-foreground">{scent.vibes.join(', ')}</p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-2">Mood</h4>
+              <p className="italic text-muted-foreground">"{scent.mood}"</p>
+            </div>
+          </div>
+          
+          <div className="border-t border-border pt-6">
+            <h4 className="font-semibold mb-3">Your Zodiac Personality</h4>
             {isLoading ? (
-              <div className="mt-4">
-                <Skeleton className="h-4 w-64 mx-auto bg-white/20" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
               </div>
             ) : (
-              <p className="mt-4 text-sm text-white/80 max-w-md mx-auto">
+              <p className="text-muted-foreground mb-6">
                 {zodiacDescription}
               </p>
             )}
-          </motion.div>
-        )}
-        
-        {/* Website Link */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-white/80 font-light"
-        >
-          fordive.com
-        </motion.div>
-        
-        {/* Buy Button */}
-        {scent.purchaseUrl && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-8"
-          >
-            <a 
-              href={scent.purchaseUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-block bg-[#C89F65] hover:bg-[#C89F65]/90 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 hover:shadow-xl transform hover:scale-105"
-            >
-              Shop Now
-            </a>
-          </motion.div>
-        )}
+            
+            {scent.purchaseUrl && (
+              <div className="mt-6">
+                <a 
+                  href={scent.purchaseUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-8 rounded-full shadow-md transition duration-300 hover:shadow-lg transform hover:scale-105"
+                >
+                  Buy Now
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
