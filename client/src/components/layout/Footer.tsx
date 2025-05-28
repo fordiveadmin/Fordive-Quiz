@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">
             <div className="mb-4">
-              <img src={logoImage} alt="Fordive Logo" className="h-16" />
+              <img src={logoImage} alt="Fordive Logo" className="h-24" />
             </div>
             <p className="text-white/90 mb-6">
               Love More Live More
