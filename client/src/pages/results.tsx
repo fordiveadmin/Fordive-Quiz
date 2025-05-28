@@ -138,54 +138,10 @@ export default function Results() {
         <meta name="description" content={`Based on your personality and preferences, ${matchedScent.name} is your signature Fordive fragrance. ${matchedScent.mood}`} />
       </Helmet>
       
-      <div className="min-h-screen flex flex-col bg-[#F9F7F2]">
-        <Navigation />
-        
-        <div className="flex-grow flex items-center justify-center pt-28 pb-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl w-full space-y-12">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center"
-            >
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-4 text-foreground">Your Signature Scent</h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                Based on your personality, preferences, and zodiac sign, we've found your perfect match
-              </p>
-            </motion.div>
-            
-            <ResultsCard 
-              scent={matchedScent} 
-              zodiacSign={zodiacSign}
-            />
-            
-            <ShareResults 
-              scent={matchedScent}
-              userName={user?.name || ''}
-              userEmail={user?.email || ''}
-              zodiacSign={zodiacSign?.name || ''}
-            />
-            
-            <div className="flex justify-center mt-8">
-              <Button 
-                onClick={() => navigate('/quiz?retake=true')}
-                variant="outline"
-                className="bg-white hover:bg-gray-100 text-gray-800 font-semibold px-6 py-2 border border-gray-300 rounded-md shadow-sm transition-all hover:border-gray-400"
-              >
-                Retake Quiz
-              </Button>
-            </div>
-            
-            <SimilarScents 
-              currentScentId={matchedScent.id}
-              category={matchedScent.category}
-              allScents={scents}
-            />
-          </div>
-        </div>
-        
-        <Footer />
-      </div>
+      <ResultsCard 
+        scent={matchedScent} 
+        zodiacSign={zodiacSign}
+      />
     </>
   );
 }
