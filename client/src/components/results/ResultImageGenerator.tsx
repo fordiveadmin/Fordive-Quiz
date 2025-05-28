@@ -126,18 +126,18 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         {/* Content */}
         <div className="absolute inset-0 z-10 flex flex-col justify-between p-6 text-white">
           {/* Header - Logo Fordive */}
-          <div className="text-center pt-6">
-            <div className="flex justify-center mb-4">
-              <img src={logoImage} alt="Fordive Logo" className="h-16" />
+          <div className="text-center pt-4">
+            <div className="flex justify-center mb-3">
+              <img src={logoImage} alt="Fordive Logo" className="h-20" />
             </div>
-            <h1 className="text-sm font-light tracking-wider text-white/90 mb-4">Scent Finder Result</h1>
+            <h1 className="text-sm font-light tracking-wider text-white/90 mb-2">Scent Finder Result</h1>
           </div>
           
           {/* Middle content - Main Result */}
-          <div className="flex flex-col items-center justify-center flex-1">
-            <div className="bg-black/50 backdrop-blur-md p-8 rounded-2xl shadow-lg w-full max-w-[300px] text-center">
+          <div className="flex flex-col items-center justify-center flex-1 -mt-4">
+            <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl shadow-lg w-full max-w-[300px] text-center mb-2">
               <p className="text-xs uppercase tracking-wider mb-3 text-white/80">YOUR SCENT MATCH</p>
-              <h2 className="text-4xl font-bold mb-4 text-yellow-400">{scent.name}</h2>
+              <h2 className="text-4xl font-bold mb-4" style={{color: '#C89F65'}}>{scent.name}</h2>
               
               {/* Notes */}
               <div className="flex flex-wrap justify-center gap-2 mb-4">
@@ -152,7 +152,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               </div>
               
               {/* Quote/Tagline */}
-              <p className="text-sm italic text-white/90 leading-relaxed mb-6">"{scent.mood}"</p>
+              <p className="text-sm italic text-white/90 leading-relaxed">"{scent.mood}"</p>
             </div>
           </div>
           
@@ -165,7 +165,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {zodiacSign && (
                 <>
                   <p className="text-sm text-white/90 mb-2">
-                    <span className="font-medium">Horoscope:</span> <span className="text-yellow-400">{zodiacSign}</span>
+                    <span className="font-medium">Horoscope:</span> <span style={{color: '#C89F65'}}>{zodiacSign}</span>
                   </p>
                   <p className="text-xs text-white/80 leading-relaxed px-2">
                     {getZodiacDescription()}
