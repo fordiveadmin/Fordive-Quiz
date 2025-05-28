@@ -5,7 +5,7 @@ import { getScentImageUrl } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
-import logoImage from "../../assets/fordive-logo-white.png";
+import logoImage from "../../assets/logo.png";
 
 interface ResultImageGeneratorProps {
   scent: {
@@ -43,16 +43,18 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
     enabled: !!zodiacSign,
   });
 
-  // Get zodiac description for this scent
+  // Get zodiac description for this scent (shortened to first sentence only)
   const getZodiacDescription = () => {
     if (!zodiacMappings || !Array.isArray(zodiacMappings)) return "";
     
     const mapping = zodiacMappings.find((m: any) => m.scentId === scent.id);
     if (mapping && mapping.description) {
-      return mapping.description;
+      // Return only text up to the first period
+      const firstSentence = mapping.description.split('.')[0];
+      return firstSentence + (firstSentence.length < mapping.description.length ? '.' : '');
     }
     
-    // Default zodiac descriptions
+    // Default zodiac descriptions (already short)
     const defaultDescriptions: { [key: string]: string } = {
       'Aries': 'Bold and energetic, you embrace life with passion and confidence.',
       'Taurus': 'Reliable and sensual, you appreciate the finer things in life.',
