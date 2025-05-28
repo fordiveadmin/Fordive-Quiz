@@ -80,9 +80,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       // Use higher quality settings for better resolution
       const dataUrl = await toPng(storyRef.current, { 
         quality: 1.0, 
-        pixelRatio: 3,  // Increase pixel ratio for higher resolution
-        canvasWidth: 1050, // 3x the visual width
-        canvasHeight: 1860 // 3x the visual height
+        pixelRatio: 2,  // 2x pixel ratio for good quality with smaller file size
+        canvasWidth: 700, // 2x the visual width
+        canvasHeight: 1240 // 2x the visual height
       });
       
       // Create a download link and trigger download
