@@ -77,6 +77,21 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
     if (!storyRef.current) return;
     
     try {
+      // Wait for all images to load before capturing
+      const images = storyRef.current.querySelectorAll('img');
+      await Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+        })
+      );
+
+      // Add a small delay to ensure everything is rendered
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       // Use higher quality settings for better resolution
       const dataUrl = await toPng(storyRef.current, { 
         quality: 1.0, 
@@ -120,6 +135,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
             src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
             alt={scent.name} 
             className="w-full h-full object-cover"
+            crossOrigin="anonymous"
+            loading="eager"
           />
         </div>
         
@@ -128,7 +145,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           {/* Header - Logo Fordive */}
           <div className="text-center pt-4">
             <div className="flex justify-center mb-3">
-              <img src={logoImage} alt="Fordive Logo" className="h-20" />
+              <img 
+                src={logoImage} 
+                alt="Fordive Logo" 
+                className="h-20" 
+                crossOrigin="anonymous"
+                loading="eager"
+              />
             </div>
           </div>
           
