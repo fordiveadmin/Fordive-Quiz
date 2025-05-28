@@ -128,7 +128,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           {/* Header - Logo Fordive */}
           <div className="text-center pt-6">
             <div className="flex justify-center mb-4">
-              <img src={logoImage} alt="Fordive Logo" className="h-12" />
+              <img src={logoImage} alt="Fordive Logo" className="h-16" />
             </div>
             <h1 className="text-sm font-light tracking-wider text-white/90 mb-4">Scent Finder Result</h1>
           </div>
@@ -137,7 +137,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           <div className="flex flex-col items-center justify-center flex-1">
             <div className="bg-black/50 backdrop-blur-md p-8 rounded-2xl shadow-lg w-full max-w-[300px] text-center">
               <p className="text-xs uppercase tracking-wider mb-3 text-white/80">YOUR SCENT MATCH</p>
-              <h2 className="text-4xl font-bold mb-4 text-white">{scent.name}</h2>
+              <h2 className="text-4xl font-bold mb-4 text-yellow-400">{scent.name}</h2>
               
               {/* Notes */}
               <div className="flex flex-wrap justify-center gap-2 mb-4">
@@ -165,7 +165,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {zodiacSign && (
                 <>
                   <p className="text-sm text-white/90 mb-2">
-                    <span className="font-medium">Horoscope:</span> {zodiacSign}
+                    <span className="font-medium">Horoscope:</span> <span className="text-yellow-400">{zodiacSign}</span>
                   </p>
                   <p className="text-xs text-white/80 leading-relaxed px-2">
                     {getZodiacDescription()}
