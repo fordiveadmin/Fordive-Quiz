@@ -112,30 +112,6 @@ Find your signature scent at fordive.com
             <FaImage className="mr-2 text-primary" />
             <span>Save as Image</span>
           </Button>
-          
-          <Button
-            variant="outline"
-            className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-            onClick={handleCopyResults}
-            disabled={isCopied}
-          >
-            <FaCopy className="mr-2 text-primary" />
-            <span>{isCopied ? 'Copied!' : 'Copy Results'}</span>
-          </Button>
-          
-          <Button
-            variant="outline"
-            className="flex items-center px-4 py-2 border border-border rounded-lg hover:border-primary transition duration-300"
-            onClick={() => emailResults.mutate()}
-            disabled={emailResults.isPending}
-          >
-            {emailResults.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
-            ) : (
-              <FaEnvelope className="mr-2 text-primary" />
-            )}
-            <span>Email Results</span>
-          </Button>
         </div>
       ) : (
         <div className="flex flex-col items-center">
