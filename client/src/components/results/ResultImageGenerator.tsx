@@ -130,7 +130,6 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
             <div className="flex justify-center mb-3">
               <img src={logoImage} alt="Fordive Logo" className="h-20" />
             </div>
-            <h1 className="text-sm font-light tracking-wider text-white/90 mb-2">Scent Finder Result</h1>
           </div>
           
           {/* Middle content - Main Result */}
