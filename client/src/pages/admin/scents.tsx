@@ -377,6 +377,27 @@ export default function AdminScents() {
           
           <FormField
             control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL Gambar Parfum</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="https://example.com/image.jpg" 
+                    {...field} 
+                    value={field.value || ''}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Masukkan URL gambar parfum dari internet (opsional).
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
             name="purchaseUrl"
             render={({ field }) => (
               <FormItem>
@@ -486,6 +507,7 @@ export default function AdminScents() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-24">Gambar</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Notes</TableHead>
@@ -496,6 +518,19 @@ export default function AdminScents() {
                 <TableBody>
                   {scents.map((scent) => (
                     <TableRow key={scent.id}>
+                      <TableCell>
+                        <div className="h-16 w-20 rounded-md overflow-hidden border border-border">
+                          <img 
+                            src={scent.imageUrl || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80'} 
+                            alt={scent.name}
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
+                            }}
+                          />
+                        </div>
+                      </TableCell>
                       <TableCell className="font-medium">{scent.name}</TableCell>
                       <TableCell>{scent.category}</TableCell>
                       <TableCell>
