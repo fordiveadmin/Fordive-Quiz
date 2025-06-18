@@ -141,7 +141,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="h-6" 
+                className="h-10" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
@@ -171,9 +171,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
         </div>
         
-        {/* Extended Product Image Section with margin and rounded corners */}
-        <div className="absolute top-48 left-4 right-4 bottom-4">
-          <div className="w-full h-full relative overflow-hidden rounded-xl shadow-2xl">
+        {/* Extended Product Image Section with margin kiri-kanan only */}
+        <div className="absolute top-48 left-4 right-4 bottom-0">
+          <div className="w-full h-full relative overflow-hidden rounded-t-xl shadow-2xl">
             {/* Product Image - covering full remaining space */}
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
