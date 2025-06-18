@@ -12,8 +12,6 @@ interface MultipleChoiceProps {
       id: string;
       text: string;
       description?: string;
-      imageUrl?: string;
-      hideText?: boolean;
       scentMappings: Record<string, number>;
     }[];
   };
@@ -93,27 +91,9 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
             )}
             onClick={() => handleSelect(option.id)}
           >
-            {option.imageUrl && (
-              <div className={option.hideText ? "h-48" : "mb-3"}>
-                <img 
-                  src={option.imageUrl} 
-                  alt={option.text}
-                  className={`w-full object-cover rounded-md ${
-                    option.hideText ? "h-full" : "h-32"
-                  }`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-            {!option.hideText && (
-              <>
-                <h3 className="font-semibold mb-2 font-playfair">{option.text}</h3>
-                {option.description && (
-                  <p className="text-sm text-muted-foreground">{option.description}</p>
-                )}
-              </>
+            <h3 className="font-semibold mb-2 font-playfair">{option.text}</h3>
+            {option.description && (
+              <p className="text-sm text-muted-foreground">{option.description}</p>
             )}
           </motion.div>
         ))}

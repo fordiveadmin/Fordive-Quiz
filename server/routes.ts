@@ -64,11 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/questions/:id', async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      console.log('Received update data:', JSON.stringify(req.body, null, 2));
-      
       const questionData = insertQuestionSchema.partial().parse(req.body);
-      console.log('Parsed data:', JSON.stringify(questionData, null, 2));
-      
       const question = await storage.updateQuestion(id, questionData);
       
       if (!question) {
@@ -78,11 +74,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json(question);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error('Validation error:', error.errors);
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      console.error('Update error:', error);
       return res.status(500).json({ message: 'Failed to update question' });
     }
   });

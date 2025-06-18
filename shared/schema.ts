@@ -40,6 +40,7 @@ export const questions = pgTable("questions", {
   type: text("type").notNull(), // multiple_choice, checkbox
   order: integer("order").notNull(),
   layout: text("layout").default("standard"), // standard, grid, carousel, cardstack
+  imageUrl: text("image_url"), // URL gambar untuk question
   
   // Untuk struktur pertanyaan bercabang
   isMainQuestion: boolean("is_main_question").default(false),
@@ -51,7 +52,6 @@ export const questions = pgTable("questions", {
     text: string;
     description?: string;
     imageUrl?: string;
-    hideText?: boolean;
     scentMappings: Record<string, number>;
   }[]>(),
 });
@@ -60,14 +60,6 @@ export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
 }).extend({
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
-  options: z.array(z.object({
-    id: z.string(),
-    text: z.string(),
-    description: z.string().optional(),
-    imageUrl: z.string().optional(),
-    hideText: z.boolean().optional(),
-    scentMappings: z.record(z.string(), z.number()),
-  })),
 });
 
 // Zodiac mapping model
