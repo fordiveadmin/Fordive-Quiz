@@ -87,14 +87,13 @@ const questionSchema = z.object({
   type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
-  imageUrl: z.string().optional(),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
   options: z.array(optionSchema).min(1, 'At least one option is required')
 });
 
-type Question = z.infer<typeof questionSchema> & { id: number; imageUrl?: string };
+type Question = z.infer<typeof questionSchema> & { id: number };
 
 // Define a type for the scent objects
 interface Scent {
@@ -205,17 +204,16 @@ export default function AdminQuestions() {
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
-        [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', hideText: false, scentMappings: {} }]
     );
     
-    const form = useForm({
+    const form = useForm<z.infer<typeof questionSchema>>({
       resolver: zodResolver(questionSchema),
       defaultValues: isEdit && currentQuestion ? {
         text: currentQuestion.text,
         type: currentQuestion.type,
         order: currentQuestion.order,
         layout: currentQuestion.layout || 'standard',
-        imageUrl: (currentQuestion as any).imageUrl || '',
         isMainQuestion: currentQuestion.isMainQuestion || false,
         parentId: currentQuestion.parentId || null,
         parentOptionId: currentQuestion.parentOptionId || null,
@@ -225,11 +223,10 @@ export default function AdminQuestions() {
         type: 'multiple_choice',
         order: questions ? questions.length + 1 : 1,
         layout: 'standard',
-        imageUrl: '',
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', hideText: false, scentMappings: {} }]
       },
     });
     
@@ -259,7 +256,7 @@ export default function AdminQuestions() {
       form.setValue('options', newOptions);
     };
     
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: z.infer<typeof questionSchema>) => {
       // Pastikan data yang dikirim valid dan layout disertakan
       const formattedData = {
         ...data,
@@ -336,27 +333,6 @@ export default function AdminQuestions() {
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Question Image URL (Optional)</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="url"
-                      placeholder="https://example.com/image.jpg"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Add an image to display with this question
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -546,34 +522,53 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {/* Image URL field - shown only when question type is image_choice */}
-                  {form.watch('type') === 'image_choice' && (
-                    <div className="mt-2">
-                      <Label htmlFor={`option-image-${index}`}>Image URL</Label>
-                      <Input
-                        id={`option-image-${index}`}
-                        value={option.imageUrl || ''}
+                  {/* Image URL field - available for all question types */}
+                  <div className="mt-2">
+                    <Label htmlFor={`option-image-${index}`}>Image URL (optional)</Label>
+                    <Input
+                      id={`option-image-${index}`}
+                      value={option.imageUrl || ''}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].imageUrl = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.imageUrl`, e.target.value);
+                      }}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    {option.imageUrl && (
+                      <div className="mt-2 border rounded p-2">
+                        <p className="text-xs text-muted-foreground mb-1">Image Preview:</p>
+                        <img 
+                          src={option.imageUrl} 
+                          alt={option.text}
+                          className="w-full h-32 object-cover rounded"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://placehold.co/400x300?text=Image+Not+Found';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Hide Text Option */}
+                  {option.imageUrl && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id={`option-hidetext-${index}`}
+                        checked={option.hideText || false}
                         onChange={(e) => {
                           const newOptions = [...options];
-                          newOptions[index].imageUrl = e.target.value;
+                          newOptions[index].hideText = e.target.checked;
                           setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, e.target.value);
+                          form.setValue(`options.${index}.hideText`, e.target.checked);
                         }}
-                        placeholder="https://example.com/image.jpg"
+                        className="h-4 w-4 rounded border-gray-300"
                       />
-                      {option.imageUrl && (
-                        <div className="mt-2 border rounded p-2">
-                          <p className="text-xs text-muted-foreground mb-1">Image Preview:</p>
-                          <img 
-                            src={option.imageUrl} 
-                            alt={option.text}
-                            className="w-full h-32 object-cover rounded"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://placehold.co/400x300?text=Image+Not+Found';
-                            }}
-                          />
-                        </div>
-                      )}
+                      <Label htmlFor={`option-hidetext-${index}`} className="text-sm">
+                        Hide text (show image only)
+                      </Label>
                     </div>
                   )}
                 </div>

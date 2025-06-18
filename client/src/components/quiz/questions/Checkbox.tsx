@@ -13,6 +13,8 @@ interface CheckboxProps {
       id: string;
       text: string;
       description?: string;
+      imageUrl?: string;
+      hideText?: boolean;
       scentMappings: Record<string, number>;
     }[];
   };
@@ -111,15 +113,33 @@ export default function Checkbox({ question }: CheckboxProps) {
               className="h-5 w-5 text-primary rounded border-input mt-1 mr-3"
               id={`checkbox-${option.id}`}
             />
-            <div>
-              <Label 
-                htmlFor={`checkbox-${option.id}`} 
-                className="font-semibold mb-1 font-playfair cursor-pointer"
-              >
-                {option.text}
-              </Label>
-              {option.description && (
-                <p className="text-sm text-muted-foreground">{option.description}</p>
+            <div className="flex-1">
+              {option.imageUrl && (
+                <div className={option.hideText ? "h-48" : "mb-3"}>
+                  <img 
+                    src={option.imageUrl} 
+                    alt={option.text}
+                    className={`w-full object-cover rounded-md ${
+                      option.hideText ? "h-full" : "h-32"
+                    }`}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              {!option.hideText && (
+                <>
+                  <Label 
+                    htmlFor={`checkbox-${option.id}`} 
+                    className="font-semibold mb-1 font-playfair cursor-pointer"
+                  >
+                    {option.text}
+                  </Label>
+                  {option.description && (
+                    <p className="text-sm text-muted-foreground">{option.description}</p>
+                  )}
+                </>
               )}
             </div>
           </motion.div>
