@@ -115,6 +115,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- June 18, 2025: Added Card Stack 3D layout for image questions
+  - Implemented interactive 3D card stack with flip animations
+  - Added layout selection in admin panel for image question types
+  - Created dynamic layout switching (Gallery Grid vs Card Stack 3D)
+  - Enhanced user experience with tap-to-select and arrow navigation
+  - Added CSS perspective effects for authentic 3D appearance
+
+- June 18, 2025: Enhanced result image generator pattern background
+  - Added rotated Fordive logo pattern with adjustable opacity and positioning
+  - Implemented subtle background texture at -35 degree rotation
+  - Optimized pattern size and position for better visibility
+  - Maintained elegant cream gradient background
+
 - June 18, 2025: Redesigned result image generator to match brand template
   - Updated layout from dark theme to cream/gold gradient background
   - Resized to Instagram Story format (375x667px, 9:16 ratio)
