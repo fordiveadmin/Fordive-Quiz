@@ -6,7 +6,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
 import logoImage from "../../assets/logo.png";
-import patternImage from "@assets/Vector Smart Object_1750262358556.png";
 
 interface ResultImageGeneratorProps {
   scent: {
@@ -129,98 +128,87 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl"
         style={{ 
           fontFamily: '"Playfair Display", "Montserrat", sans-serif',
-          backgroundColor: '#F5F1E8'
+          background: 'linear-gradient(to bottom, #FAF7F2 0%, #F5F1E8 50%, #E8DCC0 100%)'
         }}
       >
-        {/* Pattern background overlay */}
-        <div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `url(${patternImage})`,
-            backgroundSize: '40px 40px',
-            backgroundRepeat: 'repeat'
-          }}
-        />
-        
-        {/* Content overlay */}
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="px-6 pt-6 pb-4">
-            <div className="flex justify-between items-start mb-8">
-              <div className="text-left">
-                <p className="text-amber-600 text-sm font-medium" style={{color: '#C8926B'}}>Scent Finder Result:</p>
-              </div>
-              <div className="flex items-center">
-                <img 
-                  src={logoImage} 
-                  alt="Fordive Logo" 
-                  className="h-6" 
-                  crossOrigin="anonymous"
-                  loading="eager"
-                />
-              </div>
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4">
+          <div className="flex justify-between items-start mb-6">
+            <div className="text-left">
+              <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
             </div>
-            
-            {/* Title */}
-            <h2 className="text-gray-800 text-xl font-medium mb-6" style={{color: '#4A4A4A'}}>Your Scent Match</h2>
-            
-            {/* Scent Name */}
-            <h1 className="text-4xl font-bold text-center mb-4" style={{ 
-              color: '#C8926B', 
-              fontFamily: 'Playfair Display, serif',
-              fontStyle: 'italic',
-              lineHeight: '1.1'
-            }}>
-              {scent.name}
-            </h1>
-            
-            {/* Vibes Badge */}
-            <div className="text-center mb-6">
-              <div className="inline-block px-4 py-2 border rounded-full" style={{borderColor: '#C8926B'}}>
-                <span className="text-sm font-medium" style={{color: '#C8926B'}}>
-                  {scent.vibes.join(', ')}
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Large Product Image Section */}
-          <div className="px-6 mb-6">
-            <div className="w-full h-48 relative rounded-lg overflow-hidden shadow-lg bg-white">
+            <div className="flex items-center">
               <img 
-                src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
-                alt={scent.name} 
-                className="w-full h-full object-contain"
+                src={logoImage} 
+                alt="Fordive Logo" 
+                className="h-6" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
             </div>
           </div>
           
-          {/* Bottom Section */}
-          <div className="px-6 pb-6">
-            {zodiacSign && (
-              <div className="mb-6">
-                {/* Background overlay with rounded corners */}
-                <div className="rounded-lg p-4 text-white" style={{backgroundColor: 'rgba(0,0,0,0.4)'}}>
-                  <h3 className="text-white text-base font-medium mb-2">
-                    {userName}'s scent characteristics
-                  </h3>
-                  <p className="font-medium text-sm mb-2" style={{color: '#C8926B'}}>
-                    Horoscope: {zodiacSign}
-                  </p>
-                  <p className="text-white text-sm leading-relaxed">
-                    {getZodiacDescription()}
-                  </p>
-                </div>
-              </div>
-            )}
-            
-            <div className="text-center">
-              <p className="text-gray-700 text-sm">
-                Find your scent at <span className="font-medium italic" style={{color: '#C8926B'}}>fordive.id</span>
-              </p>
+          {/* Title */}
+          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
+          
+          {/* Scent Name */}
+          <h1 className="text-3xl font-bold text-center mb-3" style={{ 
+            color: '#D4713A', 
+            fontFamily: 'Playfair Display, serif',
+            fontStyle: 'italic',
+            lineHeight: '1.1'
+          }}>
+            {scent.name}
+          </h1>
+          
+          {/* Vibes Badge */}
+          <div className="text-center mb-4">
+            <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
+              <span className="text-amber-700 text-xs font-medium">
+                {scent.vibes.join(', ')}
+              </span>
             </div>
+          </div>
+        </div>
+        
+        {/* Large Product Image Section */}
+        <div className="px-6 mb-4 flex-1">
+          <div className="w-full h-56 relative rounded-lg overflow-hidden shadow-lg">
+            {/* Background with subtle gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-50 to-amber-100 opacity-80"></div>
+            <img 
+              src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
+              alt={scent.name} 
+              className="w-full h-full object-contain relative z-10"
+              crossOrigin="anonymous"
+              loading="eager"
+            />
+          </div>
+        </div>
+        
+        {/* Bottom Section with overlay on image */}
+        <div className="absolute bottom-0 left-0 right-0 px-6 pb-6">
+          {zodiacSign && (
+            <div className="mb-4">
+              {/* Semi-transparent background */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 text-white">
+                <h3 className="text-white text-base font-medium mb-2">
+                  {userName}'s scent characteristics
+                </h3>
+                <p className="text-amber-200 font-medium text-xs mb-1">
+                  Horoscope: {zodiacSign}
+                </p>
+                <p className="text-white text-xs leading-relaxed">
+                  {getZodiacDescription()}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="text-center">
+            <p className="text-gray-700 text-xs">
+              Find your scent at <span className="text-amber-700 font-medium italic">fordive.id</span>
+            </p>
           </div>
         </div>
       </div>
