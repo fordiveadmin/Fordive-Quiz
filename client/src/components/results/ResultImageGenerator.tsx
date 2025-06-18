@@ -131,6 +131,15 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           background: 'linear-gradient(135deg, #FAF7F2 0%, #F5F1E8 30%, #E8DCC0 70%, #D4B896 100%)'
         }}
       >
+        {/* Subtle pattern background overlay */}
+        <div 
+          className="absolute inset-0 opacity-5 pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D4AF37' fill-opacity='1'%3E%3Ctext x='30' y='35' text-anchor='middle' font-family='serif' font-size='24' font-weight='bold'%3EFD%3C/text%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundSize: '40px 40px',
+            backgroundRepeat: 'repeat'
+          }}
+        ></div>
         {/* Header - Compact for Instagram Story */}
         <div className="px-6 pt-6 pb-4">
           <div className="flex justify-between items-start mb-4">
