@@ -113,7 +113,19 @@ The application is configured for multiple deployment targets:
 
 Preferred communication style: Simple, everyday language.
 
-## Changelog
+## Recent Changes
 
-Changelog:
-- June 18, 2025. Initial setup
+- June 18, 2025: Redesigned result image generator to match brand template
+  - Updated layout from dark theme to cream/gold gradient background
+  - Resized to Instagram Story format (375x667px, 9:16 ratio)
+  - Extended product image to fill majority of space with golden gradient overlay
+  - Positioned text overlay at bottom with proper contrast
+  - Integrated search icon and underlined fordive.id link
+  - Optimized export settings for social media sharing (750x1334px output)
+
+- June 18, 2025: Fixed admin panel scent creation
+  - Resolved database sequence conflicts causing duplicate key errors
+  - Added URL-based image field replacing problematic file upload
+  - Improved error logging and validation feedback
+
+- June 18, 2025: Initial project setup
