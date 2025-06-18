@@ -149,10 +149,10 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
           
           {/* Title */}
-          <h2 className="text-gray-800 text-lg font-medium mb-3">Your Scent Match</h2>
+          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
           
-          {/* Scent Name */}
-          <h1 className="text-3xl font-bold text-center mb-3" style={{ 
+          {/* Scent Name - Rata kiri dan lebih besar */}
+          <h1 className="text-4xl font-bold text-left mb-3" style={{ 
             color: '#D4713A', 
             fontFamily: 'Playfair Display, serif',
             fontStyle: 'italic',
@@ -161,19 +161,19 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
             {scent.name}
           </h1>
           
-          {/* Vibes Badge */}
-          <div className="text-center mb-4">
-            <div className="inline-block px-4 py-1 border border-amber-400 rounded-full">
-              <span className="text-amber-700 text-sm font-medium">
+          {/* Vibes Badge - Rata kiri dan lebih kecil */}
+          <div className="text-left mb-4">
+            <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
+              <span className="text-amber-700 text-xs font-medium">
                 {scent.vibes.join(', ')}
               </span>
             </div>
           </div>
         </div>
         
-        {/* Extended Product Image Section - Mepet ke bawah */}
-        <div className="absolute top-48 left-0 right-0 bottom-0">
-          <div className="w-full h-full relative overflow-hidden">
+        {/* Extended Product Image Section with margin and rounded corners */}
+        <div className="absolute top-48 left-4 right-4 bottom-4">
+          <div className="w-full h-full relative overflow-hidden rounded-xl shadow-2xl">
             {/* Product Image - covering full remaining space */}
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
