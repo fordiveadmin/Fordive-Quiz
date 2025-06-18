@@ -183,8 +183,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               loading="eager"
             />
             
-            {/* Strong gold gradient overlay covering more area */}
-            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-amber-900/90 via-amber-800/70 via-amber-700/50 to-transparent"></div>
+            {/* Soft golden gradient overlay like in template */}
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-yellow-800/85 via-yellow-700/65 via-amber-600/45 to-transparent"></div>
             
             {/* Text overlay on the gradient */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -193,7 +193,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
                   <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
-                  <p className="text-amber-200 font-medium text-sm mb-2">
+                  <p className="text-yellow-200 font-medium text-sm mb-2">
                     Horoscope: {zodiacSign}
                   </p>
                   <p className="text-white text-sm leading-relaxed">
@@ -205,7 +205,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {/* Bottom link integrated into the overlay */}
               <div className="text-center">
                 <p className="text-white text-sm">
-                  Find your scent at <span className="text-amber-200 font-medium italic">fordive.id</span>
+                  Find your scent at <span className="text-yellow-200 font-medium italic">fordive.id</span>
                 </p>
               </div>
             </div>
