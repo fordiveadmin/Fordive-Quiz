@@ -138,7 +138,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           style={{
             backgroundImage: `url(${fordivePattern})`,
             backgroundSize: 'cover',
-            backgroundRepeat: 'repeat'
+            backgroundRepeat: 'repeat',
+            transform: 'rotate(35deg)',
+            transformOrigin: 'center'
           }}
         ></div>
         {/* Header - Compact for Instagram Story */}
