@@ -87,13 +87,14 @@ const questionSchema = z.object({
   type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
+  imageUrl: z.string().optional(),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
   options: z.array(optionSchema).min(1, 'At least one option is required')
 });
 
-type Question = z.infer<typeof questionSchema> & { id: number };
+type Question = z.infer<typeof questionSchema> & { id: number; imageUrl?: string };
 
 // Define a type for the scent objects
 interface Scent {
@@ -207,13 +208,14 @@ export default function AdminQuestions() {
         [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
     );
     
-    const form = useForm<z.infer<typeof questionSchema>>({
+    const form = useForm({
       resolver: zodResolver(questionSchema),
       defaultValues: isEdit && currentQuestion ? {
         text: currentQuestion.text,
         type: currentQuestion.type,
         order: currentQuestion.order,
         layout: currentQuestion.layout || 'standard',
+        imageUrl: currentQuestion.imageUrl || '',
         isMainQuestion: currentQuestion.isMainQuestion || false,
         parentId: currentQuestion.parentId || null,
         parentOptionId: currentQuestion.parentOptionId || null,
@@ -223,6 +225,7 @@ export default function AdminQuestions() {
         type: 'multiple_choice',
         order: questions ? questions.length + 1 : 1,
         layout: 'standard',
+        imageUrl: '',
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
@@ -256,7 +259,7 @@ export default function AdminQuestions() {
       form.setValue('options', newOptions);
     };
     
-    const onSubmit = (data: z.infer<typeof questionSchema>) => {
+    const onSubmit = (data: any) => {
       // Pastikan data yang dikirim valid dan layout disertakan
       const formattedData = {
         ...data,
@@ -333,6 +336,27 @@ export default function AdminQuestions() {
                       onChange={(e) => field.onChange(parseInt(e.target.value))}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Question Image URL (Optional)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Add an image to display with this question
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
