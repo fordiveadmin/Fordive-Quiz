@@ -235,6 +235,8 @@ export default function AdminQuestions() {
         id: `option_${Date.now()}`, 
         text: '', 
         description: '', 
+        imageUrl: '',
+        hideText: false,
         scentMappings: {} 
       };
       setOptions([...options, newOption]);
@@ -562,7 +564,10 @@ export default function AdminQuestions() {
                           const newOptions = [...options];
                           newOptions[index].hideText = e.target.checked;
                           setOptions(newOptions);
-                          form.setValue(`options.${index}.hideText`, e.target.checked);
+                          // Update the form values directly
+                          const currentOptions = form.getValues('options');
+                          currentOptions[index] = { ...currentOptions[index], hideText: e.target.checked };
+                          form.setValue('options', currentOptions);
                         }}
                         className="h-4 w-4 rounded border-gray-300"
                       />
