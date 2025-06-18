@@ -338,35 +338,37 @@ export default function AdminQuestions() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="layout"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Question Layout</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value || 'standard'}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select layout style" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="standard">Standard Layout</SelectItem>
-                      <SelectItem value="grid">Grid Cards Layout</SelectItem>
-                      <SelectItem value="carousel">Carousel Layout</SelectItem>
-                      <SelectItem value="cardstack">3D Card Stack Layout</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Choose how the question options will be displayed to users
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {form.watch('type') !== 'image_choice' && (
+              <FormField
+                control={form.control}
+                name="layout"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Question Layout</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || 'standard'}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select layout style" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="standard">Standard Layout</SelectItem>
+                        <SelectItem value="grid">Grid Cards Layout</SelectItem>
+                        <SelectItem value="carousel">Carousel Layout</SelectItem>
+                        <SelectItem value="cardstack">3D Card Stack Layout</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Choose how the question options will be displayed to users
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
           <div className="space-y-4 border p-4 rounded-md">
