@@ -137,7 +137,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: '80px 80px',
+            backgroundSize: '120px 120px',
             backgroundRepeat: 'repeat'
           }}
         ></div>
