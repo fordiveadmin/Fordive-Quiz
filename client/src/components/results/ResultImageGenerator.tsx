@@ -162,7 +162,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </h1>
           
           {/* Vibes Badge - Rata kiri dan lebih kecil */}
-          <div className="text-left mb-4">
+          <div className="text-left mb-6">
             <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
               <span className="text-amber-700 text-xs font-medium">
                 {scent.vibes.join(', ')}
@@ -172,7 +172,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         </div>
         
         {/* Extended Product Image Section with margin kiri-kanan only */}
-        <div className="absolute top-48 left-4 right-4 bottom-0">
+        <div className="absolute top-56 left-4 right-4 bottom-0">
           <div className="w-full h-full relative overflow-hidden rounded-t-xl shadow-2xl">
             {/* Product Image - covering full remaining space */}
             <img 
