@@ -215,7 +215,7 @@ export default function AdminQuestions() {
         type: currentQuestion.type,
         order: currentQuestion.order,
         layout: currentQuestion.layout || 'standard',
-        imageUrl: currentQuestion.imageUrl || '',
+        imageUrl: (currentQuestion as any).imageUrl || '',
         isMainQuestion: currentQuestion.isMainQuestion || false,
         parentId: currentQuestion.parentId || null,
         parentOptionId: currentQuestion.parentOptionId || null,
