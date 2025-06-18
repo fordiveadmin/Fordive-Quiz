@@ -522,36 +522,34 @@ export default function AdminQuestions() {
                     />
                   </div>
                   
-                  {/* Image URL field - shown only when question type is image_choice */}
-                  {form.watch('type') === 'image_choice' && (
-                    <div className="mt-2">
-                      <Label htmlFor={`option-image-${index}`}>Image URL</Label>
-                      <Input
-                        id={`option-image-${index}`}
-                        value={option.imageUrl || ''}
-                        onChange={(e) => {
-                          const newOptions = [...options];
-                          newOptions[index].imageUrl = e.target.value;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.imageUrl`, e.target.value);
-                        }}
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      {option.imageUrl && (
-                        <div className="mt-2 border rounded p-2">
-                          <p className="text-xs text-muted-foreground mb-1">Image Preview:</p>
-                          <img 
-                            src={option.imageUrl} 
-                            alt={option.text}
-                            className="w-full h-32 object-cover rounded"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://placehold.co/400x300?text=Image+Not+Found';
-                            }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Image URL field - available for all question types */}
+                  <div className="mt-2">
+                    <Label htmlFor={`option-image-${index}`}>Image URL (optional)</Label>
+                    <Input
+                      id={`option-image-${index}`}
+                      value={option.imageUrl || ''}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index].imageUrl = e.target.value;
+                        setOptions(newOptions);
+                        form.setValue(`options.${index}.imageUrl`, e.target.value);
+                      }}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    {option.imageUrl && (
+                      <div className="mt-2 border rounded p-2">
+                        <p className="text-xs text-muted-foreground mb-1">Image Preview:</p>
+                        <img 
+                          src={option.imageUrl} 
+                          alt={option.text}
+                          className="w-full h-32 object-cover rounded"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://placehold.co/400x300?text=Image+Not+Found';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div>

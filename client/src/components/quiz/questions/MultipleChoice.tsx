@@ -12,6 +12,7 @@ interface MultipleChoiceProps {
       id: string;
       text: string;
       description?: string;
+      imageUrl?: string;
       scentMappings: Record<string, number>;
     }[];
   };
@@ -91,6 +92,18 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
             )}
             onClick={() => handleSelect(option.id)}
           >
+            {option.imageUrl && (
+              <div className="mb-3">
+                <img 
+                  src={option.imageUrl} 
+                  alt={option.text}
+                  className="w-full h-32 object-cover rounded-md"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
             <h3 className="font-semibold mb-2 font-playfair">{option.text}</h3>
             {option.description && (
               <p className="text-sm text-muted-foreground">{option.description}</p>

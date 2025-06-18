@@ -13,6 +13,7 @@ interface CheckboxProps {
       id: string;
       text: string;
       description?: string;
+      imageUrl?: string;
       scentMappings: Record<string, number>;
     }[];
   };
