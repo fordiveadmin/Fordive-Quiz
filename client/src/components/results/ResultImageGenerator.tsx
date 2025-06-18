@@ -125,77 +125,86 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       {/* Story container - this will be captured as an image */}
       <div 
         ref={storyRef}
-        className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-amber-50 to-amber-100"
-        style={{ fontFamily: '"Playfair Display", "Montserrat", sans-serif' }}
+        className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl"
+        style={{ 
+          fontFamily: '"Playfair Display", "Montserrat", sans-serif',
+          backgroundColor: '#FAF7F2'
+        }}
       >
-        {/* Background image with darker gradient overlay */}
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-gradient-to-b from-black/60 via-black/30 to-black/60 z-10 absolute" />
-          <img 
-            src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
-            alt={scent.name} 
-            className="w-full h-full object-cover"
-            crossOrigin="anonymous"
-            loading="eager"
-          />
-        </div>
-        
-        {/* Content */}
-        <div className="absolute inset-0 z-10 flex flex-col justify-between p-6 text-white">
-          {/* Header - Logo Fordive */}
-          <div className="text-center pt-4">
-            <div className="flex justify-center mb-3">
+        {/* Header */}
+        <div className="px-6 pt-6 pb-2">
+          <div className="flex justify-between items-start mb-4">
+            <div className="text-left">
+              <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
+            </div>
+            <div className="flex items-center">
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="h-20" 
+                className="h-8" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
             </div>
           </div>
           
-          {/* Middle content - Main Result */}
-          <div className="flex flex-col items-center justify-center flex-1 -mt-4">
-            <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl shadow-lg w-full max-w-[300px] text-center mb-2">
-              <p className="text-xs uppercase tracking-wider mb-3 text-white/80">YOUR SCENT MATCH</p>
-              <h2 className="text-4xl font-bold mb-4" style={{color: '#C89F65'}}>{scent.name}</h2>
-              
-              {/* Notes */}
-              <div className="flex flex-wrap justify-center gap-2 mb-4">
-                {scent.notes.slice(0, 4).map((note, index) => (
-                  <span 
-                    key={index} 
-                    className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-medium"
-                  >
-                    {note}
-                  </span>
-                ))}
-              </div>
-              
-              {/* Quote/Tagline */}
-              <p className="text-sm italic text-white/90 leading-relaxed">"{scent.mood}"</p>
+          {/* Title */}
+          <h2 className="text-gray-800 text-xl font-semibold mb-6">Your Scent Match</h2>
+          
+          {/* Scent Name */}
+          <h1 className="text-4xl font-bold text-center mb-3" style={{ 
+            color: '#D4713A', 
+            fontFamily: 'Playfair Display, serif',
+            fontStyle: 'italic'
+          }}>
+            {scent.name}
+          </h1>
+          
+          {/* Vibes Badge */}
+          <div className="text-center mb-6">
+            <div className="inline-block px-4 py-1 border border-amber-300 rounded-full">
+              <span className="text-amber-700 text-sm font-medium">
+                {scent.vibes.join(', ')}
+              </span>
             </div>
           </div>
-          
-          {/* Footer - User Characteristics */}
-          <div className="text-center pb-6">
-            <div className="bg-black/40 backdrop-blur-sm py-4 px-6 rounded-xl mb-4">
-              <p className="text-lg font-semibold text-white mb-2">
-                {userName}'s Scent Characteristics
-              </p>
-              {zodiacSign && (
-                <>
-                  <p className="text-sm text-white/90 mb-2">
-                    <span className="font-medium">Horoscope:</span> <span style={{color: '#C89F65'}}>{zodiacSign}</span>
-                  </p>
-                  <p className="text-xs text-white/80 leading-relaxed px-2">
-                    {getZodiacDescription()}
-                  </p>
-                </>
-              )}
+        </div>
+        
+        {/* Product Image Section */}
+        <div className="px-6 mb-6">
+          <div className="w-full h-48 bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
+            <img 
+              src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
+              alt={scent.name} 
+              className="max-w-full max-h-full object-contain"
+              crossOrigin="anonymous"
+              loading="eager"
+            />
+          </div>
+        </div>
+        
+        {/* Bottom Section */}
+        <div className="px-6 pb-6">
+          {zodiacSign && (
+            <div className="mb-6">
+              <h3 className="text-gray-800 text-lg font-semibold mb-3">
+                {userName}'s scent characteristics
+              </h3>
+              <div className="bg-white/60 rounded-lg p-4 shadow-sm">
+                <p className="text-amber-700 font-medium text-sm mb-2">
+                  Horoscope: {zodiacSign}
+                </p>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {getZodiacDescription()}
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-white/70 font-light">fordive.id</p>
+          )}
+          
+          <div className="text-center">
+            <p className="text-gray-600 text-sm mb-1">Find your scent at {' '}
+              <span className="text-amber-700 font-semibold italic">fordive.id</span>
+            </p>
           </div>
         </div>
       </div>
