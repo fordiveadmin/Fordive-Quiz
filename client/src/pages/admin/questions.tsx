@@ -338,7 +338,7 @@ export default function AdminQuestions() {
               )}
             />
 
-            {form.watch('type') !== 'image_choice' && (
+            {form.watch('type') !== 'image_choice' && form.watch('type') !== 'checkbox' && (
               <FormField
                 control={form.control}
                 name="layout"
