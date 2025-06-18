@@ -204,7 +204,7 @@ export default function AdminQuestions() {
     const [options, setOptions] = useState<Array<any>>(
       isEdit && currentQuestion?.options ? 
         currentQuestion.options : 
-        [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', hideText: false, scentMappings: {} }]
+        [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
     );
     
     const form = useForm<z.infer<typeof questionSchema>>({
@@ -226,7 +226,7 @@ export default function AdminQuestions() {
         isMainQuestion: false,
         parentId: null,
         parentOptionId: null,
-        options: [{ id: `option_${Date.now()}`, text: '', description: '', imageUrl: '', hideText: false, scentMappings: {} }]
+        options: [{ id: `option_${Date.now()}`, text: '', description: '', scentMappings: {} }]
       },
     });
     
@@ -550,27 +550,6 @@ export default function AdminQuestions() {
                       </div>
                     )}
                   </div>
-
-                  {/* Hide Text Option */}
-                  {option.imageUrl && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`option-hidetext-${index}`}
-                        checked={option.hideText || false}
-                        onChange={(e) => {
-                          const newOptions = [...options];
-                          newOptions[index].hideText = e.target.checked;
-                          setOptions(newOptions);
-                          form.setValue(`options.${index}.hideText`, e.target.checked);
-                        }}
-                        className="h-4 w-4 rounded border-gray-300"
-                      />
-                      <Label htmlFor={`option-hidetext-${index}`} className="text-sm">
-                        Hide text (show image only)
-                      </Label>
-                    </div>
-                  )}
                 </div>
                 
                 <div>

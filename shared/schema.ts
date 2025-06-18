@@ -51,7 +51,6 @@ export const questions = pgTable("questions", {
     text: string;
     description?: string;
     imageUrl?: string;
-    hideText?: boolean;
     scentMappings: Record<string, number>;
   }[]>(),
 });
