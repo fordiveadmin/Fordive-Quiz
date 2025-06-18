@@ -139,7 +139,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
             backgroundImage: `url(${fordivePattern})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'repeat',
-            transform: 'rotate(35deg)',
+            transform: 'rotate(-35deg)',
             transformOrigin: 'center'
           }}
         ></div>
