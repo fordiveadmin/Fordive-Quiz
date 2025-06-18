@@ -171,10 +171,10 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
         </div>
         
-        {/* Large Product Image Section with Overlay */}
-        <div className="px-6 mb-6 flex-1 relative">
-          <div className="w-full h-64 relative rounded-lg overflow-hidden shadow-lg">
-            {/* Product Image */}
+        {/* Large Product Image Section with Overlay - Extended to bottom */}
+        <div className="flex-1 relative">
+          <div className="w-full h-full relative overflow-hidden">
+            {/* Product Image - covering more space */}
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
               alt={scent.name} 
@@ -183,13 +183,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               loading="eager"
             />
             
-            {/* Gold gradient overlay at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-amber-900/80 via-amber-800/60 to-transparent"></div>
+            {/* Strong gold gradient overlay covering more area */}
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-amber-900/90 via-amber-800/70 via-amber-700/50 to-transparent"></div>
             
             {/* Text overlay on the gradient */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               {zodiacSign && (
-                <div className="text-left">
+                <div className="text-left mb-6">
                   <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
@@ -201,16 +201,14 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
                   </p>
                 </div>
               )}
+              
+              {/* Bottom link integrated into the overlay */}
+              <div className="text-center">
+                <p className="text-white text-sm">
+                  Find your scent at <span className="text-amber-200 font-medium italic">fordive.id</span>
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
-        
-        {/* Bottom Section */}
-        <div className="px-6 pb-6">
-          <div className="text-center">
-            <p className="text-gray-700 text-sm">
-              Find your scent at <span className="text-amber-700 font-medium italic">fordive.id</span>
-            </p>
           </div>
         </div>
       </div>
