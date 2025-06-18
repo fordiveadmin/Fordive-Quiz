@@ -129,15 +129,15 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         className="relative w-[375px] h-[667px] rounded-2xl overflow-hidden shadow-xl"
         style={{ 
           fontFamily: '"Playfair Display", "Montserrat", sans-serif',
-          background: 'linear-gradient(135deg, #FAF7F2 0%, #F5F1E8 30%, #E8DCC0 70%, #D4B896 100%)'
+          background: 'linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 50%, #F0EAD6 100%)'
         }}
       >
         {/* Subtle pattern background overlay */}
         <div 
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: '120px 120px',
+            backgroundSize: 'cover',
             backgroundRepeat: 'repeat'
           }}
         ></div>
