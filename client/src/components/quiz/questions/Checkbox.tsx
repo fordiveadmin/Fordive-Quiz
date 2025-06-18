@@ -112,7 +112,19 @@ export default function Checkbox({ question }: CheckboxProps) {
               className="h-5 w-5 text-primary rounded border-input mt-1 mr-3"
               id={`checkbox-${option.id}`}
             />
-            <div>
+            <div className="flex-1">
+              {option.imageUrl && (
+                <div className="mb-3">
+                  <img 
+                    src={option.imageUrl} 
+                    alt={option.text}
+                    className="w-full h-32 object-cover rounded-md"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
               <Label 
                 htmlFor={`checkbox-${option.id}`} 
                 className="font-semibold mb-1 font-playfair cursor-pointer"
