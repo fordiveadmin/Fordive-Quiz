@@ -262,10 +262,19 @@ export default function AdminQuestions() {
       // Pastikan data yang dikirim valid dan layout disertakan
       const formattedData = {
         ...data,
-        layout: data.layout || 'standard' // Pastikan nilai layout selalu disertakan
+        layout: data.layout || 'standard', // Pastikan nilai layout selalu disertakan
+        options: options.map(option => ({
+          id: option.id,
+          text: option.text,
+          description: option.description || '',
+          imageUrl: option.imageUrl || '',
+          hideText: option.hideText || false,
+          scentMappings: option.scentMappings || {}
+        }))
       };
       
       console.log('Form data to submit:', formattedData);
+      console.log('Options with hideText:', formattedData.options);
       
       if (isEdit && currentQuestion) {
         updateQuestion.mutate({ id: currentQuestion.id, data: formattedData });

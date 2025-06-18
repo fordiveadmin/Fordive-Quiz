@@ -60,6 +60,14 @@ export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
 }).extend({
   layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
+  options: z.array(z.object({
+    id: z.string(),
+    text: z.string(),
+    description: z.string().optional(),
+    imageUrl: z.string().optional(),
+    hideText: z.boolean().optional(),
+    scentMappings: z.record(z.string(), z.number()),
+  })),
 });
 
 // Zodiac mapping model
