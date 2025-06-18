@@ -171,42 +171,44 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
         </div>
         
-        {/* Large Product Image Section */}
-        <div className="px-6 mb-4 flex-1">
-          <div className="w-full h-56 relative rounded-lg overflow-hidden shadow-lg">
-            {/* Background with subtle gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-amber-50 to-amber-100 opacity-80"></div>
+        {/* Large Product Image Section with Overlay */}
+        <div className="px-6 mb-6 flex-1 relative">
+          <div className="w-full h-64 relative rounded-lg overflow-hidden shadow-lg">
+            {/* Product Image */}
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
               alt={scent.name} 
-              className="w-full h-full object-contain relative z-10"
+              className="w-full h-full object-cover"
               crossOrigin="anonymous"
               loading="eager"
             />
+            
+            {/* Gold gradient overlay at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-amber-900/80 via-amber-800/60 to-transparent"></div>
+            
+            {/* Text overlay on the gradient */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              {zodiacSign && (
+                <div className="text-left">
+                  <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
+                    {userName}'s scent characteristics
+                  </h3>
+                  <p className="text-amber-200 font-medium text-sm mb-2">
+                    Horoscope: {zodiacSign}
+                  </p>
+                  <p className="text-white text-sm leading-relaxed">
+                    {getZodiacDescription()}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
-        {/* Bottom Section with overlay on image */}
-        <div className="absolute bottom-0 left-0 right-0 px-6 pb-6">
-          {zodiacSign && (
-            <div className="mb-4">
-              {/* Semi-transparent background */}
-              <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 text-white">
-                <h3 className="text-white text-base font-medium mb-2">
-                  {userName}'s scent characteristics
-                </h3>
-                <p className="text-amber-200 font-medium text-xs mb-1">
-                  Horoscope: {zodiacSign}
-                </p>
-                <p className="text-white text-xs leading-relaxed">
-                  {getZodiacDescription()}
-                </p>
-              </div>
-            </div>
-          )}
-          
+        {/* Bottom Section */}
+        <div className="px-6 pb-6">
           <div className="text-center">
-            <p className="text-gray-700 text-xs">
+            <p className="text-gray-700 text-sm">
               Find your scent at <span className="text-amber-700 font-medium italic">fordive.id</span>
             </p>
           </div>
