@@ -128,12 +128,12 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         className="relative w-[350px] h-[620px] rounded-2xl overflow-hidden shadow-xl"
         style={{ 
           fontFamily: '"Playfair Display", "Montserrat", sans-serif',
-          backgroundColor: '#FAF7F2'
+          background: 'linear-gradient(to bottom, #FAF7F2 0%, #F5F1E8 50%, #E8DCC0 100%)'
         }}
       >
         {/* Header */}
-        <div className="px-6 pt-6 pb-2">
-          <div className="flex justify-between items-start mb-4">
+        <div className="px-6 pt-6 pb-4">
+          <div className="flex justify-between items-start mb-6">
             <div className="text-left">
               <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
             </div>
@@ -141,7 +141,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="h-8" 
+                className="h-6" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
@@ -149,52 +149,56 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
           
           {/* Title */}
-          <h2 className="text-gray-800 text-xl font-semibold mb-6">Your Scent Match</h2>
+          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
           
           {/* Scent Name */}
-          <h1 className="text-4xl font-bold text-center mb-3" style={{ 
+          <h1 className="text-3xl font-bold text-center mb-3" style={{ 
             color: '#D4713A', 
             fontFamily: 'Playfair Display, serif',
-            fontStyle: 'italic'
+            fontStyle: 'italic',
+            lineHeight: '1.1'
           }}>
             {scent.name}
           </h1>
           
           {/* Vibes Badge */}
-          <div className="text-center mb-6">
-            <div className="inline-block px-4 py-1 border border-amber-300 rounded-full">
-              <span className="text-amber-700 text-sm font-medium">
+          <div className="text-center mb-4">
+            <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
+              <span className="text-amber-700 text-xs font-medium">
                 {scent.vibes.join(', ')}
               </span>
             </div>
           </div>
         </div>
         
-        {/* Product Image Section */}
-        <div className="px-6 mb-6">
-          <div className="w-full h-48 bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
+        {/* Large Product Image Section */}
+        <div className="px-6 mb-4 flex-1">
+          <div className="w-full h-56 relative rounded-lg overflow-hidden shadow-lg">
+            {/* Background with subtle gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-50 to-amber-100 opacity-80"></div>
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
               alt={scent.name} 
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-full object-contain relative z-10"
               crossOrigin="anonymous"
               loading="eager"
             />
           </div>
         </div>
         
-        {/* Bottom Section */}
-        <div className="px-6 pb-6">
+        {/* Bottom Section with overlay on image */}
+        <div className="absolute bottom-0 left-0 right-0 px-6 pb-6">
           {zodiacSign && (
-            <div className="mb-6">
-              <h3 className="text-gray-800 text-lg font-semibold mb-3">
-                {userName}'s scent characteristics
-              </h3>
-              <div className="bg-white/60 rounded-lg p-4 shadow-sm">
-                <p className="text-amber-700 font-medium text-sm mb-2">
+            <div className="mb-4">
+              {/* Semi-transparent background */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-lg p-4 text-white">
+                <h3 className="text-white text-base font-medium mb-2">
+                  {userName}'s scent characteristics
+                </h3>
+                <p className="text-amber-200 font-medium text-xs mb-1">
                   Horoscope: {zodiacSign}
                 </p>
-                <p className="text-gray-700 text-sm leading-relaxed">
+                <p className="text-white text-xs leading-relaxed">
                   {getZodiacDescription()}
                 </p>
               </div>
@@ -202,8 +206,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           )}
           
           <div className="text-center">
-            <p className="text-gray-600 text-sm mb-1">Find your scent at {' '}
-              <span className="text-amber-700 font-semibold italic">fordive.id</span>
+            <p className="text-gray-700 text-xs">
+              Find your scent at <span className="text-amber-700 font-medium italic">fordive.id</span>
             </p>
           </div>
         </div>
