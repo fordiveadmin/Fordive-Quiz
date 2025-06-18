@@ -40,7 +40,6 @@ export const questions = pgTable("questions", {
   type: text("type").notNull(), // multiple_choice, checkbox
   order: integer("order").notNull(),
   layout: text("layout").default("standard"), // standard, grid, carousel, cardstack
-  imageUrl: text("image_url"), // URL gambar untuk question
   
   // Untuk struktur pertanyaan bercabang
   isMainQuestion: boolean("is_main_question").default(false),
