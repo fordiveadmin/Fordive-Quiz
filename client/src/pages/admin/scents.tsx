@@ -373,58 +373,7 @@ export default function AdminScents() {
             )}
           />
           
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Perfume Image</FormLabel>
-                <div className="space-y-2">
-                  <Input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Create a temporary URL for the image preview
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                          field.onChange(e.target?.result as string);
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                  {field.value && field.value.startsWith('data:') ? (
-                    <div className="mt-2 rounded-md overflow-hidden border border-border">
-                      <img 
-                        src={field.value} 
-                        alt="Scent preview" 
-                        className="w-full h-40 object-cover"
-                      />
-                    </div>
-                  ) : field.value ? (
-                    <div className="mt-2 rounded-md overflow-hidden border border-border">
-                      <img 
-                        src={field.value} 
-                        alt="Scent preview" 
-                        className="w-full h-40 object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
-                          target.title = 'Failed to load image';
-                        }}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-                <FormDescription>
-                  Upload an image for this fragrance. The image should be in landscape format (16:9).
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
           
           <FormField
             control={form.control}
@@ -537,7 +486,6 @@ export default function AdminScents() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-24">Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Notes</TableHead>
@@ -548,19 +496,6 @@ export default function AdminScents() {
                 <TableBody>
                   {scents.map((scent) => (
                     <TableRow key={scent.id}>
-                      <TableCell>
-                        <div className="h-16 w-20 rounded-md overflow-hidden border border-border">
-                          <img 
-                            src={scent.imageUrl || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80'} 
-                            alt={scent.name}
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80';
-                            }}
-                          />
-                        </div>
-                      </TableCell>
                       <TableCell className="font-medium">{scent.name}</TableCell>
                       <TableCell>{scent.category}</TableCell>
                       <TableCell>

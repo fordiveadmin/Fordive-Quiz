@@ -123,15 +123,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post('/api/scents', async (req: Request, res: Response) => {
     try {
+      console.log('Received scent data:', req.body);
       const scentData = insertScentSchema.parse(req.body);
+      console.log('Validated scent data:', scentData);
       const scent = await storage.createScent(scentData);
       return res.status(201).json(scent);
     } catch (error) {
+      console.error('Error creating scent:', error);
       if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
+        console.error('Validation error details:', validationError.message);
         return res.status(400).json({ message: validationError.message });
       }
-      return res.status(500).json({ message: 'Failed to create scent' });
+      return res.status(500).json({ message: `Failed to create scent: ${error instanceof Error ? error.message : 'Unknown error'}` });
     }
   });
   
