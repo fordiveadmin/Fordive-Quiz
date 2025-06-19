@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="bg-[#D1AB66] py-12 px-6 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-center text-center">
             <div className="mb-4">
               <img src={logoImage} alt="Fordive Logo" className="h-24" />
             </div>
