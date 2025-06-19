@@ -343,7 +343,7 @@ export default function Collection() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center btn-premium py-3 px-8 rounded-md text-base font-medium group cursor-pointer"
+              className="inline-flex items-center bg-[#D1AB66] hover:bg-[#C4A05B] text-white py-3 px-8 rounded-md text-base font-medium group cursor-pointer transition-all duration-300"
             >
               <span>Find Your Scent Here</span>
               <motion.span
