@@ -3,7 +3,7 @@ import logoImage from "../../assets/fordive-logo-white.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#C89F65] py-12 px-6 text-white">
+    <footer className="bg-[#d2b183] py-12 px-6 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">

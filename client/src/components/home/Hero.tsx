@@ -201,13 +201,13 @@ export default function Hero() {
           transition={{ delay: 1.5, duration: 0.8 }}
           className="w-full"
         >
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-[#C89F65] to-transparent w-full mb-6"></div>
+          <div className="h-[1px] bg-gradient-to-r from-transparent via-[#d2b183] to-transparent w-full mb-6"></div>
           <motion.div 
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
             className="flex justify-center mb-6"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C89F65" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d2b183" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           </motion.div>
         </motion.div>
       </div>

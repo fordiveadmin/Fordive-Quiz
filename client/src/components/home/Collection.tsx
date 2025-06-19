@@ -171,7 +171,7 @@ export default function Collection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.04 }}
           transition={{ duration: 2 }}
-          className="absolute -top-[20%] -right-[20%] w-[600px] h-[600px] rounded-full bg-[#C89F65]"
+          className="absolute -top-[20%] -right-[20%] w-[600px] h-[600px] rounded-full bg-[#d2b183]"
         />
         <motion.div 
           initial={{ opacity: 0 }}

@@ -46,7 +46,7 @@ export default function Features() {
             className="flex flex-col items-center text-center premium-card p-8 hover:translate-y-[-5px] transition-all duration-500"
           >
             <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 shadow-sm border border-[#EDEAE0]">
-              <CircleHelp className="h-10 w-10 text-[#C89F65]" />
+              <CircleHelp className="h-10 w-10 text-[#d2b183]" />
             </div>
             <h3 className="text-xl font-playfair font-semibold mb-4 text-[#555555]">Answer Questions</h3>
             <p className="text-gray-600">
