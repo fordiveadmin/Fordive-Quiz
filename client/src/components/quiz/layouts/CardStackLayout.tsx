@@ -103,7 +103,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
               className={`
                 absolute top-0 left-0 right-0 flex flex-col h-[300px] p-6 rounded-lg cursor-pointer shadow-lg
                 ${option.id === selectedOption ? 
-                  'bg-[#1f1f1f] text-white border-2 border-[#C89F65]' : 
+                  'bg-[#d2b183] text-white border-2 border-[#d2b183]' : 
                   'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
                 transform-gpu
               `}
@@ -137,7 +137,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
               {/* Selection indicator */}
               {option.id === selectedOption && (
                 <div className="absolute top-3 right-3">
-                  <div className="bg-[#C89F65] rounded-full p-1">
+                  <div className="bg-[#d2b183] rounded-full p-1">
                     <Check className="h-4 w-4 text-white" />
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
 
         {/* Navigation buttons */}
         <button 
-          className="absolute left-4 md:left-10 bg-[#C89F65]/80 hover:bg-[#C89F65] text-white rounded-full p-2 transition-colors duration-300"
+          className="absolute left-4 md:left-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300"
           onClick={(e) => {
             e.stopPropagation();
             goToPrev();
@@ -160,7 +160,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
         </button>
         
         <button 
-          className="absolute right-4 md:right-10 bg-[#C89F65]/80 hover:bg-[#C89F65] text-white rounded-full p-2 transition-colors duration-300"
+          className="absolute right-4 md:right-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300"
           onClick={(e) => {
             e.stopPropagation();
             goToNext();
@@ -178,7 +178,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
           <button
             key={index}
             className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-              index === activeIndex ? 'bg-[#C89F65]' : 'bg-gray-300'
+              index === activeIndex ? 'bg-[#d2b183]' : 'bg-gray-300'
             }`}
             onClick={() => setActiveIndex(index)}
           />

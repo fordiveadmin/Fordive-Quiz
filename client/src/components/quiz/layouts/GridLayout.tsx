@@ -82,7 +82,7 @@ export default function GridLayout({ question }: GridLayoutProps) {
             className={`
               relative p-6 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg
               ${option.id === selectedOption ? 
-                'bg-[#C89F65] text-white shadow-md' : 
+                'bg-[#d2b183] text-white shadow-md' : 
                 'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
             `}
             onClick={() => handleSelect(option.id, option)}
@@ -113,7 +113,7 @@ export default function GridLayout({ question }: GridLayoutProps) {
             {/* Selection indicator */}
             {option.id === selectedOption && (
               <div className="absolute top-3 right-3">
-                <div className="bg-[#C89F65] rounded-full p-1">
+                <div className="bg-[#d2b183] rounded-full p-1">
                   <Check className="h-4 w-4 text-white" />
                 </div>
               </div>

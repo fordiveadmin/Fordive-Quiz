@@ -59,7 +59,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               className={`
                 relative flex flex-col items-center justify-center p-6 md:p-12 rounded-lg cursor-pointer transition-all
                 ${option.id === selectedOption ? 
-                  'bg-[#1f1f1f] text-white' : 
+                  'bg-[#d2b183] text-white' : 
                   'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
               `}
               onClick={() => handleSelect(option.id, option)}
