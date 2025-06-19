@@ -15,7 +15,7 @@ export default function Footer() {
               Love More Live More
             </p>
             <Link href="/quiz">
-              <Button className="bg-[#DA7346] hover:bg-[#D1AB66] text-white py-2 px-6 rounded-md text-sm font-medium transition-all duration-300">
+              <Button className="bg-[#d2b183] hover:bg-[#D1AB66] text-white py-2 px-6 rounded-md text-sm font-medium transition-all duration-300">
                 Find Your Scent Here
               </Button>
             </Link>
