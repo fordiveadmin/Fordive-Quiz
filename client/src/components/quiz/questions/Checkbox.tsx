@@ -101,8 +101,8 @@ export default function Checkbox({ question }: CheckboxProps) {
             key={option.id}
             variants={item}
             className={cn(
-              "border-2 hover:border-primary rounded-lg p-4 cursor-pointer bg-white transition duration-300 flex items-start",
-              selectedOptions.includes(option.id) ? "border-primary bg-primary/5" : "border-border"
+              "border-2 hover:border-[#d2b183] rounded-lg p-4 cursor-pointer bg-white transition duration-300 flex items-start",
+              selectedOptions.includes(option.id) ? "border-[#d2b183] bg-[#d2b183]/20" : "border-border"
             )}
             onClick={() => handleToggle(option.id)}
           >
@@ -114,11 +114,11 @@ export default function Checkbox({ question }: CheckboxProps) {
             />
             <div className="flex-1">
               {option.imageUrl && (
-                <div className="mb-3">
+                <div className="mb-3 -mx-4 -mt-4">
                   <img 
                     src={option.imageUrl} 
                     alt={option.text}
-                    className="w-full h-32 object-cover rounded-md"
+                    className="w-full h-40 object-cover rounded-t-lg"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                     }}

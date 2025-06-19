@@ -87,17 +87,17 @@ export default function MultipleChoice({ question }: MultipleChoiceProps) {
             key={option.id}
             variants={item}
             className={cn(
-              "border-2 hover:border-[#C89F65] rounded-lg p-6 cursor-pointer bg-white transition duration-300 hover:-translate-y-1 hover:shadow-md",
-              selectedOption === option.id ? "border-[#C89F65] bg-[#C89F65]/10" : "border-border"
+              "border-2 hover:border-[#d2b183] rounded-lg p-6 cursor-pointer bg-white transition duration-300 hover:-translate-y-1 hover:shadow-md",
+              selectedOption === option.id ? "border-[#d2b183] bg-[#d2b183]/20" : "border-border"
             )}
             onClick={() => handleSelect(option.id)}
           >
             {option.imageUrl && (
-              <div className="mb-3">
+              <div className="mb-3 -mx-6 -mt-6">
                 <img 
                   src={option.imageUrl} 
                   alt={option.text}
-                  className="w-full h-32 object-cover rounded-md"
+                  className="w-full h-40 object-cover rounded-t-lg"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
