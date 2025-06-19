@@ -89,8 +89,8 @@ export default function ResultsCard({ scent, zodiacSign }: ResultsCardProps) {
             <h3 className="text-3xl font-playfair font-bold">{scent.name}</h3>
             {zodiacSign && (
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-white border-2 border-[#C89F65] shadow-md flex items-center justify-center mr-2">
-                  <i className={`${zodiacSign.iconClass} text-[#C89F65] text-lg`}></i>
+                <div className="w-10 h-10 rounded-full bg-white border-2 border-[#d2b183] shadow-md flex items-center justify-center mr-2">
+                  <i className={`${zodiacSign.iconClass} text-[#d2b183] text-lg`}></i>
                 </div>
                 <span className="font-medium">{zodiacSign.name}</span>
               </div>

@@ -56,8 +56,8 @@ export function ImageChoiceComponent({ question }: Props) {
             className={`
               relative flex flex-col border rounded-lg overflow-hidden cursor-pointer transition-all
               ${option.id === selectedOption ? 
-                'border-[#C89F65] ring-2 ring-[#C89F65]/50 shadow-md' : 
-                'border-gray-200 hover:border-[#C89F65]'}
+                'border-[#d2b183] ring-2 ring-[#d2b183]/50 shadow-md' : 
+                'border-gray-200 hover:border-[#d2b183]'}
             `}
             onClick={() => handleSelect(option.id, option)}
           >
@@ -87,7 +87,7 @@ export function ImageChoiceComponent({ question }: Props) {
             
             {/* Selected indicator */}
             {option.id === selectedOption && (
-              <div className="absolute right-3 top-3 bg-[#C89F65] rounded-full p-1">
+              <div className="absolute right-3 top-3 bg-[#d2b183] rounded-full p-1">
                 <Check className="h-4 w-4 text-white" />
               </div>
             )}

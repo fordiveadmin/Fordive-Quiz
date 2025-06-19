@@ -94,8 +94,8 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               className={`
                 relative border rounded-lg p-6 cursor-pointer transition-all
                 ${option.id === selectedOption ? 
-                  'bg-[#f5f1e9] border-[#C89F65] shadow-md' : 
-                  'bg-white border-gray-200 hover:border-[#C89F65]'}
+                  'bg-[#f5f1e9] border-[#d2b183] shadow-md' : 
+                  'bg-white border-gray-200 hover:border-[#d2b183]'}
               `}
               onClick={() => handleSelect(option.id, option)}
             >
@@ -109,7 +109,7 @@ export default function ImageChoice({ question }: ImageChoiceProps) {
               {/* Selected indicator */}
               {option.id === selectedOption && (
                 <div className="absolute right-4 top-4">
-                  <Check className="h-5 w-5 text-[#C89F65]" />
+                  <Check className="h-5 w-5 text-[#d2b183]" />
                 </div>
               )}
             </motion.div>

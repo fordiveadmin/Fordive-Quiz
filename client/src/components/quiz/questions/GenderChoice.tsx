@@ -85,13 +85,13 @@ export default function GenderChoice({ question }: GenderChoiceProps) {
             let textColor = "text-gray-900";
             
             if (genderKey.includes("male")) {
-              bgColor = isSelected ? "bg-[#27241F]" : "bg-[#EEDFCA]";
+              bgColor = isSelected ? "bg-[#d2b183]" : "bg-[#EEDFCA]";
               textColor = isSelected ? "text-white" : "text-gray-900";
             } else if (genderKey.includes("female")) {
-              bgColor = isSelected ? "bg-[#27241F]" : "bg-[#E5D5B8]"; 
+              bgColor = isSelected ? "bg-[#d2b183]" : "bg-[#E5D5B8]"; 
               textColor = isSelected ? "text-white" : "text-gray-900";
             } else {
-              bgColor = isSelected ? "bg-[#27241F]" : "bg-[#EDE3D1]";
+              bgColor = isSelected ? "bg-[#d2b183]" : "bg-[#EDE3D1]";
               textColor = isSelected ? "text-white" : "text-gray-900";
             }
             
