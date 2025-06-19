@@ -139,15 +139,7 @@ export default function Hero() {
                 </Button>
               </Link>
               
-              <motion.a
-                href="#features"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-                className="text-[#C17A50] font-medium underline-offset-4 hover:underline cursor-pointer"
-              >
-                Learn More
-              </motion.a>
+
             </motion.div>
           </motion.div>
           
