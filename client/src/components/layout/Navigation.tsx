@@ -33,7 +33,7 @@ export default function Navigation({ transparent = false }) {
           : "bg-white shadow-sm px-6"
       )}
     >
-      <div className="max-w-7xl mx-auto flex justify-center items-center">
+      <div className="max-w-7xl mx-auto flex justify-start items-center">
         <Link href="/">
           <div className="transition-opacity duration-300 hover:opacity-90">
             <img 

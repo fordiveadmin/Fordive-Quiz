@@ -141,7 +141,7 @@ export default function UserForm() {
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>
-                      I'd like to receive fragrance tips and exclusive offers
+                      I'd like to receive fragrance tips<br />and exclusive offers
                     </FormLabel>
                   </div>
                 </FormItem>
@@ -158,7 +158,7 @@ export default function UserForm() {
             
             <div className="text-center text-xs text-muted-foreground">
               <p>
-                By continuing, you agree to our {" "}
+                By continuing, you agree to our<br />
                 <a href="#" className="text-primary hover:underline">
                   Terms of Service
                 </a>{" "}

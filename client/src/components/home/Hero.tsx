@@ -68,12 +68,12 @@ export default function Hero() {
           initial="initial"
           animate="animate"
           variants={stagger}
-          className="flex flex-col md:flex-row items-center justify-between h-[70vh] md:h-[85vh] px-4 md:px-6 pt-4"
+          className="flex flex-col items-center justify-center h-[70vh] md:h-[85vh] px-4 md:px-6 pt-4"
         >
-          {/* Left Text Content */}
+          {/* Text Content - Centered */}
           <motion.div 
             variants={fadeInUp}
-            className="w-full text-center md:text-left mb-12 md:mb-0"
+            className="w-full text-center mb-12"
           >
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -114,7 +114,7 @@ export default function Hero() {
             
             <motion.div
               variants={fadeInUp}
-              className="flex items-center justify-center md:justify-start space-x-6"
+              className="flex items-center justify-center space-x-6"
             >
               <Link href="/quiz">
                 <Button 
@@ -151,10 +151,10 @@ export default function Hero() {
             </motion.div>
           </motion.div>
           
-          {/* Right Perfume Bottles Display - Only on Desktop */}
+          {/* Perfume Bottles Display - Below Text Content */}
           <motion.div 
             variants={fadeInUp}
-            className="hidden md:block w-full md:w-1/2 relative h-[300px] md:h-[600px]"
+            className="w-full relative h-[200px] md:h-[300px] mt-8"
           >
             {/* Perfume bottles with individual animations */}
             <div className="relative w-full h-full flex items-center justify-center">
