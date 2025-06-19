@@ -118,10 +118,10 @@ export default function Hero() {
             >
               <Link href="/quiz">
                 <Button 
-                  className="btn-premium py-3 px-8 rounded-md text-base font-medium group relative overflow-hidden"
+                  className="bg-[#DA7346] hover:bg-[#D1AB66] text-white py-3 px-8 rounded-md text-base font-medium group relative overflow-hidden transition-all duration-300"
                 >
                   <span className="relative z-10 flex items-center">
-                    <span className="mr-2">Find Your Scent</span>
+                    <span className="mr-2">Find Your Scent Here</span>
                     <motion.span
                       initial={{ x: 0 }}
                       whileHover={{ x: 5 }}

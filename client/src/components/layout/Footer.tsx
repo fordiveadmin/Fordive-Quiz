@@ -1,9 +1,10 @@
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 import logoImage from "../../assets/fordive-logo-white.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#d2b183] py-12 px-6 text-white">
+    <footer className="bg-[#D1AB66] py-12 px-6 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-start">
@@ -13,10 +14,15 @@ export default function Footer() {
             <p className="text-white/90 mb-6">
               Love More Live More
             </p>
+            <Link href="/quiz">
+              <Button className="bg-[#DA7346] hover:bg-[#D1AB66] text-white py-2 px-6 rounded-md text-sm font-medium transition-all duration-300">
+                Find Your Scent Here
+              </Button>
+            </Link>
           </div>
           
           <div className="md:col-start-2 md:col-end-3">
-            <h4 className="text-lg font-semibold text-white mb-4">Company</h4>
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Company</h4>
             <ul className="space-y-2">
               <li>
                 <a href="https://fordive.id/aboutus/" className="text-white/80 hover:text-white transition-colors duration-300">
@@ -37,7 +43,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Shop</h4>
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Shop</h4>
             <ul className="space-y-2">
               <li>
                 <a href="https://shopee.co.id/fordive.id" className="text-white/80 hover:text-white transition-colors duration-300">
@@ -68,7 +74,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Let's Talk</h4>
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Let's Talk</h4>
             <ul className="space-y-2">
               <li>
                 <a href="https://www.instagram.com/fordive.id/" className="text-white/80 hover:text-white transition-colors duration-300">

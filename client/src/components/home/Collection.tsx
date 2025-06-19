@@ -345,7 +345,7 @@ export default function Collection() {
               whileTap={{ scale: 0.95 }}
               className="inline-flex items-center btn-premium py-3 px-8 rounded-md text-base font-medium group cursor-pointer"
             >
-              <span>Find Your Perfect Match</span>
+              <span>Find Your Scent Here</span>
               <motion.span
                 initial={{ x: 0 }}
                 whileHover={{ x: 5 }}
