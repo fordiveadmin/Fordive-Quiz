@@ -3,12 +3,12 @@ import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Gradien colors untuk carousel (lebih bervariasi dan elegan)
+// Gradien colors untuk carousel (warna terang sesuai branding Fordive)
 const gradientColors = [
   'linear-gradient(135deg, #f8f3e9 0%, #e6d2af 100%)',
-  'linear-gradient(135deg, #e6d2af 0%, #c8a97b 100%)',
-  'linear-gradient(135deg, #f1e8db 0%, #d9c0a1 100%)',
-  'linear-gradient(135deg, #f7efe0 0%, #e0c7a8 100%)',
+  'linear-gradient(135deg, #f7f4ef 0%, #d2b183 100%)',
+  'linear-gradient(135deg, #faf7f2 0%, #e0c7a8 100%)',
+  'linear-gradient(135deg, #f5f1e8 0%, #d9c0a1 100%)',
 ];
 
 interface Option {
@@ -162,7 +162,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
                   justifyContent: 'center',
                   alignItems: 'center',
                   background: option.id === selectedOption 
-                    ? 'linear-gradient(rgba(210, 177, 131, 0.9), rgba(210, 177, 131, 0.9)), ' + gradientColors[question.options.indexOf(option) % gradientColors.length]
+                    ? '#d2b183'
                     : gradientColors[question.options.indexOf(option) % gradientColors.length]
                 }}
                 onClick={() => handleSelect(option.id, option)}
