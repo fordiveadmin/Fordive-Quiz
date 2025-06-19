@@ -58,7 +58,7 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.1, scale: 1 }}
           transition={{ duration: 2, delay: 0.3 }}
-          className="absolute top-[40%] -left-[10%] w-[400px] h-[400px] rounded-full bg-[#C89F65]"
+          className="absolute top-[40%] -left-[10%] w-[400px] h-[400px] rounded-full bg-[#d2b183]"
         />
       </div>
       
@@ -100,7 +100,7 @@ export default function Hero() {
                   initial={{ width: 0 }}
                   animate={{ width: "70%" }}
                   transition={{ duration: 1.2, delay: 1 }}
-                  className="absolute -bottom-2 left-0 h-[3px] bg-gradient-to-r from-[#C89F65] to-transparent"
+                  className="absolute -bottom-2 left-0 h-[3px] bg-gradient-to-r from-[#d2b183] to-transparent"
                 />
               </motion.span>
             </motion.h1>

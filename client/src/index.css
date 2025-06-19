@@ -91,7 +91,7 @@
 }
 
 .btn-premium {
-  @apply bg-[#C89F65] hover:bg-[#D7B37A] text-white transition-all duration-300;
+  @apply bg-[#d2b183] hover:bg-[#D7B37A] text-white transition-all duration-300;
 }
 
 .premium-card {

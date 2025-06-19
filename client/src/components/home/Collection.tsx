@@ -177,7 +177,7 @@ export default function Collection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.04 }}
           transition={{ duration: 2, delay: 0.3 }}
-          className="absolute top-[60%] -left-[10%] w-[400px] h-[400px] rounded-full bg-[#C89F65]"
+          className="absolute top-[60%] -left-[10%] w-[400px] h-[400px] rounded-full bg-[#d2b183]"
         />
       </div>
       
@@ -323,7 +323,7 @@ export default function Collection() {
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C89F65" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d2b183" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
                 </motion.div>
