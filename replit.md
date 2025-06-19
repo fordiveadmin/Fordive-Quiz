@@ -115,6 +115,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- June 19, 2025: Enhanced quiz layout components for better visual presentation
+  - Updated checkbox layout with full-sized images (48-56px height) above content
+  - Improved card stack layout with full-sized images occupying 2/3 of card height
+  - Hidden navigation buttons on mobile devices for card stack layout
+  - Maintained consistent gold color scheme (#d2b183) for selected states
+  - Enhanced image presentation with proper aspect ratios and object-cover scaling
+
 - June 19, 2025: Implemented comprehensive UI revisions from feedback
   - Updated button colors throughout application (#DA7346 primary, #D1AB66 hover)
   - Changed all CTA button text to "Find Your Scent Here" for consistency
@@ -122,7 +129,8 @@ Preferred communication style: Simple, everyday language.
   - Updated footer background color to #D1AB66 and changed headings to Inter font
   - Modified Hero section layout to vertical arrangement (text above, perfumes below)
   - Fixed newsletter form text formatting with proper line breaks
-  - Ensured consistent gold color scheme (#d2b183) across all quiz components
+  - Removed "Learn More" link from homepage hero section
+  - Center-aligned footer elements (logo, tagline, button) for cleaner organization
 
 - June 18, 2025: Redesigned result image generator to match brand template
   - Updated layout from dark theme to cream/gold gradient background

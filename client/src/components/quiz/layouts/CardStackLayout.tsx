@@ -101,7 +101,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
             <motion.div
               key={option.id}
               className={`
-                absolute top-0 left-0 right-0 flex flex-col h-[300px] p-6 rounded-lg cursor-pointer shadow-lg
+                absolute top-0 left-0 right-0 flex flex-col h-[400px] rounded-lg cursor-pointer shadow-lg overflow-hidden
                 ${option.id === selectedOption ? 
                   'bg-[#d2b183] text-white border-2 border-[#d2b183]' : 
                   'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
@@ -113,22 +113,20 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
                 handleSelect(option.id, option);
               }}
             >
-              <div className="flex flex-col items-center justify-center h-full">
-                {/* Image if available */}
-                {option.imageUrl && (
-                  <div className="mb-4 w-full h-32 overflow-hidden rounded-md">
-                    <img 
-                      src={option.imageUrl} 
-                      alt={option.text} 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                
-                {/* Title */}
+              {/* Full-sized image */}
+              {option.imageUrl && (
+                <div className="w-full h-2/3 overflow-hidden">
+                  <img 
+                    src={option.imageUrl} 
+                    alt={option.text} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              
+              {/* Content section */}
+              <div className="flex-1 p-6 flex flex-col justify-center">
                 <h3 className="text-xl font-medium text-center mb-2">{option.text}</h3>
-                
-                {/* Description */}
                 {option.description && (
                   <p className="text-sm text-center opacity-90">{option.description}</p>
                 )}
@@ -146,9 +144,9 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
           ))}
         </div>
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons - hidden on mobile */}
         <button 
-          className="absolute left-4 md:left-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300"
+          className="absolute left-4 md:left-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300 hidden md:block"
           onClick={(e) => {
             e.stopPropagation();
             goToPrev();
@@ -160,7 +158,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
         </button>
         
         <button 
-          className="absolute right-4 md:right-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300"
+          className="absolute right-4 md:right-10 bg-[#d2b183]/80 hover:bg-[#d2b183] text-white rounded-full p-2 transition-colors duration-300 hidden md:block"
           onClick={(e) => {
             e.stopPropagation();
             goToNext();

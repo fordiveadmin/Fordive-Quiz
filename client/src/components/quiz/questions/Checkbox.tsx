@@ -101,39 +101,46 @@ export default function Checkbox({ question }: CheckboxProps) {
             key={option.id}
             variants={item}
             className={cn(
-              "border-2 hover:border-[#d2b183] rounded-lg p-4 cursor-pointer bg-white transition duration-300 flex items-start",
+              "border-2 hover:border-[#d2b183] rounded-lg cursor-pointer bg-white transition duration-300 overflow-hidden relative",
               selectedOptions.includes(option.id) ? "border-[#d2b183] bg-[#d2b183]/20" : "border-border"
             )}
             onClick={() => handleToggle(option.id)}
           >
-            <CheckboxInput
-              checked={selectedOptions.includes(option.id)}
-              onCheckedChange={() => handleToggle(option.id)}
-              className="h-5 w-5 text-primary rounded border-input mt-1 mr-3"
-              id={`checkbox-${option.id}`}
-            />
-            <div className="flex-1">
-              {option.imageUrl && (
-                <div className="mb-3 -mx-4 -mt-4">
-                  <img 
-                    src={option.imageUrl} 
-                    alt={option.text}
-                    className="w-full h-40 object-cover rounded-t-lg"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
+            {/* Full-sized image */}
+            {option.imageUrl && (
+              <div className="w-full h-48 md:h-56">
+                <img 
+                  src={option.imageUrl} 
+                  alt={option.text}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            
+            {/* Content section */}
+            <div className="p-4">
+              <div className="flex items-start">
+                <CheckboxInput
+                  checked={selectedOptions.includes(option.id)}
+                  onCheckedChange={() => handleToggle(option.id)}
+                  className="h-5 w-5 text-primary rounded border-input mt-1 mr-3 flex-shrink-0"
+                  id={`checkbox-${option.id}`}
+                />
+                <div className="flex-1">
+                  <Label 
+                    htmlFor={`checkbox-${option.id}`} 
+                    className="font-semibold mb-1 font-playfair cursor-pointer block"
+                  >
+                    {option.text}
+                  </Label>
+                  {option.description && (
+                    <p className="text-sm text-muted-foreground">{option.description}</p>
+                  )}
                 </div>
-              )}
-              <Label 
-                htmlFor={`checkbox-${option.id}`} 
-                className="font-semibold mb-1 font-playfair cursor-pointer"
-              >
-                {option.text}
-              </Label>
-              {option.description && (
-                <p className="text-sm text-muted-foreground">{option.description}</p>
-              )}
+              </div>
             </div>
           </motion.div>
         ))}
