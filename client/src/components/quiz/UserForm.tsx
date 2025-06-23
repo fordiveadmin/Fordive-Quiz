@@ -27,6 +27,15 @@ const formSchema = z.object({
   email: z
     .string()
     .email({ message: "Please enter a valid email address" }),
+  birthDate: z
+    .string()
+    .optional()
+    .refine((date) => {
+      if (!date) return true; // Optional field
+      const birthDate = new Date(date);
+      const today = new Date();
+      return birthDate <= today;
+    }, { message: "Birth date cannot be in the future" }),
   subscribeToNewsletter: z.boolean().default(false),
 });
 
@@ -40,6 +49,7 @@ export default function UserForm() {
     defaultValues: {
       name: "",
       email: "",
+      birthDate: "",
       subscribeToNewsletter: false,
     },
   });
@@ -121,6 +131,25 @@ export default function UserForm() {
                     <p className="mt-1 text-xs text-muted-foreground">
                       We'll send your scent results to this email
                     </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="birthDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Birth Date (Optional)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="date" 
+                        {...field} 
+                        className="border-border focus:border-primary focus:ring-primary"
+                        max={new Date().toISOString().split('T')[0]}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

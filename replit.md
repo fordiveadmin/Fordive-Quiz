@@ -115,6 +115,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- June 19, 2025: Added birth date field to user registration
+  - Updated database schema to include optional birth_date field
+  - Enhanced user form with date picker and validation
+  - Modified analytics interface to track user birth date data
+  - Prepared foundation for age-based analytics and insights
+
 - June 19, 2025: Added Parallax Scroll Layout for quiz questions
   - Created layered design with parallax effects where images move slower than text
   - Implemented smooth spring animations and depth effects for modern feel

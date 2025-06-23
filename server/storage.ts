@@ -30,6 +30,7 @@ export interface QuizResultWithUserDetails {
   id: number;
   userName: string;
   userEmail: string;
+  userBirthDate: string | null;
   scentName: string;
   zodiacSign: string | null;
   createdAt: Date;
@@ -398,6 +399,7 @@ export class MemStorage implements IStorage {
           id: quizResult.id,
           userName: user.name,
           userEmail: user.email,
+          userBirthDate: user.birthDate || null,
           scentName: scent.name,
           zodiacSign: quizResult.zodiacSign,
           createdAt: quizResult.createdAt as Date
