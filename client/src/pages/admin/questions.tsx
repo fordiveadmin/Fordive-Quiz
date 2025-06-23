@@ -86,7 +86,7 @@ const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
   type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
-  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack']).default('standard'),
+  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack', 'floating_bubble']).default('standard'),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
