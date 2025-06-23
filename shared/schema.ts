@@ -39,7 +39,7 @@ export const questions = pgTable("questions", {
   text: text("text").notNull(),
   type: text("type").notNull(), // multiple_choice, checkbox
   order: integer("order").notNull(),
-  layout: text("layout").default("standard"), // standard, grid, carousel, cardstack, floating_bubble
+  layout: text("layout").default("standard"), // standard, grid, carousel, cardstack, floating_bubble, parallax_scroll
   
   // Untuk struktur pertanyaan bercabang
   isMainQuestion: boolean("is_main_question").default(false),
@@ -58,7 +58,7 @@ export const questions = pgTable("questions", {
 export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
 }).extend({
-  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack', 'floating_bubble']).default('standard'),
+  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack', 'floating_bubble', 'parallax_scroll']).default('standard'),
 });
 
 // Zodiac mapping model

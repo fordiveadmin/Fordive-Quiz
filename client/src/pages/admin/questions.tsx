@@ -86,7 +86,7 @@ const questionSchema = z.object({
   text: z.string().min(3, 'Question text is required'),
   type: z.enum(['multiple_choice', 'checkbox', 'slider', 'image_choice']),
   order: z.number().min(1, 'Order is required'),
-  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack', 'floating_bubble']).default('standard'),
+  layout: z.enum(['standard', 'grid', 'carousel', 'cardstack', 'floating_bubble', 'parallax_scroll']).default('standard'),
   isMainQuestion: z.boolean().default(false),
   parentId: z.number().nullable().optional(),
   parentOptionId: z.string().nullable().optional(),
@@ -360,6 +360,7 @@ export default function AdminQuestions() {
                         <SelectItem value="carousel">Carousel Layout</SelectItem>
                         <SelectItem value="cardstack">3D Card Stack Layout</SelectItem>
                         <SelectItem value="floating_bubble">Floating Bubble Layout</SelectItem>
+                        <SelectItem value="parallax_scroll">Parallax Scroll Layout</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
