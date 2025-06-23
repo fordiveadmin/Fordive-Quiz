@@ -14,6 +14,7 @@ import GenderChoice from '@/components/quiz/questions/GenderChoice';
 import GridLayout from '@/components/quiz/layouts/GridLayout';
 import CarouselLayout from '@/components/quiz/layouts/CarouselLayout';
 import CardStackLayout from '@/components/quiz/layouts/CardStackLayout';
+import FloatingBubbleLayout from '@/components/quiz/layouts/FloatingBubbleLayout';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FlaskRound, Loader2 } from 'lucide-react';

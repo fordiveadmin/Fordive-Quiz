@@ -39,7 +39,7 @@ export const questions = pgTable("questions", {
   text: text("text").notNull(),
   type: text("type").notNull(), // multiple_choice, checkbox
   order: integer("order").notNull(),
-  layout: text("layout").default("standard"), // standard, grid, carousel, cardstack
+  layout: text("layout").default("standard"), // standard, grid, carousel, cardstack, floating_bubble
   
   // Untuk struktur pertanyaan bercabang
   isMainQuestion: boolean("is_main_question").default(false),
