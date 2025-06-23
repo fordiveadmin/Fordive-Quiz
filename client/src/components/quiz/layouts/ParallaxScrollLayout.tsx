@@ -202,18 +202,7 @@ export default function ParallaxScrollLayout({ options, selectedOption, onSelect
                 <div className="absolute inset-0 rounded-2xl border border-white/10 pointer-events-none" />
               </div>
 
-              {/* Floating Selection Indicator */}
-              {selectedOption === option.id && (
-                <motion.div
-                  initial={{ scale: 0, y: 20 }}
-                  animate={{ scale: 1, y: 0 }}
-                  className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 z-30"
-                >
-                  <div className="bg-[#d2b183] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-                    Selected
-                  </div>
-                </motion.div>
-              )}
+
             </motion.div>
           );
         })}
