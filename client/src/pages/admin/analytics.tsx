@@ -31,7 +31,7 @@ export default function AnalyticsPage() {
     if (!quizResults || quizResults.length === 0) return;
     
     // Prepare CSV header row
-    const headers = ['Nama', 'Email', 'Parfum', 'Zodiak', 'Tanggal'];
+    const headers = ['Nama', 'Email', 'Parfum', 'Zodiak', 'Tanggal Lahir', 'Tanggal'];
     
     // Prepare CSV data rows
     const csvData = quizResults.map((result: any) => {
@@ -40,6 +40,7 @@ export default function AnalyticsPage() {
         result.userEmail,
         result.scentName,
         result.zodiacSign || 'Tidak diisi',
+        result.userBirthDate ? formatDate(new Date(result.userBirthDate)) : 'Tidak diisi',
         formatDate(new Date(result.createdAt))
       ];
     });
@@ -69,7 +70,8 @@ export default function AnalyticsPage() {
       result.userName.toLowerCase().includes(searchTermLower) ||
       result.userEmail.toLowerCase().includes(searchTermLower) ||
       result.scentName.toLowerCase().includes(searchTermLower) ||
-      (result.zodiacSign && result.zodiacSign.toLowerCase().includes(searchTermLower))
+      (result.zodiacSign && result.zodiacSign.toLowerCase().includes(searchTermLower)) ||
+      (result.userBirthDate && result.userBirthDate.toLowerCase().includes(searchTermLower))
     );
   });
   
@@ -196,6 +198,7 @@ export default function AnalyticsPage() {
                       <TableHead>Email</TableHead>
                       <TableHead>Parfum</TableHead>
                       <TableHead>Zodiak</TableHead>
+                      <TableHead>Tanggal Lahir</TableHead>
                       <TableHead>Tanggal</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -206,6 +209,7 @@ export default function AnalyticsPage() {
                         <TableCell>{result.userEmail}</TableCell>
                         <TableCell>{result.scentName}</TableCell>
                         <TableCell>{result.zodiacSign || '—'}</TableCell>
+                        <TableCell>{result.userBirthDate ? formatDate(new Date(result.userBirthDate)) : '—'}</TableCell>
                         <TableCell>{formatDate(new Date(result.createdAt))}</TableCell>
                       </TableRow>
                     ))}
