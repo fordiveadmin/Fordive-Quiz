@@ -359,6 +359,7 @@ export default function AdminQuestions() {
                         <SelectItem value="grid">Grid Cards Layout</SelectItem>
                         <SelectItem value="carousel">Carousel Layout</SelectItem>
                         <SelectItem value="cardstack">3D Card Stack Layout</SelectItem>
+                        <SelectItem value="floating_bubble">Floating Bubble Layout</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>

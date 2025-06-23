@@ -115,6 +115,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- June 19, 2025: Added new Floating Bubble Layout for quiz questions
+  - Created animated circular bubbles with gentle floating motion
+  - Implemented golden glow effects for selected states
+  - Added floating particles animation for dreamy ethereal feeling
+  - Integrated layout into quiz system and admin panel
+  - Layout features staggered animations and 3D hover effects
+
 - June 19, 2025: Enhanced quiz layout components for better visual presentation
   - Updated checkbox layout with full-sized images (48-56px height) above content
   - Improved card stack layout with full-sized images occupying 2/3 of card height
