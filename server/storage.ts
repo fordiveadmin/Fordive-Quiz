@@ -398,6 +398,7 @@ export class MemStorage implements IStorage {
           id: quizResult.id,
           userName: user.name,
           userEmail: user.email,
+          userBirthDate: user.birthDate,
           scentName: scent.name,
           zodiacSign: quizResult.zodiacSign,
           createdAt: quizResult.createdAt as Date
