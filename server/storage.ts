@@ -612,6 +612,7 @@ export class DatabaseStorage implements IStorage {
       id: quizResults.id,
       userName: users.name,
       userEmail: users.email,
+      userBirthDate: users.birthDate,
       scentName: scents.name,
       zodiacSign: quizResults.zodiacSign,
       createdAt: quizResults.createdAt
