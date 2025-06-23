@@ -7,7 +7,6 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  birthDate: text("birth_date"), // Format: YYYY-MM-DD
   subscribeToNewsletter: boolean("subscribe_to_newsletter").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });

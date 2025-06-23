@@ -6,7 +6,6 @@ interface User {
   id: number;
   name: string;
   email: string;
-  birthDate?: string;
 }
 
 interface QuizState {
