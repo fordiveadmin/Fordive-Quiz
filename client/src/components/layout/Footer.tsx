@@ -21,7 +21,7 @@ export default function Footer() {
             </Link>
           </div>
           
-          <div className="md:col-start-2 md:col-end-3 md:border-l md:pl-8 border-white/20">
+          <div className="md:col-start-2 md:col-end-3 border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
             <h4 className="text-lg font-semibold text-white mb-4 font-inter">Company</h4>
             <ul className="space-y-2">
               <li>
@@ -42,7 +42,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div className="md:border-l md:pl-8 border-white/20">
+          <div className="border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
             <h4 className="text-lg font-semibold text-white mb-4 font-inter">Shop</h4>
             <ul className="space-y-2">
               <li>
@@ -73,7 +73,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div className="md:border-l md:pl-8 border-white/20">
+          <div className="border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
             <h4 className="text-lg font-semibold text-white mb-4 font-inter">Let's Talk</h4>
             <ul className="space-y-2">
               <li>
