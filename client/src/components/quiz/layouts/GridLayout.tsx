@@ -21,7 +21,7 @@ interface GridLayoutProps {
 }
 
 export default function GridLayout({ question }: GridLayoutProps) {
-  const { answers, setAnswer, currentQuestion, setCurrentQuestion } = useStore();
+  const { answers, setAnswer } = useStore();
   const selectedOption = answers[question.id]?.optionId;
   
   // Animation variants for staggered children
@@ -48,14 +48,6 @@ export default function GridLayout({ question }: GridLayoutProps) {
         scentMappings: option.scentMappings,
       }
     );
-    
-    // Auto-proceed to next question if this is a main question
-    if (question.isMainQuestion) {
-      // Use setTimeout to give visual feedback that the option was selected
-      setTimeout(() => {
-        setCurrentQuestion(currentQuestion + 1);
-      }, 300);
-    }
   };
   
   return (
