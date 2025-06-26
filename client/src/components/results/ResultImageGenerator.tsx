@@ -97,8 +97,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       const dataUrl = await toPng(storyRef.current, { 
         quality: 1.0, 
         pixelRatio: 2,  // High quality for Instagram Story
-        canvasWidth: 1080, // 2x the visual width (540 * 2) 
-        canvasHeight: 1920 // 2x the visual height (960 * 2)
+        canvasWidth: 750, // 2x the visual width (375 * 2)
+        canvasHeight: 1334 // 2x the visual height (667 * 2)
       });
       
       // Create a download link and trigger download
@@ -126,45 +126,34 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
       {/* Story container - this will be captured as an image */}
       <div 
         ref={storyRef}
-        className="relative w-[540px] h-[960px] rounded-2xl overflow-hidden shadow-xl"
+        className="relative w-[375px] h-[667px] rounded-2xl overflow-hidden shadow-xl"
         style={{ 
-          fontFamily: '"Inter", sans-serif',
-          background: '#d2abe7'
+          fontFamily: '"Playfair Display", "Montserrat", sans-serif',
+          background: 'linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 50%, #F0EAD6 100%)'
         }}
       >
-        {/* Background logo with opacity */}
+        {/* Subtle pattern background overlay */}
         <div 
-          className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none"
-          style={{ transform: 'scale(1.2)' }}
-        >
-          <img 
-            src={logoImage} 
-            alt="" 
-            className="w-32 h-32"
-            style={{ filter: 'brightness(0) invert(1)' }}
-          />
-        </div>
-
-        {/* Header */}
-        <div className="px-8 pt-8 pb-6">
-          <div className="flex justify-between items-start mb-6">
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            backgroundImage: `url(${fordivePattern})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'repeat',
+            transform: 'rotate(-35deg) translateX(100px)',
+            transformOrigin: 'center'
+          }}
+        ></div>
+        {/* Header - Compact for Instagram Story */}
+        <div className="px-6 pt-6 pb-4">
+          <div className="flex justify-between items-start mb-4">
             <div className="text-left">
-              <p 
-                style={{ 
-                  fontFamily: '"Inter", sans-serif',
-                  fontSize: '32px',
-                  color: '#d2abe7',
-                  fontWeight: '500'
-                }}
-              >
-                Scent Finder Result:
-              </p>
+              <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
             </div>
             <div className="flex items-center">
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="w-16 h-16" 
+                className="h-10" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
@@ -172,59 +161,31 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
           
           {/* Title */}
-          <h2 
-            style={{ 
-              fontFamily: '"Inter", sans-serif',
-              fontSize: '51.78px',
-              color: 'white',
-              fontWeight: '300'
-            }}
-            className="mb-6"
-          >
-            Your Scent Match
-          </h2>
+          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
           
-          {/* Scent Name */}
-          <h1 
-            style={{ 
-              fontFamily: '"Playfair Display", serif',
-              fontSize: '135.56px',
-              color: 'white',
-              fontStyle: 'italic',
-              lineHeight: '1.1',
-              fontWeight: '400'
-            }}
-            className="text-left mb-8"
-          >
+          {/* Scent Name - Rata kiri dan lebih besar */}
+          <h1 className="text-4xl font-bold text-left mb-3" style={{ 
+            color: '#D4713A', 
+            fontFamily: 'Playfair Display, serif',
+            fontStyle: 'italic',
+            lineHeight: '1.1'
+          }}>
             {scent.name}
           </h1>
           
-          {/* Vibes Badge */}
-          <div className="text-left mb-8">
-            <div 
-              className="inline-block px-6 py-3 rounded-full"
-              style={{ 
-                backgroundColor: 'white',
-                border: '2px solid #DA7346'
-              }}
-            >
-              <span 
-                style={{
-                  fontFamily: '"Inter", sans-serif',
-                  fontSize: '24px',
-                  color: '#DA7346',
-                  fontWeight: '400'
-                }}
-              >
+          {/* Vibes Badge - Rata kiri dan lebih kecil */}
+          <div className="text-left mb-6">
+            <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
+              <span className="text-amber-700 text-xs font-medium">
                 {scent.vibes.join(', ')}
               </span>
             </div>
           </div>
         </div>
         
-        {/* Product Image Section */}
-        <div className="absolute top-96 left-0 right-0 bottom-0">
-          <div className="w-full h-full relative overflow-hidden">
+        {/* Extended Product Image Section with margin kiri-kanan only */}
+        <div className="absolute top-56 left-4 right-4 bottom-0">
+          <div className="w-full h-full relative overflow-hidden rounded-t-xl shadow-2xl">
             {/* Product Image - covering full remaining space */}
             <img 
               src={scent.imageUrl ? getScentImageUrl(scent.name, scent.imageUrl) : getScentImageUrl(scent.name)} 
@@ -234,50 +195,20 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               loading="eager"
             />
             
-            {/* Gradient overlay with #d2abe7 */}
-            <div 
-              className="absolute bottom-0 left-0 right-0 h-80"
-              style={{
-                background: 'linear-gradient(180deg, transparent 0%, rgba(210, 171, 231, 0.8) 50%, #d2abe7 100%)'
-              }}
-            ></div>
+            {/* Extended golden gradient overlay */}
+            <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-yellow-900/95 via-yellow-800/75 via-amber-700/55 to-transparent"></div>
             
-            {/* Text overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-8">
+            {/* Text overlay on the gradient */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               {zodiacSign && (
                 <div className="text-left mb-6">
-                  <h3 
-                    style={{
-                      fontFamily: '"Inter", sans-serif',
-                      fontSize: '24px',
-                      color: 'white',
-                      fontWeight: '500',
-                      marginBottom: '8px'
-                    }}
-                  >
+                  <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
-                  <p 
-                    style={{
-                      fontFamily: '"Inter", sans-serif',
-                      fontSize: '24px',
-                      color: 'white',
-                      fontWeight: '400',
-                      marginBottom: '12px'
-                    }}
-                  >
+                  <p className="text-yellow-200 font-medium text-sm mb-2">
                     Horoscope: {zodiacSign}
                   </p>
-                  <p 
-                    style={{
-                      fontFamily: '"Inter", sans-serif',
-                      fontSize: '24px',
-                      color: 'white',
-                      fontWeight: '400',
-                      lineHeight: '1.4',
-                      marginBottom: '16px'
-                    }}
-                  >
+                  <p className="text-white text-sm leading-relaxed">
                     {getZodiacDescription()}
                   </p>
                 </div>
@@ -286,26 +217,10 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {/* Bottom link with search icon */}
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  <p 
-                    style={{
-                      fontFamily: '"Inter", sans-serif',
-                      fontSize: '24px',
-                      color: 'white',
-                      fontWeight: '400'
-                    }}
-                  >
-                    Find your scent at{' '}
-                    <span 
-                      style={{
-                        fontStyle: 'italic',
-                        fontWeight: 'bold',
-                        textDecoration: 'underline'
-                      }}
-                    >
-                      fordive.id
-                    </span>
+                  <p className="text-white text-sm">
+                    Find your scent at <span className="text-yellow-200 font-medium italic border-b border-yellow-200">fordive.id</span>
                   </p>
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
