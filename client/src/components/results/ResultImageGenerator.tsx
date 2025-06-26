@@ -5,7 +5,7 @@ import { getScentImageUrl } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
-import logoImage from "../../assets/logo.png";
+import logoImage from "@assets/LOGOTYPE  FORDIVE  EDP  PNG (White).png";
 import fordivePattern from '@assets/Vector Smart Object_1750266780273.png';
 
 interface ResultImageGeneratorProps {
@@ -128,8 +128,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         ref={storyRef}
         className="relative w-[375px] h-[667px] rounded-2xl overflow-hidden shadow-xl"
         style={{ 
-          fontFamily: '"Playfair Display", "Montserrat", sans-serif',
-          background: 'linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 50%, #F0EAD6 100%)'
+          fontFamily: '"Inter", "Playfair Display", sans-serif',
+          background: 'linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 50%, #d2ab67 100%)'
         }}
       >
         {/* Subtle pattern background overlay */}
@@ -147,13 +147,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         <div className="px-6 pt-6 pb-4">
           <div className="flex justify-between items-start mb-4">
             <div className="text-left">
-              <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
+              <p className="text-[#d2ab67] text-[32px] font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>Scent Finder Result:</p>
             </div>
             <div className="flex items-center">
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="h-10" 
+                className="h-12 w-auto" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
@@ -161,10 +161,10 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
           
           {/* Title */}
-          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
+          <h2 className="text-gray-800 text-lg font-normal mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>Your Scent Match</h2>
           
           {/* Scent Name - Rata kiri dan lebih besar */}
-          <h1 className="text-4xl font-bold text-left mb-3" style={{ 
+          <h1 className="text-4xl font-medium text-left mb-3" style={{ 
             color: '#D4713A', 
             fontFamily: 'Playfair Display, serif',
             fontStyle: 'italic',
@@ -176,7 +176,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           {/* Vibes Badge - Rata kiri dan lebih kecil */}
           <div className="text-left mb-6">
             <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
-              <span className="text-amber-700 text-xs font-medium">
+              <span className="text-amber-700 text-sm font-medium">
                 {scent.vibes.join(', ')}
               </span>
             </div>
