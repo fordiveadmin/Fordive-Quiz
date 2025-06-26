@@ -147,7 +147,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
         <div className="px-6 pt-6 pb-4">
           <div className="flex justify-between items-start mb-4">
             <div className="text-left">
-              <p className="text-amber-600 text-sm font-medium">Scent Finder Result:</p>
+              <p className="text-amber-600 text-sm font-semibold font-inter">Scent Finder Result:</p>
             </div>
             <div className="flex items-center">
               <img 
