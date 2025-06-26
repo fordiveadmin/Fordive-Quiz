@@ -5,7 +5,7 @@ import { getScentImageUrl } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
-import logoImage from "../../assets/logo.png";
+import logoImage from "../../assets/fordive-logo.png";
 import fordivePattern from '@assets/Vector Smart Object_1750266780273.png';
 
 interface ResultImageGeneratorProps {
@@ -161,7 +161,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           </div>
           
           {/* Title */}
-          <h2 className="text-gray-800 text-lg font-medium mb-4">Your Scent Match</h2>
+          <h2 className="text-gray-800 text-lg font-medium mb-4 font-inter">Your Scent Match</h2>
           
           {/* Scent Name - Rata kiri dan lebih besar */}
           <h1 className="text-4xl font-bold text-left mb-3" style={{ 
@@ -205,7 +205,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
                   <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
-                  <p className="text-yellow-200 font-medium text-sm mb-2">
+                  <p className="text-white font-medium text-sm mb-2">
                     Horoscope: {zodiacSign}
                   </p>
                   <p className="text-white text-sm leading-relaxed">
@@ -218,9 +218,9 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               <div className="text-left">
                 <div className="flex items-center gap-2">
                   <p className="text-white text-sm">
-                    Find your scent at <span className="text-yellow-200 font-medium italic border-b border-yellow-200">fordive.id</span>
+                    Find your scent at <span className="text-white font-medium italic border-b border-white">fordive.id</span>
                   </p>
-                  <svg className="w-3 h-3 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
