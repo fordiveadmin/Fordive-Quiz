@@ -77,21 +77,40 @@ export default function ResultImageGenerator({
     return fallback[zodiacSign || ""] || "";
   };
 
+  // === IMAGE LOADING WITH CORS HANDLING ===
+  const loadImageWithCors = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => {
+        // Fallback: try without CORS for same-origin images
+        const fallbackImg = new Image();
+        fallbackImg.onload = () => resolve(fallbackImg);
+        fallbackImg.onerror = () => reject(new Error('Failed to load image'));
+        fallbackImg.src = src;
+      };
+      img.src = src;
+    });
+  };
+
   // === DOWNLOAD IMAGE FUNCTION ===
   const handleDownloadImage = async () => {
     if (!storyRef.current) return;
 
     try {
+      // Wait for all images to load properly
       const images = storyRef.current.querySelectorAll("img");
       await Promise.all(
-        Array.from(images).map((img) =>
-          img.complete
-            ? Promise.resolve()
-            : new Promise((res, rej) => {
+        Array.from(images).map((img) => {
+          if (img.complete && img.naturalHeight !== 0) {
+            return Promise.resolve();
+          }
+          return new Promise((res, rej) => {
                 img.onload = res;
                 img.onerror = rej;
-              }),
-        ),
+              });
+        })
       );
 
       await new Promise((r) => setTimeout(r, 500));
@@ -103,21 +122,46 @@ export default function ResultImageGenerator({
         canvasHeight: 1334,
       });
 
+      // Create download link with proper mobile handling
       const link = document.createElement("a");
-      link.download = `fordive-${scent.name.toLowerCase().replace(/\s+/g, "-")}-result.png`;
-      link.href = dataUrl;
-      link.click();
+      const filename = `fordive-${scent.name.toLowerCase().replace(/\s+/g, '-')}-result.png`;
+      
+      // Check if we're on mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // For mobile, open in new window if direct download fails
+        try {
+          link.download = filename;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (mobileError) {
+          // Fallback for mobile browsers that don't support download
+          const newWindow = window.open();
+          if (newWindow) {
+            newWindow.document.write(`<img src="${dataUrl}" alt="Fordive Result" style="width:100%;height:auto;" />`);
+            newWindow.document.write(`<p style="text-align:center;margin-top:20px;">Long-press the image above to save it to your device</p>`);
+          }
+        }
+      } else {
+        link.download = filename;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
       toast({
-        title: "HD Image Downloaded",
-        description:
-          "Your high-quality personalized result image has been downloaded",
+        title: "Image Downloaded!",
+        description: `Your ${scent.name} scent result has been saved.`,
       });
     } catch (error) {
-      console.error("Error generating image:", error);
+      console.error("Error downloading image:", error);
       toast({
-        title: "Error",
-        description: "Failed to generate image. Please try again.",
+        title: "Download Failed",
+        description: "There was an issue generating the image. Please try again.",
         variant: "destructive",
       });
     }
@@ -200,6 +244,13 @@ export default function ResultImageGenerator({
               className="w-full h-full object-cover"
               crossOrigin="anonymous"
               loading="eager"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.includes('fallback')) {
+                  // Fallback to a reliable image source
+                  target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80&fallback=true';
+                }
+              }}
             />
 
             {/* Gradient Overlay */}
