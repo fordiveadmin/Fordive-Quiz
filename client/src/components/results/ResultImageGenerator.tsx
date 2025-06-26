@@ -202,13 +202,13 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               {zodiacSign && (
                 <div className="text-left mb-6">
-                  <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
+                  <h3 className="text-white text-xl font-normal mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
-                  <p className="text-yellow-200 font-medium text-sm mb-2">
+                  <p className="text-yellow-200 font-bold text-sm mb-2" style={{ fontFamily: 'Inter, sans-serif', fontStyle: 'italic' }}>
                     Horoscope: {zodiacSign}
                   </p>
-                  <p className="text-white text-sm leading-relaxed">
+                  <p className="text-white text-base leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                     {getZodiacDescription()}
                   </p>
                 </div>
@@ -217,7 +217,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {/* Bottom link with search icon */}
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  <p className="text-white text-sm">
+                  <p className="text-white text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
                     Find your scent at <span className="text-yellow-200 font-medium italic border-b border-yellow-200">fordive.id</span>
                   </p>
                   <svg className="w-3 h-3 text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
