@@ -137,7 +137,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: '60px',
+            backgroundSize: '100px',
             backgroundRepeat: 'repeat'
           }}
         ></div>
@@ -162,7 +162,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           <h2 className="text-gray-800 text-lg font-medium mb-4 font-inter">Your Scent Match</h2>
           
           {/* Scent Name - Rata kiri dan lebih besar */}
-          <h1 className="text-4xl font-bold text-left mb-3" style={{ 
+          <h1 className="text-4xl font-normal text-left mb-3" style={{ 
             color: '#D4713A', 
             fontFamily: 'Playfair Display, serif',
             fontStyle: 'italic',
@@ -203,10 +203,10 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
                   <h3 className="text-white text-lg font-medium mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
                     {userName}'s scent characteristics
                   </h3>
-                  <p className="text-white font-medium text-sm mb-2">
+                  <p className="text-white font-medium text-sm mb-2 font-inter italic">
                     Horoscope: {zodiacSign}
                   </p>
-                  <p className="text-white text-sm leading-relaxed">
+                  <p className="text-white text-sm leading-relaxed font-inter">
                     {getZodiacDescription()}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               {/* Bottom link with search icon */}
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  <p className="text-white text-sm">
+                  <p className="text-white text-sm font-inter italic">
                     Find your scent at <span className="text-white font-medium italic border-b border-white">fordive.id</span>
                   </p>
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
