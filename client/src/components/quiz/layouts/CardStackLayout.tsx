@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useStore } from '@/store/quizStore';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Option {
@@ -23,7 +23,9 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
   const { answers, setAnswer } = useStore();
   const selectedOption = answers[question.id]?.optionId;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const options = question.options;
+  const constraintsRef = useRef(null);
 
   const handleSelect = (optionId: string, option: Option) => {
     setAnswer(
@@ -44,6 +46,19 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
   const goToPrev = () => {
     if (activeIndex > 0) {
       setActiveIndex(prev => prev - 1);
+    }
+  };
+
+  const handleDragEnd = (event: any, info: PanInfo) => {
+    setIsDragging(false);
+    const threshold = 50;
+    
+    if (info.offset.x > threshold) {
+      // Dragged right - go to previous
+      goToPrev();
+    } else if (info.offset.x < -threshold) {
+      // Dragged left - go to next
+      goToNext();
     }
   };
 
@@ -95,7 +110,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
         {question.text}
       </motion.h2>
 
-      <div className="relative h-[400px] w-full flex items-center justify-center">
+      <div className="relative h-[400px] w-full flex items-center justify-center" ref={constraintsRef}>
         <div className="relative w-full max-w-md mx-auto h-[300px]">
           {options.map((option, index) => (
             <motion.div
@@ -103,15 +118,24 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
               className={`
                 absolute top-0 left-0 right-0 flex flex-col h-[400px] rounded-lg cursor-pointer shadow-lg overflow-hidden
                 ${option.id === selectedOption ? 
-                  'bg-[#d2b183] text-white border-2 border-[#d2b183]' : 
-                  'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800'}
-                transform-gpu
+                  'bg-[#d2b183] text-white border-4 border-[#d2b183] ring-4 ring-[#d2b183]/30' : 
+                  'bg-[#f5f1e9] hover:bg-[#e6ddca] text-gray-800 border-2 border-transparent hover:border-[#d2b183]/50'}
+                transform-gpu transition-all duration-300
+                ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
               `}
               style={getCardStyle(index)}
+              drag={index === activeIndex ? "x" : false}
+              dragConstraints={constraintsRef}
+              dragElastic={0.3}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={handleDragEnd}
               onClick={() => {
-                setActiveIndex(index);
-                handleSelect(option.id, option);
+                if (!isDragging) {
+                  setActiveIndex(index);
+                  handleSelect(option.id, option);
+                }
               }}
+              whileTap={{ scale: 0.98 }}
             >
               {/* Full-sized image */}
               {option.imageUrl && (
@@ -134,9 +158,18 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
               
               {/* Selection indicator */}
               {option.id === selectedOption && (
-                <div className="absolute top-3 right-3">
-                  <div className="bg-[#d2b183] rounded-full p-1">
-                    <Check className="h-4 w-4 text-white" />
+                <div className="absolute top-4 right-4">
+                  <div className="bg-white rounded-full p-2 shadow-lg">
+                    <Check className="h-5 w-5 text-[#d2b183]" />
+                  </div>
+                </div>
+              )}
+              
+              {/* Tap indicator for active card */}
+              {index === activeIndex && option.id !== selectedOption && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-[#d2b183] text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+                    Tap to Select
                   </div>
                 </div>
               )}
@@ -183,9 +216,16 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
         ))}
       </div>
 
-      {/* Helper text */}
-      <div className="text-center text-sm text-gray-500 mt-6">
-        {selectedOption ? '' : 'Select a card to continue'}
+      {/* Helper text and mobile instructions */}
+      <div className="text-center mt-6">
+        {!selectedOption ? (
+          <div className="space-y-2">
+            <p className="text-sm text-gray-500">Tap on a card to select it</p>
+            <p className="text-xs text-gray-400 md:hidden">Swipe or use dots to navigate between cards</p>
+          </div>
+        ) : (
+          <p className="text-sm text-[#d2b183] font-medium">✓ Card selected</p>
+        )}
       </div>
     </div>
   );
