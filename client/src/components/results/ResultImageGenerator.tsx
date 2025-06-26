@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
 import logoImage from "../../assets/fordive-logo.png";
-import fordivePattern from '@assets/Vector Smart Object_1750266780273.png';
+import fordivePattern from '@assets/bg_1750908182073.png';
 
 interface ResultImageGeneratorProps {
   scent: {
@@ -137,10 +137,8 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'repeat',
-            transform: 'rotate(-35deg) translateX(100px)',
-            transformOrigin: 'center'
+            backgroundSize: 'auto',
+            backgroundRepeat: 'repeat'
           }}
         ></div>
         {/* Header - Compact for Instagram Story */}
