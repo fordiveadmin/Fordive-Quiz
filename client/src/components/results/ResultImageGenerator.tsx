@@ -137,7 +137,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: '100px',
+            backgroundSize: '150px',
             backgroundRepeat: 'repeat'
           }}
         ></div>
@@ -162,7 +162,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           <h2 className="text-gray-800 text-lg font-medium mb-4 font-inter">Your Scent Match</h2>
           
           {/* Scent Name - Rata kiri dan lebih besar */}
-          <h1 className="text-4xl font-normal text-left mb-3" style={{ 
+          <h1 className="text-5xl font-normal text-left mb-3" style={{ 
             color: '#D4713A', 
             fontFamily: 'Playfair Display, serif',
             fontStyle: 'italic',
