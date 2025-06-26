@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
-import { copyToClipboard } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { FaCopy, FaEnvelope, FaImage } from 'react-icons/fa';
-import ResultImageGenerator from './ResultImageGenerator';
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { copyToClipboard } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { FaCopy, FaEnvelope, FaImage } from "react-icons/fa";
+import ResultImageGenerator from "./ResultImageGenerator";
 
 interface ShareResultsProps {
   scent: {
@@ -23,10 +23,15 @@ interface ShareResultsProps {
   zodiacSign: string;
 }
 
-export default function ShareResults({ scent, userName, userEmail, zodiacSign }: ShareResultsProps) {
+export default function ShareResults({
+  scent,
+  userName,
+  userEmail,
+  zodiacSign,
+}: ShareResultsProps) {
   const { toast } = useToast();
   const [isCopied, setIsCopied] = useState(false);
-  
+
   // Email results mutation
   const emailResults = useMutation({
     mutationFn: async () => {
@@ -34,75 +39,77 @@ export default function ShareResults({ scent, userName, userEmail, zodiacSign }:
         email: userEmail,
         name: userName,
         scent,
-        zodiacSign
+        zodiacSign,
       };
-      
-      const res = await apiRequest('POST', '/api/email-results', emailData);
+
+      const res = await apiRequest("POST", "/api/email-results", emailData);
       return res.json();
     },
     onSuccess: () => {
       toast({
-        title: 'Email Sent',
-        description: 'Your results have been sent to your email',
+        title: "Email Sent",
+        description: "Your results have been sent to your email",
       });
     },
     onError: (error) => {
       toast({
-        title: 'Error',
+        title: "Error",
         description: `Failed to send email: ${error.message}`,
-        variant: 'destructive',
+        variant: "destructive",
       });
     },
   });
-  
+
   const handleCopyResults = async () => {
     const resultText = `
 🌟 My Fordive Signature Scent: ${scent.name} 🌟
 
-Vibes: ${scent.vibes.join(', ')}
-Notes: ${scent.notes.join(', ')}
+Vibes: ${scent.vibes.join(", ")}
+Notes: ${scent.notes.join(", ")}
 
 "${scent.mood}"
 
-${zodiacSign ? `My Zodiac Sign: ${zodiacSign}` : ''}
+${zodiacSign ? `My Zodiac Sign: ${zodiacSign}` : ""}
 
 Find your signature scent at fordive.com
     `;
-    
+
     const success = await copyToClipboard(resultText);
-    
+
     if (success) {
       setIsCopied(true);
       toast({
-        title: 'Copied to Clipboard',
-        description: 'Your results have been copied to clipboard',
+        title: "Copied to Clipboard",
+        description: "Your results have been copied to clipboard",
       });
-      
+
       setTimeout(() => {
         setIsCopied(false);
       }, 2000);
     } else {
       toast({
-        title: 'Error',
-        description: 'Failed to copy to clipboard',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
       });
     }
   };
-  
+
   // We've replaced this with the image generator functionality
-  
+
   const [showImageGenerator, setShowImageGenerator] = useState(false);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
       className="bg-white rounded-xl shadow-md p-6"
     >
-      <h3 className="font-playfair font-semibold text-xl mb-4">Save & Share Your Results</h3>
-      
+      <h3 className="font-inter font-semibold text-lg mb-4">
+        Save & Share Your Results
+      </h3>
+
       {!showImageGenerator ? (
         <div className="flex flex-wrap gap-4">
           <Button
@@ -116,7 +123,7 @@ Find your signature scent at fordive.com
         </div>
       ) : (
         <div className="flex flex-col items-center">
-          <ResultImageGenerator 
+          <ResultImageGenerator
             scent={scent}
             userName={userName}
             zodiacSign={zodiacSign}

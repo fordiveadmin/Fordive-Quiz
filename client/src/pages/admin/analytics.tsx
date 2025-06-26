@@ -26,6 +26,53 @@ export default function AnalyticsPage() {
   // Calculate stats
   const totalParticipants = quizResults?.length || 0;
   
+  // Calculate age groups
+  const getAgeFromBirthDate = (birthDate: string) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  
+  const getAgeGroup = (age: number) => {
+    if (age < 18) return 'Di bawah 18';
+    if (age >= 18 && age <= 24) return '18-24';
+    if (age >= 25 && age <= 34) return '25-34';
+    if (age >= 35 && age <= 44) return '35-44';
+    if (age >= 45 && age <= 54) return '45-54';
+    return '55+';
+  };
+  
+  const ageGroupStats = quizResults && quizResults.length > 0 
+    ? (() => {
+        const ageGroups: Record<string, number> = {
+          'Di bawah 18': 0,
+          '18-24': 0,
+          '25-34': 0,
+          '35-44': 0,
+          '45-54': 0,
+          '55+': 0,
+          'Tidak diketahui': 0
+        };
+        
+        quizResults.forEach((result: any) => {
+          if (result.userBirthDate) {
+            const age = getAgeFromBirthDate(result.userBirthDate);
+            const ageGroup = getAgeGroup(age);
+            ageGroups[ageGroup]++;
+          } else {
+            ageGroups['Tidak diketahui']++;
+          }
+        });
+        
+        return ageGroups;
+      })()
+    : null;
+  
   // Function to download CSV
   const downloadCSV = () => {
     if (!quizResults || quizResults.length === 0) return;
@@ -101,7 +148,7 @@ export default function AnalyticsPage() {
           </Button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-primary/5 border-primary/20">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg">
@@ -150,17 +197,90 @@ export default function AnalyticsPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg">
-                Analytics & Performance
+                <Users className="mr-2 h-5 w-5 text-primary" />
+                Kelompok Umur Dominan
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-lg font-semibold">Lebih detail segera hadir</div>
+              <div className="text-lg font-semibold">
+                {ageGroupStats 
+                  ? (() => {
+                      const sortedAgeGroups = Object.entries(ageGroupStats)
+                        .filter(([group]) => group !== 'Tidak diketahui')
+                        .sort((a, b) => b[1] - a[1]);
+                      return sortedAgeGroups.length > 0 && sortedAgeGroups[0][1] > 0 
+                        ? sortedAgeGroups[0][0] 
+                        : 'Belum ada data';
+                    })()
+                  : 'Belum ada data'
+                }
+              </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Dashboard analitik lengkap sedang dikembangkan
+                Kelompok umur dengan peserta terbanyak
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center text-lg">
+                <BarChart3 className="mr-2 h-5 w-5 text-primary" />
+                Data Lengkap
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-lg font-semibold">
+                {quizResults 
+                  ? `${quizResults.filter((r: any) => r.userBirthDate).length}/${totalParticipants}`
+                  : '0/0'
+                }
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Pengguna dengan tanggal lahir
               </p>
             </CardContent>
           </Card>
         </div>
+        
+        {/* Age Group Analysis Card */}
+        {ageGroupStats && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Analisis Kelompok Umur</CardTitle>
+              <CardDescription>
+                Distribusi pengguna berdasarkan kelompok umur
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {Object.entries(ageGroupStats)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([ageGroup, count]) => {
+                    const percentage = totalParticipants > 0 ? ((count / totalParticipants) * 100).toFixed(1) : '0';
+                    return (
+                      <div key={ageGroup} className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-3 h-3 rounded-full bg-primary"></div>
+                          <span className="font-medium">{ageGroup}</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm text-muted-foreground w-16 text-right">
+                            {count} ({percentage}%)
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
         <Card>
           <CardHeader>
