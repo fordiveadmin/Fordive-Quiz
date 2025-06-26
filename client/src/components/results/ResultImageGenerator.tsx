@@ -137,7 +137,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
           className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage: `url(${fordivePattern})`,
-            backgroundSize: 'auto',
+            backgroundSize: '60px',
             backgroundRepeat: 'repeat'
           }}
         ></div>
@@ -151,7 +151,7 @@ export default function ResultImageGenerator({ scent, userName, zodiacSign }: Re
               <img 
                 src={logoImage} 
                 alt="Fordive Logo" 
-                className="h-10" 
+                className="h-6" 
                 crossOrigin="anonymous"
                 loading="eager"
               />
