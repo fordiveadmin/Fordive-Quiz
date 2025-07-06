@@ -38,15 +38,13 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
   };
 
   const goToNext = () => {
-    if (activeIndex < options.length - 1) {
-      setActiveIndex(prev => prev + 1);
-    }
+    // Loop back to first card when at the end
+    setActiveIndex(prev => prev < options.length - 1 ? prev + 1 : 0);
   };
 
   const goToPrev = () => {
-    if (activeIndex > 0) {
-      setActiveIndex(prev => prev - 1);
-    }
+    // Loop to last card when at the beginning
+    setActiveIndex(prev => prev > 0 ? prev - 1 : options.length - 1);
   };
 
   const handleDragEnd = (event: any, info: PanInfo) => {
@@ -184,8 +182,6 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
             e.stopPropagation();
             goToPrev();
           }}
-          disabled={activeIndex === 0}
-          style={{ opacity: activeIndex === 0 ? 0.5 : 1 }}
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
@@ -196,8 +192,6 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
             e.stopPropagation();
             goToNext();
           }}
-          disabled={activeIndex === options.length - 1}
-          style={{ opacity: activeIndex === options.length - 1 ? 0.5 : 1 }}
         >
           <ChevronRight className="h-6 w-6" />
         </button>
@@ -221,7 +215,7 @@ export default function CardStackLayout({ question }: CardStackLayoutProps) {
         {!selectedOption ? (
           <div className="space-y-2">
             <p className="text-sm text-gray-500">Tap on a card to select it</p>
-            <p className="text-xs text-gray-400 md:hidden">Swipe or use dots to navigate between cards</p>
+            <p className="text-xs text-gray-400 md:hidden">Swipe or use dots to navigate between cards (loops)</p>
           </div>
         ) : (
           <p className="text-sm text-[#d2b183] font-medium">✓ Card selected</p>

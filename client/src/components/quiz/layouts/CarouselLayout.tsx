@@ -61,16 +61,13 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
   };
 
   const nextSlide = () => {
-    // Only move if we're not at the last option
-    if (currentIndex < question.options.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-    }
+    // Loop back to first slide when at the end
+    setCurrentIndex(prev => prev < question.options.length - 1 ? prev + 1 : 0);
   };
 
   const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
-    }
+    // Loop to last slide when at the beginning
+    setCurrentIndex(prev => prev > 0 ? prev - 1 : question.options.length - 1);
   };
   
   // Handle swipe gestures
@@ -114,16 +111,14 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
       </motion.h2>
 
       <div className="relative">
-        {/* Left Arrow */}
-        {currentIndex > 0 && (
-          <button 
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 md:-ml-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
-            aria-label="Previous option"
-          >
-            <ChevronLeft className="h-6 w-6 text-gray-800" />
-          </button>
-        )}
+        {/* Left Arrow - Always visible with looping */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 md:-ml-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
+          aria-label="Previous option"
+        >
+          <ChevronLeft className="h-6 w-6 text-gray-800" />
+        </button>
         
         {/* Carousel Container */}
         <div 
@@ -190,16 +185,14 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
           </motion.div>
         </div>
         
-        {/* Right Arrow - Show until we reach the last option */}
-        {currentIndex < question.options.length - 1 && (
-          <button 
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
-            aria-label="Next option"
-          >
-            <ChevronRight className="h-6 w-6 text-gray-800" />
-          </button>
-        )}
+        {/* Right Arrow - Always visible with looping */}
+        <button 
+          onClick={nextSlide}
+          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-10 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md"
+          aria-label="Next option"
+        >
+          <ChevronRight className="h-6 w-6 text-gray-800" />
+        </button>
       </div>
       
       {/* Carousel Dots */}
@@ -220,7 +213,7 @@ export default function CarouselLayout({ question }: CarouselLayoutProps) {
       
       {/* Selected state text */}
       <div className="text-center text-sm text-gray-500 mt-6">
-        {selectedOption ? 'Tap next to continue' : 'Select one option to continue'}
+        {selectedOption ? 'Tap next to continue' : 'Select one option to continue (swipe to loop)'}
       </div>
     </div>
   );

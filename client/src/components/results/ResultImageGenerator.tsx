@@ -81,13 +81,13 @@ export default function ResultImageGenerator({
   const loadImageWithCors = (src: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = "anonymous";
       img.onload = () => resolve(img);
       img.onerror = () => {
         // Fallback: try without CORS for same-origin images
         const fallbackImg = new Image();
         fallbackImg.onload = () => resolve(fallbackImg);
-        fallbackImg.onerror = () => reject(new Error('Failed to load image'));
+        fallbackImg.onerror = () => reject(new Error("Failed to load image"));
         fallbackImg.src = src;
       };
       img.src = src;
@@ -107,10 +107,10 @@ export default function ResultImageGenerator({
             return Promise.resolve();
           }
           return new Promise((res, rej) => {
-                img.onload = res;
-                img.onerror = rej;
-              });
-        })
+            img.onload = res;
+            img.onerror = rej;
+          });
+        }),
       );
 
       await new Promise((r) => setTimeout(r, 500));
@@ -124,11 +124,14 @@ export default function ResultImageGenerator({
 
       // Create download link with proper mobile handling
       const link = document.createElement("a");
-      const filename = `fordive-${scent.name.toLowerCase().replace(/\s+/g, '-')}-result.png`;
-      
+      const filename = `fordive-${scent.name.toLowerCase().replace(/\s+/g, "-")}-result.png`;
+
       // Check if we're on mobile
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent,
+        );
+
       if (isMobile) {
         // For mobile, open in new window if direct download fails
         try {
@@ -141,8 +144,12 @@ export default function ResultImageGenerator({
           // Fallback for mobile browsers that don't support download
           const newWindow = window.open();
           if (newWindow) {
-            newWindow.document.write(`<img src="${dataUrl}" alt="Fordive Result" style="width:100%;height:auto;" />`);
-            newWindow.document.write(`<p style="text-align:center;margin-top:20px;">Long-press the image above to save it to your device</p>`);
+            newWindow.document.write(
+              `<img src="${dataUrl}" alt="Fordive Result" style="width:100%;height:auto;" />`,
+            );
+            newWindow.document.write(
+              `<p style="text-align:center;margin-top:20px;">Long-press the image above to save it to your device</p>`,
+            );
           }
         }
       } else {
@@ -161,7 +168,8 @@ export default function ResultImageGenerator({
       console.error("Error downloading image:", error);
       toast({
         title: "Download Failed",
-        description: "There was an issue generating the image. Please try again.",
+        description:
+          "There was an issue generating the image. Please try again.",
         variant: "destructive",
       });
     }
@@ -176,7 +184,7 @@ export default function ResultImageGenerator({
         style={{
           fontFamily: '"Playfair Display", "Montserrat", sans-serif',
           background:
-            "linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 50%, #F0EAD6 100%)",
+            "linear-gradient(135deg, #FAF7F2 0%, #F7F4EF 100%, #F0EAD6 100%)",
         }}
       >
         {/* Pattern Overlay */}
@@ -222,9 +230,9 @@ export default function ResultImageGenerator({
             {scent.name}
           </h1>
 
-          <div className="text-left mb-6">
-            <div className="inline-block px-3 py-1 border border-amber-400 rounded-full">
-              <span className="text-amber-700 text-xs font-medium">
+          <div className="text-left mt-2">
+            <div className="inline-block px-3 pb-1 border-2 border-amber-400 rounded-full">
+              <span className="text-amber-700 text-[10px] font-semibold leading-none">
                 {scent.vibes.join(", ")}
               </span>
             </div>
@@ -246,30 +254,31 @@ export default function ResultImageGenerator({
               loading="eager"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                if (!target.src.includes('fallback')) {
+                if (!target.src.includes("fallback")) {
                   // Fallback to a reliable image source
-                  target.src = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80&fallback=true';
+                  target.src =
+                    "https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500&q=80&fallback=true";
                 }
               }}
             />
 
             {/* Gradient Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 h-80 bg-gradient-to-t from-[#d0ab65]/95 via-[#e8d4aa]/85 via-[#f4ead3]/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-80 bg-gradient-to-t from-[#d0ab65]/100 via-[#e8d4aa]/87 via-[#e4c172]/50 to-transparent" />
 
             {/* Text Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               {zodiacSign && (
                 <div className="text-left mb-6">
                   <h3
-                    className="text-white text-lg font-medium mb-2"
+                    className="text-white text-sm font-semibold mb-2"
                     style={{ fontFamily: "Playfair Display, serif" }}
                   >
                     {userName}'s scent characteristics
                   </h3>
-                  <p className="font-medium text-sm mb-2 font-inter italic">
+                  <p className="font-bold text-[10px] mb-2 font-inter italic">
                     Horoscope: {zodiacSign}
                   </p>
-                  <p className="text-sm leading-relaxed font-inter">
+                  <p className="font-medium text-[10px] leading-relaxed font-inter">
                     {getZodiacDescription()}
                   </p>
                 </div>
@@ -277,12 +286,12 @@ export default function ResultImageGenerator({
 
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-inter italic">
-                    Find your scent at{" "}
-                    <span className="font-medium italic border-b border-white">
-                      fordive.id
+                  <p className="text-[9px] font-inter italic">
+                    <span className="inline-block font-medium italic border-b border-white pb-[2px]">
+                      Find your scent at fordive.id
                     </span>
                   </p>
+
                   <svg
                     className="w-3 h-3 text-white"
                     fill="none"
