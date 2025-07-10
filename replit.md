@@ -115,6 +115,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- January 9, 2025: Removed birth date field from user registration
+  - Removed birth date field from user registration form per user request
+  - Simplified user onboarding process by removing optional birth date collection
+  - Birth date field remains optional in database schema for backward compatibility
+  - Zodiac sign functionality still available through separate quiz flow if needed
+
 - June 19, 2025: Added birth date collection and display functionality
   - Added optional birth date field to user registration form
   - Updated database schema to store birth dates for zodiac calculation
@@ -135,6 +141,13 @@ Preferred communication style: Simple, everyday language.
   - Added floating particles animation for dreamy ethereal feeling
   - Integrated layout into quiz system and admin panel
   - Layout features staggered animations and 3D hover effects
+
+- January 9, 2025: Added looping functionality to quiz layouts
+  - Implemented infinite looping for 3D card stack layout navigation
+  - Added seamless looping to carousel layout with continuous scrolling
+  - Removed disabled states from navigation buttons to enable full looping
+  - Added helper text indicating looping functionality is available
+  - Users can now navigate continuously through all options without dead ends
 
 - June 19, 2025: Enhanced quiz layout components for better visual presentation
   - Updated checkbox layout with full-sized images (48-56px height) above content
