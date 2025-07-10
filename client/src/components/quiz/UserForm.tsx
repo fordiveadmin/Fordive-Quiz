@@ -118,9 +118,6 @@ export default function UserForm() {
                         className="border-border focus:border-primary focus:ring-primary"
                       />
                     </FormControl>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      We'll send your scent results to this email
-                    </p>
                     <FormMessage />
                   </FormItem>
                 )}
