@@ -25,19 +25,16 @@ export default function ZodiacInput() {
   const updateUserBirthDate = useMutation({
     mutationFn: async (birthDate: string) => {
       if (!user?.id) {
-        console.log("No user ID found, skipping birth date update");
         return;
       }
-      console.log("Updating birth date for user:", user.id, "with date:", birthDate);
       const res = await apiRequest("PUT", `/api/users/${user.id}`, { birthDate });
       return res.json();
     },
     onSuccess: () => {
-      console.log("Birth date updated successfully");
       setBirthDateSaved(true);
     },
     onError: (error) => {
-      console.error("Failed to update birth date:", error);
+      // Silently handle error - birth date update is not critical
     },
   });
   
@@ -86,10 +83,7 @@ export default function ZodiacInput() {
     }
   }, [zodiacSign]);
 
-  // Debug user data
-  useEffect(() => {
-    console.log("ZodiacInput: Current user data:", user);
-  }, [user]);
+
   
   return (
     <div className="space-y-8">
@@ -110,12 +104,7 @@ export default function ZodiacInput() {
         We'll use this to determine your zodiac sign's influence on your scent profile
       </motion.p>
       
-      {/* Debug info - remove in production */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="text-xs text-gray-500 text-center">
-          Debug: User ID = {user?.id || 'No user'}, Name = {user?.name || 'No name'}
-        </div>
-      )}
+
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
