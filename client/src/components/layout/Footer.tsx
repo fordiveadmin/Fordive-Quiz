@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="max-w-none mx-auto">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
           {/* Logo Section - Left Side */}
-          <div className="flex flex-col items-start text-left md:w-1/3">
+          <div className="flex flex-col items-center md:items-start text-center md:text-left md:w-1/3">
             <div className="mb-4">
               <img src={logoImage} alt="Fordive Logo" className="h-24" />
             </div>
