@@ -4,9 +4,9 @@ import logoImage from "../../assets/fordive-logo-white.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#D1AB66] py-12 px-6 text-white">
+    <footer className="bg-[#D1AB66] py-12 px-8 md:px-16 lg:px-20 text-white">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
           <div className="flex flex-col items-center text-center">
             <div className="mb-4">
               <img src={logoImage} alt="Fordive Logo" className="h-24" />
