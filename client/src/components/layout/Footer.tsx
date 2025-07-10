@@ -24,7 +24,7 @@ export default function Footer() {
           
           {/* Links Section - Right Side */}
           <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 md:gap-16 lg:gap-20 md:w-2/3 md:justify-end">
-            <div>
+            <div className="border-t sm:border-t-0 pt-8 sm:pt-0 border-white/20">
               <h4 className="text-lg font-semibold text-white mb-4 font-inter">Company</h4>
               <ul className="space-y-2">
                 <li>
@@ -45,7 +45,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="border-t sm:border-t-0 pt-8 sm:pt-0 border-white/20">
               <h4 className="text-lg font-semibold text-white mb-4 font-inter">Shop</h4>
               <ul className="space-y-2">
                 <li>
@@ -76,7 +76,7 @@ export default function Footer() {
               </ul>
             </div>
             
-            <div>
+            <div className="border-t sm:border-t-0 pt-8 sm:pt-0 border-white/20">
               <h4 className="text-lg font-semibold text-white mb-4 font-inter">Let's Talk</h4>
               <ul className="space-y-2">
                 <li>
