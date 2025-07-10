@@ -19,16 +19,22 @@ export default function ZodiacInput() {
   const [day, setDay] = useState<number | null>(null);
   const [daysInMonth, setDaysInMonth] = useState<number[]>([]);
   const [revealZodiac, setRevealZodiac] = useState(false);
+  const [birthDateSaved, setBirthDateSaved] = useState(false);
 
   // Mutation to update user's birth date
   const updateUserBirthDate = useMutation({
     mutationFn: async (birthDate: string) => {
-      if (!user?.id) return;
+      if (!user?.id) {
+        console.log("No user ID found, skipping birth date update");
+        return;
+      }
+      console.log("Updating birth date for user:", user.id, "with date:", birthDate);
       const res = await apiRequest("PUT", `/api/users/${user.id}`, { birthDate });
       return res.json();
     },
     onSuccess: () => {
       console.log("Birth date updated successfully");
+      setBirthDateSaved(true);
     },
     onError: (error) => {
       console.error("Failed to update birth date:", error);
@@ -55,18 +61,21 @@ export default function ZodiacInput() {
   
   // Determine zodiac sign when both month and day are selected
   useEffect(() => {
-    if (month && day) {
+    if (month && day && !birthDateSaved) {
       const sign = getZodiacSign(month, day);
       if (sign) {
         setZodiacSign(sign);
         setRevealZodiac(true);
         
-        // Save birth date to user profile
-        const birthDate = `2024-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        updateUserBirthDate.mutate(birthDate);
+        // Save birth date to user profile (only if user exists and not already saved)
+        if (user?.id) {
+          const birthDate = `2024-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+          updateUserBirthDate.mutate(birthDate);
+          setBirthDateSaved(true);
+        }
       }
     }
-  }, [month, day, setZodiacSign, updateUserBirthDate]);
+  }, [month, day, setZodiacSign, user?.id, birthDateSaved]);
   
   // Set initial values if zodiac sign already exists
   useEffect(() => {
@@ -76,6 +85,11 @@ export default function ZodiacInput() {
       setRevealZodiac(true);
     }
   }, [zodiacSign]);
+
+  // Debug user data
+  useEffect(() => {
+    console.log("ZodiacInput: Current user data:", user);
+  }, [user]);
   
   return (
     <div className="space-y-8">
@@ -95,6 +109,13 @@ export default function ZodiacInput() {
       >
         We'll use this to determine your zodiac sign's influence on your scent profile
       </motion.p>
+      
+      {/* Debug info - remove in production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="text-xs text-gray-500 text-center">
+          Debug: User ID = {user?.id || 'No user'}, Name = {user?.name || 'No name'}
+        </div>
+      )}
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
