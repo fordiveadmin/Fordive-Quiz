@@ -4,203 +4,99 @@ import logoImage from "../../assets/fordive-logo-white.png";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#D4AE73] py-16 px-8 md:px-16 lg:px-24 text-white">
+    <footer className="bg-[#D1AB66] py-12 px-8 md:px-16 lg:px-20 text-white">
       <div className="max-w-7xl mx-auto">
-        {/* Desktop Layout */}
-        <div className="hidden md:flex justify-between items-start">
-          {/* Logo and Tagline Section */}
-          <div className="flex flex-col">
-            <div className="mb-6">
-              <h1 className="text-4xl lg:text-5xl font-serif font-bold text-white">
-                FORDIVE
-              </h1>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 lg:gap-16">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4">
+              <img src={logoImage} alt="Fordive Logo" className="h-24" />
             </div>
-            <p className="text-white text-base font-medium">
+            <p className="text-white/90 mb-6">
               Love More Live More
             </p>
+            <Link href="/quiz">
+              <Button className="bg-[#D1AB66] hover:bg-[#C4A05B] text-white py-2 px-6 rounded-md text-sm font-medium transition-all duration-300">
+                Find Your Scent Here
+              </Button>
+            </Link>
           </div>
           
-          {/* Right Side - 3 Columns */}
-          <div className="flex gap-16 lg:gap-20">
-            {/* Company Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Company</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://fordive.id/aboutus/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/fordive/mission/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Impact
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/fordive/shop/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Product
-                  </a>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Shop Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Shop</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://shopee.co.id/fordive" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Shopee
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tokopedia.com/fordiveperfume" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tokopedia
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.lazada.co.id/shop/fordive" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Lazada
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tiktok.com/@fordive.id" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tiktok Shop
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/distributor/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Distributor
-                  </a>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Let's Talk Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Let's Talk</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://www.instagram.com/fordive.id/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tiktok.com/@fordive.id" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tiktok
-                  </a>
-                </li>
-                <li>
-                  <a href="https://x.com/Fordiveperfume" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    X/Twitter
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.facebook.com/Fordive.idn/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Facebook
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Layout */}
-        <div className="md:hidden">
-          {/* Logo and Tagline Section */}
-          <div className="flex flex-col items-center text-center mb-12">
-            <div className="mb-6">
-              <h1 className="text-3xl font-serif font-bold text-white">
-                FORDIVE
-              </h1>
-            </div>
-            <p className="text-white text-base font-medium">
-              Love More Live More
-            </p>
+          <div className="md:col-start-2 md:col-end-3 border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Company</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="https://fordive.id/aboutus/" className="text-white/80 hover:text-white transition-colors duration-300">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="https://fordive.id/mission/" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Impact
+                </a>
+              </li>
+              <li>
+                <a href="https://fordive.id/shop/" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Product
+                </a>
+              </li>
+            </ul>
           </div>
           
-          {/* Mobile Columns */}
-          <div className="grid grid-cols-1 gap-8">
-            {/* Company Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Company</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://fordive.id/aboutus/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/fordive/mission/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Impact
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/fordive/shop/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Product
-                  </a>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Shop Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Shop</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://shopee.co.id/fordive" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Shopee
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tokopedia.com/fordiveperfume" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tokopedia
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.lazada.co.id/shop/fordive" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Lazada
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tiktok.com/@fordive.id" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tiktok Shop
-                  </a>
-                </li>
-                <li>
-                  <a href="https://fordive.id/distributor/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Distributor
-                  </a>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Let's Talk Section */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-4 font-sans">Let's Talk</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="https://www.instagram.com/fordive.id/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.tiktok.com/@fordive.id" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Tiktok
-                  </a>
-                </li>
-                <li>
-                  <a href="https://x.com/Fordiveperfume" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    X/Twitter
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.facebook.com/Fordive.idn/" className="text-white hover:text-white/80 transition-colors duration-300 text-base no-underline">
-                    Facebook
-                  </a>
-                </li>
-              </ul>
-            </div>
+          <div className="border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Shop</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="https://shopee.co.id/fordive.id" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Shopee
+                </a>
+              </li>
+              <li>
+                <a href="https://www.tokopedia.com/fordiveid" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Tokopedia
+                </a>
+              </li>
+              <li>
+                <a href="https://www.lazada.co.id/shop/fordive" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Lazada
+                </a>
+              </li>
+              <li>
+                <a href="https://www.tiktok.com/@fordive.id" className="text-white/80 hover:text-white transition-colors duration-300">
+                  TikTok Shop
+                </a>
+              </li>
+              <li>
+                <a href="https://fordive.id/distributor/" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Distributor
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="border-t md:border-t-0 pt-8 md:pt-0 border-white/20">
+            <h4 className="text-lg font-semibold text-white mb-4 font-inter">Let's Talk</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="https://www.instagram.com/fordive.id/" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a href="https://www.tiktok.com/@fordive.id" className="text-white/80 hover:text-white transition-colors duration-300">
+                  TikTok
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/fordive_id" className="text-white/80 hover:text-white transition-colors duration-300">
+                  X/Twitter
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/fordive.id" className="text-white/80 hover:text-white transition-colors duration-300">
+                  Facebook
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
