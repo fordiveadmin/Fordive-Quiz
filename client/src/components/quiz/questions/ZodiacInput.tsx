@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useStore } from '@/store/quizStore';
 import { motion } from 'framer-motion';
 import { zodiacSigns, getZodiacSign, ZodiacSign } from '@/lib/zodiac';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import {
   Select,
   SelectContent,
@@ -12,11 +14,26 @@ import {
 import { Label } from "@/components/ui/label";
 
 export default function ZodiacInput() {
-  const { zodiacSign, setZodiacSign } = useStore();
+  const { zodiacSign, setZodiacSign, user } = useStore();
   const [month, setMonth] = useState<number | null>(null);
   const [day, setDay] = useState<number | null>(null);
   const [daysInMonth, setDaysInMonth] = useState<number[]>([]);
   const [revealZodiac, setRevealZodiac] = useState(false);
+
+  // Mutation to update user's birth date
+  const updateUserBirthDate = useMutation({
+    mutationFn: async (birthDate: string) => {
+      if (!user?.id) return;
+      const res = await apiRequest("PUT", `/api/users/${user.id}`, { birthDate });
+      return res.json();
+    },
+    onSuccess: () => {
+      console.log("Birth date updated successfully");
+    },
+    onError: (error) => {
+      console.error("Failed to update birth date:", error);
+    },
+  });
   
   // Set day options based on selected month
   useEffect(() => {
@@ -43,9 +60,13 @@ export default function ZodiacInput() {
       if (sign) {
         setZodiacSign(sign);
         setRevealZodiac(true);
+        
+        // Save birth date to user profile
+        const birthDate = `2024-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        updateUserBirthDate.mutate(birthDate);
       }
     }
-  }, [month, day, setZodiacSign]);
+  }, [month, day, setZodiacSign, updateUserBirthDate]);
   
   // Set initial values if zodiac sign already exists
   useEffect(() => {

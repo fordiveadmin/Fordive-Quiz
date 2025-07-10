@@ -115,11 +115,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-- January 9, 2025: Removed birth date field from user registration
-  - Removed birth date field from user registration form per user request
-  - Simplified user onboarding process by removing optional birth date collection
-  - Birth date field remains optional in database schema for backward compatibility
-  - Zodiac sign functionality still available through separate quiz flow if needed
+- January 9, 2025: Moved birth date collection to quiz flow
+  - Removed birth date field from user registration form to simplify onboarding
+  - Birth date now collected during quiz via zodiac input screen
+  - Added API endpoint to update user birth date when zodiac sign is determined
+  - Maintains zodiac-based personalization while keeping registration minimal
+  - Birth date automatically saved to user profile when selected during quiz
 
 - June 19, 2025: Added birth date collection and display functionality
   - Added optional birth date field to user registration form

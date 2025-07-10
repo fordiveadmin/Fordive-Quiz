@@ -41,6 +41,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  updateUser(id: number, user: Partial<InsertUser>): Promise<User | undefined>;
   
   // Question operations
   getQuestions(): Promise<Question[]>;
@@ -228,6 +229,17 @@ export class MemStorage implements IStorage {
     const newUser: User = { ...user, id, createdAt: timestamp };
     this.users.set(id, newUser);
     return newUser;
+  }
+
+  async updateUser(id: number, user: Partial<InsertUser>): Promise<User | undefined> {
+    const currentUser = this.users.get(id);
+    if (!currentUser) {
+      return undefined;
+    }
+    
+    const updatedUser: User = { ...currentUser, ...user };
+    this.users.set(id, updatedUser);
+    return updatedUser;
   }
   
   // Question methods
@@ -430,6 +442,15 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+
+  async updateUser(id: number, updateUser: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updateUser)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
   }
   
   // Question operations
