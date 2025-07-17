@@ -1,6 +1,6 @@
 // api/ping.ts
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { db } from "@server/db";
+import { db } from "../server/db";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log("DATABASE_URL ENV:", process.env.DATABASE_URL);
