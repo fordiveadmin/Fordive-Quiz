@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Fordive Scent Finder - Find Your Perfect Fragrance</title>
+        <title>Fordive Scen Finder - Find Your Perfect Fragrance</title>
         <meta name="description" content="Discover your signature scent with Fordive. Take our personality quiz to find the perfect fragrance that matches your personality, mood, and zodiac sign." />
       </Helmet>
       
